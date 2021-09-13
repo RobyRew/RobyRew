@@ -3,7 +3,12 @@
 
 ![](https://komarev.com/ghpvc/?username=RobyRew)
 
+#### Version History
 
+| Name | Latest release | Issues                          |
+|:-----|:---------------|:--------------------------------|
+[Asus FX504GE](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/pulls) [![Issues](https://img.shields.io/github/issues-raw/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/issues?q=is%3Aopen+is%3Aissue+label%3Aproject%3Aairport)
+[MSI X570 A-Pro](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore/pulls) ![Issues](https://img.shields.io/github/issues-raw/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)
 <!--
 **RobyRew/RobyRew** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
