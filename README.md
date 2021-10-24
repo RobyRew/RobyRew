@@ -3,7 +3,7 @@
 
 ![](https://komarev.com/ghpvc/?username=RobyRew)
 
-#### Version History
+#### Hackintosh Device Status
 
 | Name | Latest release | Status                          |
 |:-----|:---------------|:--------------------------------|
