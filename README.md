@@ -5,21 +5,15 @@
 
 #### Version History
 
-| Name | Latest release | Issues                          |
+| Name | Latest release | Status                          |
 |:-----|:---------------|:--------------------------------|
 [Asus FX504GE](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/pulls) [![Issues](https://img.shields.io/github/issues-raw/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)](https://github.com/RobyRew/ASUS-FX504GE-Hackintosh_OpenCore/issues?q=is%3Aopen+is%3Aissue+label%3Aproject%3Aairport)
 [MSI X570 A-Pro](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore/pulls) ![Issues](https://img.shields.io/github/issues-raw/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)
-<!--
-**RobyRew/RobyRew** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+[GIGABYTE Z490 Vision D](https://github.com/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore/pulls) ![Issues](https://img.shields.io/github/issues-raw/RobyRew/GIGABYTE-Z490-Vision-D_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)
+[ASRock Fatality AB350](https://github.com/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore/pulls) ![Issues](https://img.shields.io/github/issues-raw/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)
+[MSI PL62 7RC-267XES](https://github.com/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore) | [![Latest Release](https://img.shields.io/github/release/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore.svg?style=flat-square&label=)](https://github.com/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore/releases)[![Release date](https://img.shields.io/github/release-date/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=)](https://github.com/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore/releases) | [![Pulls](https://img.shields.io/github/issues-pr-raw/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=pulls)](https://github.com/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore/pulls) ![Issues](https://img.shields.io/github/issues-raw/RobyRew/MSI-PL62-7RC-267XES_Hackintosh_OpenCore.svg?style=flat-square&color=informational&label=issues)
 
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- 🌱 I’m currently learning IT
+- 💬 Ask me about everything
+- 📫 How to reach me: @RobyRew
+- ⚡ Fun fact: Im a man
