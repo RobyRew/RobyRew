@@ -4,6 +4,7 @@
 ![](https://komarev.com/ghpvc/?username=RobyRew)
 
 #### Hackintosh Device Status
+## Expect all guides to be updated this month (December 2021)
 
 | Name | Latest release | Status                          |
 |:-----|:---------------|:--------------------------------|
