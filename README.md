@@ -1,6 +1,6 @@
 [![https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true](https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true&theme=dark)](https://github.com/RobyRew)
-Dark Mode is broken here LOL
-[![https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true](https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true)](https://github.com/RobyRew)
+<!-- White Mode for when Dark mode is broken, lol
+[![https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true](https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true)](https://github.com/RobyRew) -->
 
 [![](https://komarev.com/ghpvc/?username=RobyRew)](https://github.com/RobyRew)
 
