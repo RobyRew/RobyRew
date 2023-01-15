@@ -2,6 +2,9 @@
 <!-- White Mode for when Dark mode is broken, lol
 [![https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true](https://github-readme-stats.vercel.app/api?username=RobyRew&show_icons=true)](https://github.com/RobyRew) -->
 
+[<img src="/img/listening-spotify.png">](https://github.com/RobyRew)
+[![spotify-github-profile](https://spotify-github-profile.vercel.app/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&cover_image=true&theme=novatorem&show_offline=false&background_color=000000&bar_color=53b14f&bar_color_cover=true)](https://spotify-github-profile.vercel.app/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&redirect=true)
+
 [![](https://komarev.com/ghpvc/?username=RobyRew)](https://github.com/RobyRew)
 
 #### Tableview:
