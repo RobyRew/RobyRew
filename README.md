@@ -1,6 +1,6 @@
 Currently Listening 😜:
 
-[![spotify-github-profile](https://spotify-github-profile.vercel.app/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&cover_image=true&theme=novatorem&background_color=000000&bar_color=53b14f&show_offline=true&bar_color_cover=true)](https://spotify-github-profile.vercel.app/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&redirect=true)
+[![spotify-github-profile](https://spotify-github-profile.vercel.app/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&cover_image=true&theme=novatorem&background_color=000000&bar_color=53b14f&show_offline=false&bar_color_cover=true)](https://spotify-github-profile.vercel.app/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&redirect=true)
 
 [![](https://komarev.com/ghpvc/?username=RobyRew)](https://github.com/RobyRew)
 
