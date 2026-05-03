@@ -77,13 +77,13 @@
 <!-- PROJECTS:START -->
 <div align="center">
 
-<a href="https://github.com/RobyRew/TopPresenter"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=TopPresenter&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e&cache_seconds=86400"/></a>
-<a href="https://github.com/RobyRew/calendar-event-generator"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=calendar-event-generator&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e&cache_seconds=86400"/></a>
+<a href="https://github.com/RobyRew/TopPresenter"><img width="49%" src="img/pins/TopPresenter.svg"/></a>
+<a href="https://github.com/RobyRew/calendar-event-generator"><img width="49%" src="img/pins/calendar-event-generator.svg"/></a>
 
-<a href="https://github.com/RobyRew/kingdomskids"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=kingdomskids&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e&cache_seconds=86400"/></a>
-<a href="https://github.com/RobyRew/powerpoint-extractor"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=powerpoint-extractor&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e&cache_seconds=86400"/></a>
+<a href="https://github.com/RobyRew/kingdomskids"><img width="49%" src="img/pins/kingdomskids.svg"/></a>
+<a href="https://github.com/RobyRew/powerpoint-extractor"><img width="49%" src="img/pins/powerpoint-extractor.svg"/></a>
 
-<a href="https://github.com/RobyRew/chat-converter"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=chat-converter&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e&cache_seconds=86400"/></a>
+<a href="https://github.com/RobyRew/chat-converter"><img width="49%" src="img/pins/chat-converter.svg"/></a>
 
 </div>
 <!-- PROJECTS:END -->

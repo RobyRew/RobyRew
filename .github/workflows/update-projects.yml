@@ -34,7 +34,7 @@ jobs:
             echo "No changes, skipping."
             exit 0
           fi
-          git add README.md
+          git add README.md img/pins/
           git commit -m "chore: update projects section [skip ci]"
           # Try direct push first; if rejected due to branch protection, open a PR
           if git push origin main 2>/dev/null; then
