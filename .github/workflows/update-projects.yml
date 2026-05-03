@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update:
@@ -23,9 +24,30 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 .github/scripts/update_projects.py
 
-      - name: Commit if changed
+      - name: Commit and push (or open PR if branch is protected)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git diff --quiet && git diff --staged --quiet || \
-            (git add README.md && git commit -m "chore: update projects section [skip ci]" && git push)
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes, skipping."
+            exit 0
+          fi
+          git add README.md
+          git commit -m "chore: update projects section [skip ci]"
+          # Try direct push first; if rejected due to branch protection, open a PR
+          if git push origin main 2>/dev/null; then
+            echo "Pushed directly."
+          else
+            BRANCH="bot/update-projects-$(date +%Y%m%d%H%M%S)"
+            git checkout -b "$BRANCH"
+            git push origin "$BRANCH"
+            gh pr create \
+              --title "chore: update projects section" \
+              --body "Automated update of the Projects section in README." \
+              --base main \
+              --head "$BRANCH" \
+              --label "automated" 2>/dev/null || true
+            echo "Opened PR from $BRANCH"
+          fi
