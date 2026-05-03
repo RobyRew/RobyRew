@@ -61,7 +61,7 @@
 
 ## ⚡ A Few Things About Me
 
-- � Running on Apple Silicon.
+- 🍎 Running on Apple Silicon — native arm64, no emulation, no compromises
 - ⚙️ Performance obsessive.
 - 🎛️ Convinced the best UI framework is the one shipped with the OS.
 - 🌙 Dark mode everywhere, always. Non-negotiable.
@@ -79,6 +79,15 @@
 <br/>
 
 [![GitHub Streak](https://streak-stats.demolab.com/?user=RobyRew&theme=dark&background=0d1117&border=1c1c1e&stroke=a78bfa&ring=7c3aed&fire=a78bfa&currStreakNum=c9d1d9&sideNums=c9d1d9&currStreakLabel=a78bfa&sideLabels=c9d1d9&dates=484f58)](https://git.io/streak-stats)
+
+<br/>
+
+<img width="49%" src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=RobyRew&theme=2077"/>
+<img width="49%" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=RobyRew&theme=2077"/>
+
+<br/>
+
+<img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=RobyRew&theme=2077"/>
 
 </div>
 
