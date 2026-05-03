@@ -75,14 +75,18 @@
 <div align="center">
 
 <!-- PROJECTS:START -->
-<a href="https://github.com/RobyRew/TopPresenter"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=TopPresenter&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
-<a href="https://github.com/RobyRew/calendar-event-generator"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=calendar-event-generator&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<div align="center">
 
-<a href="https://github.com/RobyRew/bibletype"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=bibletype&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
-<a href="https://github.com/RobyRew/kingdomskids"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=kingdomskids&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/TitanD3v-and-Hyperixa-Tweaks-Free"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=TitanD3v-and-Hyperixa-Tweaks-Free&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=MSI_X570_A-Pro_Hackintosh_OpenCore&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
 
-<a href="https://github.com/RobyRew/powerpoint-extractor"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=powerpoint-extractor&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
-<a href="https://github.com/RobyRew/js-ppt"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=js-ppt&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/ASUS-FX506LHB-Hackintosh_OpenCore"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=ASUS-FX506LHB-Hackintosh_OpenCore&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/Lenovo-Ideapad-Flex-5-14IIL05_Hackintosh_OpenCore"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=Lenovo-Ideapad-Flex-5-14IIL05_Hackintosh_OpenCore&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+
+<a href="https://github.com/RobyRew/ASUS-Z170-MAXIMUS-VIII-HERO_Hackintosh_OpenCore"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=ASUS-Z170-MAXIMUS-VIII-HERO_Hackintosh_OpenCore&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/Lenovo-P330-Workstation-Tower_Hackintosh_OpenCore"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=Lenovo-P330-Workstation-Tower_Hackintosh_OpenCore&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+
+</div>
 <!-- PROJECTS:END -->
 
 </div>
