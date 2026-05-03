@@ -70,6 +70,25 @@
 
 ---
 
+## � Projects
+
+<div align="center">
+
+<!-- PROJECTS:START -->
+<a href="https://github.com/RobyRew/TopPresenter"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=TopPresenter&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/calendar-event-generator"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=calendar-event-generator&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+
+<a href="https://github.com/RobyRew/bibletype"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=bibletype&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/kingdomskids"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=kingdomskids&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+
+<a href="https://github.com/RobyRew/powerpoint-extractor"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=powerpoint-extractor&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<a href="https://github.com/RobyRew/js-ppt"><img width="49%" src="https://github-readme-stats.vercel.app/api/pin/?username=RobyRew&repo=js-ppt&bg_color=0d1117&title_color=a78bfa&icon_color=a78bfa&text_color=c9d1d9&border_color=2d0a6e"/></a>
+<!-- PROJECTS:END -->
+
+</div>
+
+---
+
 ## 📊 Stats
 
 <div align="center">
@@ -79,15 +98,6 @@
 <br/>
 
 [![GitHub Streak](https://streak-stats.demolab.com/?user=RobyRew&theme=dark&background=0d1117&border=1c1c1e&stroke=a78bfa&ring=7c3aed&fire=a78bfa&currStreakNum=c9d1d9&sideNums=c9d1d9&currStreakLabel=a78bfa&sideLabels=c9d1d9&dates=484f58)](https://git.io/streak-stats)
-
-<br/>
-
-<img width="49%" src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=RobyRew&theme=2077"/>
-<img width="49%" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=RobyRew&theme=2077"/>
-
-<br/>
-
-<img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=RobyRew&theme=2077"/>
 
 </div>
 
