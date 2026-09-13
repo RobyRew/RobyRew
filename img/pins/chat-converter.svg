@@ -1,6 +1,6 @@
 <svg width="400" height="155" viewBox="0 0 400 155"
      xmlns="http://www.w3.org/2000/svg" role="img"
-     aria-label="GitHub repo: chat-converter">
+     aria-label="GitHub repo: chatforge">
   <rect width="400" height="155" rx="10" fill="#0d1117" stroke="#2d0a6e" stroke-width="1.5"/>
 
   <!-- repo icon -->
@@ -12,14 +12,14 @@
   </svg>
 
   <text x="38" y="28" fill="#a78bfa" font-size="14" font-weight="600"
-        font-family="'Segoe UI',sans-serif">chat-converter</text>
+        font-family="'Segoe UI',sans-serif">chatforge</text>
 
   <text x="15" y="68" fill="#8b949e" font-size="12"
         font-family="'Segoe UI',sans-serif" width="370">A web based tool to convert chat exports of popular messaging apps …</text>
 
   
-    <circle cx="15" cy="131" r="6" fill="#F7DF1E"/>
-    <text x="26" y="136" fill="#a9b1d6" font-size="12" font-family="'Segoe UI',sans-serif">JavaScript</text>
+    <circle cx="15" cy="131" r="6" fill="#3178C6"/>
+    <text x="26" y="136" fill="#a9b1d6" font-size="12" font-family="'Segoe UI',sans-serif">TypeScript</text>
 
   <!-- stars -->
   <svg x="120" y="122" width="16" height="16" viewBox="0 0 16 16" fill="#8b949e">
