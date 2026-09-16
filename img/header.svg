@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="200" viewBox="0 0 960 200" role="img" aria-labelledby="title desc">
+  <title id="title">RobyRew</title>
+  <desc id="desc">Native apps, web tools and experiments. Barcelona, Spain.</desc>
+  <rect width="960" height="200" rx="10" fill="#171c21"/>
+  <path d="M40 36h32" stroke="#ee9972" stroke-width="3"/>
+  <text x="86" y="41" fill="#b8bec5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" letter-spacing="2">APPS / TOOLS / EXPERIMENTS</text>
+  <text x="36" y="137" fill="#f4f1eb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="-5">RobyRew<tspan fill="#ee9972">.</tspan></text>
+  <path d="M40 161h880" stroke="#343b43"/>
+  <text x="40" y="184" fill="#b8bec5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="12" letter-spacing="1">Swift / TypeScript / macOS</text>
+  <text x="920" y="184" text-anchor="end" fill="#b8bec5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="12" letter-spacing="1">BARCELONA, ES</text>
+</svg>
