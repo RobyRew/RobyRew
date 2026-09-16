@@ -10,5 +10,5 @@
 <text x="396" y="84" fill="#f4f1eb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="38" font-weight="600">12</text>
 <text x="396" y="111" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" >updated in 90 days</text>
 <path d="M24 132h552" stroke="#343b43"/>
-<text x="24" y="157" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" >Public, non-fork repositories. This profile is excluded.</text>
+<text x="24" y="155" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" >Public, non-fork repositories. This profile is excluded.</text>
 </svg>
