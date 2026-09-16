@@ -1,0 +1,67 @@
+name: Profile cards
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/**'
+      - '.github/workflows/profile.yml'
+  pull_request:
+    paths:
+      - '.github/scripts/**'
+      - '.github/workflows/profile.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile-cards-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s .github/scripts -p 'test_*.py' -v
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: source
+          persist-credentials: false
+      - name: Render cards
+        working-directory: source
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 .github/scripts/update_profile.py --output "$RUNNER_TEMP/profile-cards"
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: profile-assets
+          path: published
+      - name: Publish generated images
+        working-directory: published
+        run: |
+          cp "$RUNNER_TEMP/profile-cards/stats.svg" stats.svg
+          cp "$RUNNER_TEMP/profile-cards/spotify.svg" spotify.svg
+          git add stats.svg spotify.svg
+          if git diff --cached --quiet; then
+            echo "Cards unchanged."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Refresh profile cards'
+          git push origin HEAD:profile-assets
