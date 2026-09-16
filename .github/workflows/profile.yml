@@ -55,8 +55,10 @@ jobs:
         working-directory: published
         run: |
           cp "$RUNNER_TEMP/profile-cards/stats.svg" stats.svg
+          cp "$RUNNER_TEMP/profile-cards/stats-compact.svg" stats-compact.svg
           cp "$RUNNER_TEMP/profile-cards/spotify.svg" spotify.svg
-          git add stats.svg spotify.svg
+          cp "$RUNNER_TEMP/profile-cards/spotify-compact.svg" spotify-compact.svg
+          git add stats.svg stats-compact.svg spotify.svg spotify-compact.svg
           if git diff --cached --quiet; then
             echo "Cards unchanged."
             exit 0

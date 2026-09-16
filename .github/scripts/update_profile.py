@@ -58,28 +58,31 @@ def text(x, y, value, size=16, color="#f4f1eb", **attrs):
             f'font-size="{size}" {options}>{escape(str(value))}</text>')
 
 
-def card(title, content, height):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="{height}" '
-            f'viewBox="0 0 600 {height}" role="img" aria-labelledby="title">\n'
+def card(title, content, height, width=600):
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+            f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title">\n'
             f'<title id="title">{escape(title)}</title>\n'
-            f'<rect x="0.5" y="0.5" width="599" height="{height-1}" rx="10" '
+            f'<rect x="0.5" y="0.5" width="{width-1}" height="{height-1}" rx="10" '
             'fill="#171c21" stroke="#343b43"/>\n' + "\n".join(content) + "\n</svg>\n")
 
 
-def stats_svg(repos, now):
+def stats_svg(repos, now, compact=False):
     recent = sum(now - timedelta(days=90) <= datetime.fromisoformat(
         repo["pushed_at"].replace("Z", "+00:00")) <= now for repo in repos if repo.get("pushed_at"))
     metrics = [(len(repos), "public projects"),
                (sum(repo["stargazers_count"] for repo in repos), "stars earned"),
                (recent, "updated in 90 days")]
+    width = 360 if compact else 600
     content = [text(24, 30, "ON GITHUB", 12, "#ee9972", letter_spacing=1.5),
-               text(576, 30, now.strftime("%d %b %Y"), 12, "#b8bec5", text_anchor="end")]
-    for x, (value, label) in zip((24, 210, 396), metrics):
+               text(width - 24, 30, now.strftime("%d %b %Y"), 12, "#b8bec5", text_anchor="end")]
+    labels = ("projects", "stars earned", "updated in 90d") if compact else tuple(label for _, label in metrics)
+    for x, (value, _), label in zip((24, 130, 240) if compact else (24, 210, 396), metrics, labels):
         content += [text(x, 84, value, 38, font_weight=600),
-                    text(x, 111, label, 16, "#b8bec5")]
-    content += ['<path d="M24 132h552" stroke="#343b43"/>',
-                text(24, 157, "Public, non-fork repositories. This profile is excluded.", 12, "#b8bec5")]
-    return card("GitHub: " + ", ".join(f"{v} {label}" for v, label in metrics), content, 178)
+                    text(x, 111, label, 12 if compact else 16, "#b8bec5")]
+    content += [f'<path d="M24 132h{width-48}" stroke="#343b43"/>',
+                text(24, 155, "Public repos. Forks and this profile excluded." if compact else
+                     "Public, non-fork repositories. This profile is excluded.", 11 if compact else 12, "#b8bec5")]
+    return card("GitHub: " + ", ".join(f"{v} {label}" for v, label in metrics), content, 178, width)
 
 
 def parse_spotify(payload):
@@ -114,20 +117,26 @@ def shorten(value, limit):
     return value if len(value) <= limit else value[:limit - 1].rstrip() + "…"
 
 
-def spotify_svg(track, now):
-    content = [text(124, 30, "SPOTIFY", 12, "#1ed760", font_weight=600, letter_spacing=1.5)]
+def spotify_svg(track, now, compact=False):
+    width = 360 if compact else 600
+    x = 108 if compact else 124
+    content = [f'<defs><clipPath id="text"><rect x="{x}" y="12" width="{width-x-20}" height="95"/></clipPath></defs>',
+               '<g clip-path="url(#text)">',
+               text(x, 30, "SPOTIFY", 12, "#1ed760", font_weight=600, letter_spacing=1.5)]
     if track:
         song, artist, cover = track
-        content += [text(124, 67, shorten(song, 33), 22, font_weight=600),
-                    text(124, 94, shorten(artist, 45), 16, "#b8bec5"),
-                    text(124, 130, now.strftime("Captured %d %b %Y · %H:%M UTC"), 12, "#b8bec5")]
+        content += [text(x, 67, shorten(song, 22 if compact else 33), 18 if compact else 22, font_weight=600),
+                    text(x, 94, shorten(artist, 30 if compact else 45), 14 if compact else 16, "#b8bec5"),
+                    '</g>', text(24 if compact else x, 140 if compact else 130,
+                                now.strftime("Captured %d %b %Y · %H:%M UTC"), 11 if compact else 12, "#b8bec5")]
         title = f"Spotify listening snapshot: {song} by {artist}. Captured {now:%d %b %Y %H:%M UTC}."
     else:
         cover = None
-        content += [text(124, 67, "Find me on Spotify", 22, font_weight=600),
-                    text(124, 94, "The music behind the commits.", 16, "#b8bec5"),
-                    text(124, 130, "Open profile ↗", 14, "#1ed760")]
+        content += [text(x, 67, "Find me on Spotify", 18 if compact else 22, font_weight=600),
+                    text(x, 94, "The music behind the commits.", 13 if compact else 16, "#b8bec5"),
+                    '</g>', text(24 if compact else x, 140 if compact else 130, "Open profile ↗", 14, "#1ed760")]
         title = "RobyRew on Spotify. Playback is unavailable; open the Spotify profile."
+    content += ['<g transform="translate(4 9) scale(.8)">' if compact else '<g>']
     if cover:
         content += ['<defs><clipPath id="cover"><rect x="24" y="35" width="80" height="80" rx="6"/></clipPath></defs>',
                     f'<image x="24" y="35" width="80" height="80" clip-path="url(#cover)" href="{escape(cover, quote=True)}"/>']
@@ -138,7 +147,8 @@ def spotify_svg(track, now):
                     '<path d="M48 68q17-8 33 2" stroke-width="4"/>',
                     '<path d="M50 76q14-7 28 2" stroke-width="3.5"/>',
                     '<path d="M52 84q12-5 23 1" stroke-width="3"/></g>']
-    return card(title, content, 154)
+    content += ['</g>']
+    return card(title, content, 164 if compact else 154, width)
 
 
 def main():
@@ -147,7 +157,9 @@ def main():
     args = parser.parse_args()
     now = datetime.now(timezone.utc)
     # A GitHub outage fails the run before either published asset can change.
-    stats = stats_svg(public_projects(), now)
+    repos = public_projects()
+    stats = stats_svg(repos, now)
+    compact_stats = stats_svg(repos, now, compact=True)
     try:
         track = parse_spotify(fetch(SPOTIFY_URL))
     except (OSError, ValueError, ET.ParseError):
@@ -156,7 +168,9 @@ def main():
         track = None
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "stats.svg").write_text(stats, encoding="utf-8")
+    (args.output / "stats-compact.svg").write_text(compact_stats, encoding="utf-8")
     (args.output / "spotify.svg").write_text(spotify_svg(track, now), encoding="utf-8")
+    (args.output / "spotify-compact.svg").write_text(spotify_svg(track, now, compact=True), encoding="utf-8")
     print(f"Rendered profile cards in {args.output}")
 
 
