@@ -1,113 +1,37 @@
-<div align="center">
+<picture>
+  <source media="(max-width: 480px)" srcset="img/header-compact.svg">
+  <img src="img/header.svg" width="100%" alt="RobyRew — native development and reverse engineering. Barcelona, Spain.">
+</picture>
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0d0d0d,40:1a0533,100:2d0a6e&height=230&section=header&text=RobyRew&fontSize=90&fontAlignY=42&animation=fadeIn&desc=Native%20apps.%20Real%20silicon.%20No%20compromises.&descAlignY=64&descSize=19&fontColor=ffffff"/>
+<p align="center">
+  I spend most of my time building native apps, working on web tools, and taking software apart.<br>
+  I care about the small details: startup time, memory use, and how an interface feels.
+</p>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=21&pause=1100&color=A78BFA&center=true&vCenter=true&random=false&width=680&lines=Native+stack+purist+%F0%9F%8E%AF;Apple+Silicon+native%2C+always+%F0%9F%8D%8E;If+it+doesn%27t+compile+to+metal%2C+I%27m+not+interested+%E2%9A%A1;Reverse+engineering+for+fun+%F0%9F%94%8D;Dark+mode+everywhere%2C+always+%F0%9F%8C%99)](https://git.io/typing-svg)
+<p align="center">
+  <sub>Swift · SwiftUI · AppKit &nbsp; / &nbsp; TypeScript · React &nbsp; / &nbsp; Docker · Ansible</sub>
+</p>
 
-<br/>
+<br>
 
-<a href="https://t.me/RobyRew">
-  <img src="https://img.shields.io/badge/Telegram-@RobyRew-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white&labelColor=1c1c1e"/>
+<a href="https://github.com/RobyRew?tab=repositories">
+  <picture>
+    <source media="(max-width: 480px)" srcset="https://raw.githubusercontent.com/RobyRew/RobyRew/profile-assets/stats-compact.svg">
+    <img src="https://raw.githubusercontent.com/RobyRew/RobyRew/profile-assets/stats.svg" width="100%" alt="Automatically updated GitHub stats: public projects, stars earned, and projects updated in the last 90 days. Forks and this profile are excluded.">
+  </picture>
 </a>
-&nbsp;
-<a href="https://github.com/RobyRew">
-  <img src="https://komarev.com/ghpvc/?username=RobyRew&style=for-the-badge&color=7c3aed&label=PROFILE+VIEWS&labelColor=1c1c1e"/>
+
+<a href="https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl">
+  <picture>
+    <source media="(max-width: 480px)" srcset="https://raw.githubusercontent.com/RobyRew/RobyRew/profile-assets/spotify-compact.svg">
+    <img src="https://raw.githubusercontent.com/RobyRew/RobyRew/profile-assets/spotify.svg" width="100%" alt="Spotify listening snapshot, refreshed hourly. Open my Spotify profile.">
+  </picture>
 </a>
 
-</div>
+<br>
 
----
-
-## 🎵 Currently Listening
-
-<div align="center">
-
-<img src="img/listening-spotify.png" height="36" alt="Listen on Spotify"/><br/><br/>
-
-[![spotify-github-profile](https://spotify-github-profile.kittinanx.com/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&cover_image=true&theme=novatorem&show_offline=true&background_color=121212&interchange=true&bar_color=53b14f&bar_color_cover=true)](https://spotify-github-profile.kittinanx.com/api/view?uid=gwiw7i4a2ha0a8dbldyn94vwl&redirect=true)
-
-</div>
-
----
-
-## 🛠 Tech DNA
-
-> *"The right tool for the right platform. Native or nothing."*
-
-<div align="center">
-
-[![My Skills](https://skillicons.dev/icons?i=swift,apple,vscode,ts,react,vite,docker,git,bash&theme=dark&perline=9)](https://skillicons.dev)
-
-</div>
-
-<br/>
-
-<details>
-<summary><b>🔬 Full stack breakdown</b></summary>
-
-<br/>
-
-| Domain | Stack |
-|:-------|:------|
-| 🍎 Native macOS / iOS | Swift · AppKit · UIKit · SwiftUI |
-| 🌐 Web (when the OS demands it) | TypeScript · React · Vite · Tailwind CSS |
-| 🐳 Infrastructure | Docker · Nginx · Ansible |
-| 🔍 Reverse engineering | IDA Pro |
-| 🔧 Daily tools | Xcode · VS Code · IDA |
-
-</details>
-
----
-
-## ⚡ A Few Things About Me
-
-- 🍎 Running on Apple Silicon — native arm64, no emulation, no compromises
-- ⚙️ Performance obsessive.
-- 🎛️ Convinced the best UI framework is the one shipped with the OS.
-- 🌙 Dark mode everywhere, always. Non-negotiable.
-- 🎵 Music is always on.
-- 🤝 Open source contributor.
-
----
-
-## 🚀 Projects
-
-<div align="center">
-
-<!-- PROJECTS:START -->
-<div align="center">
-
-<a href="https://github.com/RobyRew/TopPresenter"><img width="49%" src="img/pins/TopPresenter.svg"/></a>
-<a href="https://github.com/RobyRew/calendar-event-generator"><img width="49%" src="img/pins/calendar-event-generator.svg"/></a>
-
-<a href="https://github.com/RobyRew/kingdomskids"><img width="49%" src="img/pins/kingdomskids.svg"/></a>
-<a href="https://github.com/RobyRew/powerpoint-extractor"><img width="49%" src="img/pins/powerpoint-extractor.svg"/></a>
-
-<a href="https://github.com/RobyRew/chat-converter"><img width="49%" src="img/pins/chat-converter.svg"/></a>
-
-</div>
-<!-- PROJECTS:END -->
-
-</div>
-
----
-
-## 📊 Stats
-
-<div align="center">
-
-<img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=RobyRew&bg_color=0d1117&color=a78bfa&line=7c3aed&point=a78bfa&area=true&area_color=2d0a6e&hide_border=true"/>
-
-<br/>
-
-[![GitHub Streak](https://streak-stats.demolab.com/?user=RobyRew&theme=dark&background=0d1117&border=1c1c1e&stroke=a78bfa&ring=7c3aed&fire=a78bfa&currStreakNum=c9d1d9&sideNums=c9d1d9&currStreakLabel=a78bfa&sideLabels=c9d1d9&dates=484f58)](https://git.io/streak-stats)
-
-</div>
-
----
-
-<div align="center">
-
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:2d0a6e,60:1a0533,100:0d0d0d&height=110&section=footer"/>
-
-</div>
+<p align="center">
+  <a href="https://github.com/RobyRew?tab=repositories">Explore my work ↗</a>
+  &nbsp; · &nbsp;
+  <a href="https://t.me/RobyRew">Telegram ↗</a>
+</p>
