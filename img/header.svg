@@ -1,11 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="200" viewBox="0 0 960 200" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="324" viewBox="0 0 960 324" role="img" aria-labelledby="title desc">
   <title id="title">RobyRew</title>
-  <desc id="desc">Native apps, web tools and experiments. Barcelona, Spain.</desc>
-  <rect width="960" height="200" rx="10" fill="#171c21"/>
-  <path d="M40 36h32" stroke="#ee9972" stroke-width="3"/>
-  <text x="86" y="41" fill="#b8bec5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="13" letter-spacing="2">APPS / TOOLS / EXPERIMENTS</text>
-  <text x="36" y="137" fill="#f4f1eb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="90" font-weight="700" letter-spacing="-5">RobyRew<tspan fill="#ee9972">.</tspan></text>
-  <path d="M40 161h880" stroke="#343b43"/>
-  <text x="40" y="184" fill="#b8bec5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="12" letter-spacing="1">Swift / TypeScript / macOS</text>
-  <text x="920" y="184" text-anchor="end" fill="#b8bec5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="12" letter-spacing="1">BARCELONA, ES</text>
+  <desc id="desc">Native development and reverse engineering. Barcelona, Spain.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#161d27"/><stop offset=".55" stop-color="#0c1119"/><stop offset="1" stop-color="#121922"/></linearGradient>
+    <radialGradient id="light" cx=".78" cy=".12" r=".75"><stop stop-color="#7c9dab" stop-opacity=".18"/><stop offset="1" stop-color="#7c9dab" stop-opacity="0"/></radialGradient>
+    <linearGradient id="edge" x2=".8" y2="1"><stop stop-color="#7a8b9a" stop-opacity=".6"/><stop offset=".5" stop-color="#344353" stop-opacity=".2"/><stop offset="1" stop-color="#7a8b9a" stop-opacity=".25"/></linearGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#ffffff"/><stop offset=".4" stop-color="#c6d5df"/><stop offset=".51" stop-color="#7b909f"/><stop offset=".63" stop-color="#e6f1f5"/><stop offset="1" stop-color="#78919d"/></linearGradient>
+    <linearGradient id="tile" x2="1" y2="1"><stop stop-color="#435363"/><stop offset=".48" stop-color="#1d2936"/><stop offset="1" stop-color="#111a24"/></linearGradient>
+    <linearGradient id="rule"><stop stop-color="#b9d8e3" stop-opacity="0"/><stop offset=".5" stop-color="#b9d8e3" stop-opacity=".7"/><stop offset="1" stop-color="#b9d8e3" stop-opacity="0"/></linearGradient>
+    <clipPath id="frame"><rect x="1" y="1" width="958" height="322" rx="22"/></clipPath>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity=".5"/></filter>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="960" height="324" fill="url(#bg)"/>
+    <rect width="960" height="324" fill="url(#light)"/>
+    <g fill="none" stroke="#b0c5d5" opacity=".07">
+      <ellipse cx="775" cy="163" rx="219" ry="100" transform="rotate(-34 775 163)"/>
+      <ellipse cx="775" cy="163" rx="258" ry="140" transform="rotate(-34 775 163)"/>
+      <ellipse cx="775" cy="163" rx="303" ry="183" transform="rotate(-34 775 163)"/>
+    </g>
+    <path d="M540 323 879 0" stroke="url(#rule)" stroke-width=".7"/>
+    <g transform="translate(698 65) rotate(-12 86 90)" filter="url(#shadow)">
+      <rect width="172" height="180" rx="42" fill="url(#tile)" stroke="url(#metal)" stroke-opacity=".55"/>
+      <rect x="6" y="6" width="160" height="168" rx="37" fill="none" stroke="#d5e7f2" stroke-opacity=".12"/>
+      <path d="M41 135V42h49c27 0 40 13 40 34 0 16-9 27-24 32l29 39h-30l-27-37H67v37H41Z M67 65v23h20c11 0 17-4 17-12s-6-11-17-11Z" transform="translate(0 3)" fill="#080d14" fill-rule="evenodd"/>
+      <path d="M41 135V39h49c27 0 40 13 40 34 0 16-9 27-24 32l29 39h-30l-27-37H67v37H41Z M67 62v23h20c11 0 17-4 17-12s-6-11-17-11Z" fill="url(#metal)" fill-rule="evenodd"/>
+    </g>
+    <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+      <text x="48" y="53" fill="#a6b6c6" font-size="12" letter-spacing="2.5">SOFTWARE DEVELOPER</text>
+      <text x="43" y="161" fill="#edf3f6" font-size="88" font-weight="500" letter-spacing="-4.5">RobyRew</text>
+      <text x="49" y="202" fill="#afc4d0" font-size="20">Native development &amp; reverse engineering</text>
+      <text x="49" y="278" fill="#8fa4b4" font-size="12" letter-spacing="2">macOS / WEB / SYSTEMS</text>
+      <text x="910" y="278" text-anchor="end" fill="#8fa4b4" font-size="11" letter-spacing="1.5">BARCELONA, ES</text>
+    </g>
+    <path d="M48 235h450" stroke="url(#rule)"/>
+  </g>
+  <rect x=".5" y=".5" width="959" height="323" rx="22" fill="none" stroke="url(#edge)"/>
 </svg>

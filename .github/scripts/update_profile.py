@@ -51,19 +51,32 @@ def public_projects():
         page += 1
 
 
-def text(x, y, value, size=16, color="#f4f1eb", **attrs):
+def text(x, y, value, size=16, color="#edf3f6", **attrs):
     options = " ".join(f'{key.replace("_", "-")}="{escape(str(value), quote=True)}"'
                        for key, value in attrs.items())
     return (f'<text x="{x}" y="{y}" fill="{color}" font-family="{FONT}" '
             f'font-size="{size}" {options}>{escape(str(value))}</text>')
 
 
-def card(title, content, height, width=600):
+def card(title, content, height, width=860, music=False):
+    glow = "#6fc5a0" if music else "#91b1ca"
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
             f'viewBox="0 0 {width} {height}" role="img" aria-labelledby="title">\n'
             f'<title id="title">{escape(title)}</title>\n'
-            f'<rect x="0.5" y="0.5" width="{width-1}" height="{height-1}" rx="10" '
-            'fill="#171c21" stroke="#343b43"/>\n' + "\n".join(content) + "\n</svg>\n")
+            '<defs>'
+            '<linearGradient id="surface" x2="1" y2="1">'
+            '<stop stop-color="#151d27"/><stop offset="1" stop-color="#0d121a"/></linearGradient>'
+            f'<radialGradient id="glow" cx=".15" cy="0" r="1">'
+            f'<stop stop-color="{glow}" stop-opacity=".10"/>'
+            f'<stop offset="1" stop-color="{glow}" stop-opacity="0"/></radialGradient>'
+            '<linearGradient id="edge" x2=".8" y2="1">'
+            '<stop stop-color="#7a8b9a" stop-opacity=".45"/>'
+            '<stop offset=".5" stop-color="#344353" stop-opacity=".4"/>'
+            '<stop offset="1" stop-color="#7a8b9a" stop-opacity=".2"/></linearGradient>'
+            '</defs>'
+            f'<rect x=".5" y=".5" width="{width-1}" height="{height-1}" rx="20" fill="url(#surface)"/>'
+            f'<rect x=".5" y=".5" width="{width-1}" height="{height-1}" rx="20" fill="url(#glow)" stroke="url(#edge)"/>\n'
+            + "\n".join(content) + "\n</svg>\n")
 
 
 def stats_svg(repos, now, compact=False):
@@ -72,17 +85,21 @@ def stats_svg(repos, now, compact=False):
     metrics = [(len(repos), "public projects"),
                (sum(repo["stargazers_count"] for repo in repos), "stars earned"),
                (recent, "updated in 90 days")]
-    width = 360 if compact else 600
-    content = [text(24, 30, "ON GITHUB", 12, "#ee9972", letter_spacing=1.5),
-               text(width - 24, 30, now.strftime("%d %b %Y"), 12, "#b8bec5", text_anchor="end")]
+    width = 360 if compact else 860
+    margin = 24 if compact else 34
+    content = [text(margin, 31 if compact else 35, "PUBLIC WORK", 11, "#a8c5d4", letter_spacing=2),
+               text(width - margin, 31 if compact else 35, now.strftime("%d %b %Y"), 11, "#8fa4b4", text_anchor="end")]
     labels = ("projects", "stars earned", "updated in 90d") if compact else tuple(label for _, label in metrics)
-    for x, (value, _), label in zip((24, 130, 240) if compact else (24, 210, 396), metrics, labels):
-        content += [text(x, 84, value, 38, font_weight=600),
-                    text(x, 111, label, 12 if compact else 16, "#b8bec5")]
-    content += [f'<path d="M24 132h{width-48}" stroke="#343b43"/>',
-                text(24, 155, "Public repos. Forks and this profile excluded." if compact else
-                     "Public, non-fork repositories. This profile is excluded.", 11 if compact else 12, "#b8bec5")]
-    return card("GitHub: " + ", ".join(f"{v} {label}" for v, label in metrics), content, 178, width)
+    columns = (24, 134, 244) if compact else (34, 316, 598)
+    for x, (value, _), label in zip(columns, metrics, labels):
+        content += [text(x, 88 if compact else 109, value, 38 if compact else 52, font_weight=400, letter_spacing=-1.5),
+                    text(x, 114 if compact else 141, label, 11 if compact else 17, "#a8b8c7")]
+    for x in ((119, 229) if compact else (281, 563)):
+        content += [f'<path d="M{x} {60 if compact else 65}v{59 if compact else 86}" stroke="#b0c5d5" stroke-opacity=".12"/>']
+    content += [text(margin, 155 if compact else 184,
+                     "Public repos. Forks and this profile excluded." if compact else
+                     "Original public repositories · forks and this profile excluded", 10 if compact else 12, "#8fa4b4")]
+    return card("GitHub: " + ", ".join(f"{v} {label}" for v, label in metrics), content, 176 if compact else 206, width)
 
 
 def parse_spotify(payload):
@@ -118,37 +135,50 @@ def shorten(value, limit):
 
 
 def spotify_svg(track, now, compact=False):
-    width = 360 if compact else 600
-    x = 108 if compact else 124
-    content = [f'<defs><clipPath id="text"><rect x="{x}" y="12" width="{width-x-20}" height="95"/></clipPath></defs>',
+    width = 360 if compact else 860
+    x = 120 if compact else 204
+    content = [f'<defs><clipPath id="text"><rect x="{x}" y="17" width="{width-x-25}" height="112"/></clipPath></defs>',
                '<g clip-path="url(#text)">',
-               text(x, 30, "SPOTIFY", 12, "#1ed760", font_weight=600, letter_spacing=1.5)]
+               text(x, 34 if compact else 42, "SPOTIFY", 11, "#7dd3ac", letter_spacing=2)]
     if track:
         song, artist, cover = track
-        content += [text(x, 67, shorten(song, 22 if compact else 33), 18 if compact else 22, font_weight=600),
-                    text(x, 94, shorten(artist, 30 if compact else 45), 14 if compact else 16, "#b8bec5"),
-                    '</g>', text(24 if compact else x, 140 if compact else 130,
-                                now.strftime("Captured %d %b %Y · %H:%M UTC"), 11 if compact else 12, "#b8bec5")]
+        content += [text(x, 71 if compact else 89, shorten(song, 22 if compact else 39), 18 if compact else 30, font_weight=500, letter_spacing=-.5),
+                    text(x, 99 if compact else 119, shorten(artist, 28 if compact else 55), 14 if compact else 18, "#a8b8c7"),
+                    '</g>', text(24 if compact else x, 165 if compact else 175,
+                                now.strftime("Captured %d %b %Y · %H:%M UTC"), 10 if compact else 12, "#8fa4b4")]
         title = f"Spotify listening snapshot: {song} by {artist}. Captured {now:%d %b %Y %H:%M UTC}."
     else:
         cover = None
-        content += [text(x, 67, "Find me on Spotify", 18 if compact else 22, font_weight=600),
-                    text(x, 94, "The music behind the commits.", 13 if compact else 16, "#b8bec5"),
-                    '</g>', text(24 if compact else x, 140 if compact else 130, "Open profile ↗", 14, "#1ed760")]
+        if compact:
+            content += [text(x, 66, "Usually with", 22, font_weight=500, letter_spacing=-.5),
+                        text(x, 96, "music on.", 22, font_weight=500, letter_spacing=-.5)]
+        else:
+            content += [text(x, 89, "Usually with music on.", 30, font_weight=500, letter_spacing=-.5),
+                        text(x, 120, "Find me on Spotify", 18, "#a8b8c7")]
+        content += ['</g>', text(24 if compact else x, 165 if compact else 175,
+                                "Find me on Spotify ↗" if compact else "Open Spotify ↗", 13, "#7dd3ac")]
         title = "RobyRew on Spotify. Playback is unavailable; open the Spotify profile."
-    content += ['<g transform="translate(4 9) scale(.8)">' if compact else '<g>']
+    # The embedded cover or locally drawn record never needs another network request.
+    content += ['<g transform="translate(24 44) scale(.57)">' if compact else '<g transform="translate(34 36)">']
     if cover:
-        content += ['<defs><clipPath id="cover"><rect x="24" y="35" width="80" height="80" rx="6"/></clipPath></defs>',
-                    f'<image x="24" y="35" width="80" height="80" clip-path="url(#cover)" href="{escape(cover, quote=True)}"/>']
+        content += ['<defs><clipPath id="cover"><rect width="132" height="132" rx="14"/></clipPath></defs>',
+                    f'<image width="132" height="132" clip-path="url(#cover)" href="{escape(cover, quote=True)}"/>',
+                    '<rect x=".5" y=".5" width="131" height="131" rx="14" fill="none" stroke="#d0e8ef" stroke-opacity=".2"/>']
     else:
-        content += ['<rect x="24" y="35" width="80" height="80" rx="8" fill="#20372a"/>',
-                    '<circle cx="64" cy="75" r="24" fill="#1ed760"/>',
-                    '<g fill="none" stroke="#171c21" stroke-linecap="round">',
-                    '<path d="M48 68q17-8 33 2" stroke-width="4"/>',
-                    '<path d="M50 76q14-7 28 2" stroke-width="3.5"/>',
-                    '<path d="M52 84q12-5 23 1" stroke-width="3"/></g>']
+        content += ['<defs><linearGradient id="vinyl" x2="1" y2="1">'
+                    '<stop stop-color="#3b4b50"/><stop offset=".25" stop-color="#141e24"/>'
+                    '<stop offset=".51" stop-color="#263c3b"/><stop offset=".76" stop-color="#111a22"/>'
+                    '<stop offset="1" stop-color="#526664"/></linearGradient></defs>',
+                    '<circle cx="66" cy="66" r="65" fill="url(#vinyl)" stroke="#7a9e96" stroke-opacity=".28"/>']
+        for radius in (58, 52, 46, 40, 34):
+            content += [f'<circle cx="66" cy="66" r="{radius}" fill="none" stroke="#b8d5cd" stroke-opacity=".11"/>']
+        content += ['<circle cx="66" cy="66" r="25" fill="#7dd3ac"/>',
+                    '<g fill="none" stroke="#12261f" stroke-linecap="round">',
+                    '<path d="M50 59q17-8 33 2" stroke-width="4"/>',
+                    '<path d="M52 67q14-7 28 2" stroke-width="3.5"/>',
+                    '<path d="M54 75q12-5 23 1" stroke-width="3"/></g>']
     content += ['</g>']
-    return card(title, content, 164 if compact else 154, width)
+    return card(title, content, 192 if compact else 210, width, music=True)
 
 
 def main():

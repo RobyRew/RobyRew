@@ -1,7 +1,12 @@
 # Profile maintenance
 
-Edit `README.md` for copy and project links, and `img/header.svg` for the banner.
-The README is curated; automation never rewrites it.
+The profile has no manually maintained project list. The bio and technology
+interests in `README.md` are intentionally evergreen. Stats and Spotify refresh
+automatically; automation never rewrites the README.
+
+The silver monogram header lives in `img/header.svg`, with a separate narrow
+layout in `img/header-compact.svg`. The generated cards use the same visual style
+and provide compact variants for phones.
 
 ## Generated cards
 
