@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="178" viewBox="0 0 360 178" role="img" aria-labelledby="title">
+<title id="title">GitHub: 23 public projects, 99 stars earned, 12 updated in 90 days</title>
+<rect x="0.5" y="0.5" width="359" height="177" rx="10" fill="#171c21" stroke="#343b43"/>
+<text x="24" y="30" fill="#ee9972" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" letter-spacing="1.5">ON GITHUB</text>
+<text x="336" y="30" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" text-anchor="end">16 Sep 2026</text>
+<text x="24" y="84" fill="#f4f1eb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="38" font-weight="600">23</text>
+<text x="24" y="111" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" >projects</text>
+<text x="130" y="84" fill="#f4f1eb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="38" font-weight="600">99</text>
+<text x="130" y="111" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" >stars earned</text>
+<text x="240" y="84" fill="#f4f1eb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="38" font-weight="600">12</text>
+<text x="240" y="111" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" >updated in 90d</text>
+<path d="M24 132h312" stroke="#343b43"/>
+<text x="24" y="155" fill="#b8bec5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" >Public repos. Forks and this profile excluded.</text>
+</svg>

@@ -1,0 +1,40 @@
+{
+  "github": {
+    "repos": {
+      "Download-AI-Chat-PDF": {
+        "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
+        "language": "JavaScript",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/Download-AI-Chat-PDF"
+      },
+      "TopPresenter": {
+        "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
+        "language": "Swift",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/TopPresenter"
+      },
+      "chatforge": {
+        "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+        "language": "TypeScript",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/chatforge"
+      },
+      "mapswitch": {
+        "description": "Open any map link in your preferred app — privacy-first universal map redirector",
+        "language": "TypeScript",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/mapswitch"
+      },
+      "spotify-versions-history": {
+        "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+        "language": "JavaScript",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/spotify-versions-history"
+      }
+    },
+    "user": {
+      "created_at": "2019-04-08T13:49:08Z",
+      "public_repos": 36
+    }
+  }
+}

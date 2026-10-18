@@ -1,0 +1,60 @@
+name: Refresh profile
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - profile.toml
+      - .github/profile/**
+      - .github/workflows/refresh.yml
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-profile
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install font tools
+        run: pip install fonttools==4.67.0 brotli==1.2.0
+
+      - name: Build README and images
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+        run: python3 .github/profile/build.py
+
+      - name: Commit and push (or open a PR if main is protected)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add README.md img .github/profile/cache.json
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh profile [skip ci]"
+          if git push origin HEAD:main; then
+            exit 0
+          fi
+          branch="bot/refresh-$(date +%Y%m%d%H%M%S)"
+          git push origin "HEAD:$branch"
+          gh pr create --base main --head "$branch" \
+            --title "Refresh profile" --body "Automated rebuild of README.md and img/." || true
