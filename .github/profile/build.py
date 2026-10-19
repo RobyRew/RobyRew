@@ -17,6 +17,7 @@ import html
 import json
 import math
 import os
+import re
 import sys
 import tomllib
 import urllib.parse
@@ -136,6 +137,13 @@ ICONS = {
     "speaker": '<rect x="5" y="2.5" width="14" height="19" rx="2.5"/><circle cx="12" cy="14" r="3.5"/><circle cx="12" cy="7" r="1"/>',
     "user": '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4 4.3-6 8-6s6.8 2 8 6"/>',
     "list": '<path d="M8 6h13M8 12h13M8 18h8M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+    "download": '<path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4 19.5h16"/>',
+    "tag": '<path d="M3 12V4h8l9.5 9.5-8 8Z"/><circle cx="7.5" cy="8" r="1.4"/>',
+    "eye": '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+    "fork": '<circle cx="6" cy="5" r="2.2"/><circle cx="18" cy="5" r="2.2"/><circle cx="12" cy="19" r="2.2"/><path d="M6 7.2v1.3a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V7.2M12 11.5v5.3"/>',
+    "merge": '<circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="12" r="2.2"/><path d="M6 7.2v9.6M6 7.5c0 3 2.5 4.5 5.5 4.5h4.3"/>',
+    "users": '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.9-3.4 3.4-5.2 6.5-5.2s5.6 1.8 6.5 5.2"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 15c1.8.7 3 2.4 3.5 5"/>',
+    "repo": '<path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H19v16H7.5A2.5 2.5 0 0 0 5 20.5v-16ZM5 20.5A2.5 2.5 0 0 0 7.5 23H19v-5"/>',
 }
 STAR = "M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"
 DEVICE_ICONS = {"computer": "laptop", "smartphone": "phone", "tablet": "phone"}
@@ -715,11 +723,24 @@ def window_mock(svg, x, y, w, h, hue):
         )
 
 
-def meta_chips(svg, x, y, project, h=28, size=13.5):
-    if project["language"]:
-        x += svg.chip(x, y, project["language"], h=h, size=size, dot=LANGUAGES.get(project["language"], "#9CA3AF")) + 8
-    if project["stars"]:
-        svg.chip(x, y, str(project["stars"]), h=h, size=size, star=True)
+def meta_chips(svg, x, y, project, h=28, size=13.5, room=9999):
+    chips = []
+    if project.get("language"):
+        chips.append({"label": project["language"], "dot": LANGUAGES.get(project["language"], "#9CA3AF")})
+    if project.get("stars"):
+        chips.append({"label": compact(project["stars"]), "star": True})
+    if project.get("downloads"):
+        chips.append({"label": compact(project["downloads"]), "icon": "download"})
+    if project.get("version"):
+        chips.append({"label": project["version"], "icon": "tag"})
+    if project.get("forks"):
+        chips.append({"label": compact(project["forks"]), "icon": "fork"})
+    end = x + room
+    for chip in chips:
+        width = 24 + (15 if chip.get("dot") else 21) + FACES["semi"].width(chip["label"], size)
+        if x + width > end:
+            break
+        x += svg.chip(x, y, chip["label"], h=h, size=size, dot=chip.get("dot"), icon=chip.get("icon"), star=chip.get("star", False)) + 8
 
 
 def project_card(theme, project, index, wide):
@@ -741,7 +762,7 @@ def project_card(theme, project, index, wide):
         for line in FACES["text"].wrap(note, 16.5, text_w, 2):
             svg.text(x0 + 32, y, line, "text", 16.5, t["dim"])
             y += 23
-        meta_chips(svg, x0 + 32, H - 32 - 28, project)
+        meta_chips(svg, x0 + 32, H - 32 - 28, project, room=(400 if illustrated else CW - 64))
         if illustrated:
             window_mock(svg, x0 + 470, 40, 262, 190, hue)
         svg.glass(x0 + CW - 32 - 34, 32, 34, 34, 17)
@@ -761,7 +782,7 @@ def project_card(theme, project, index, wide):
     for line in FACES["text"].wrap(note, 14.5, w - 48, 2):
         svg.text(x0 + 24, y, line, "text", 14.5, t["dim"])
         y += 20
-    meta_chips(svg, x0 + 24, H - 24 - 26, project, h=26, size=13)
+    meta_chips(svg, x0 + 24, H - 24 - 26, project, h=26, size=13, room=w - 48)
     return svg
 
 
@@ -901,26 +922,35 @@ def activity(theme, stats):
 
 def popularity(theme, stats):
     langs = stats["languages"]
+    cells = [
+        ("Profile views", stats.get("views"), "eye"),
+        ("Stars earned", stats["stars"], "star"),
+        ("Followers", stats["followers"], "users"),
+        ("Merged PRs", stats.get("merged_prs"), "merge"),
+        ("Forks", stats["forks"], "fork"),
+        ("Contributed to", stats.get("contributed_to"), "repo"),
+    ]
+    cells = [c for c in cells if c[1] is not None]
     label = (
-        f'{stats["stars"]} stars, {stats["followers"]} followers, {stats["forks"]} forks, {stats["original"]} original repos. '
+        ", ".join(f"{name}: {value}" for name, value, _ in cells) + ". "
         + "Languages: " + ", ".join(f'{n} {p:.0f}%' for n, p, _ in langs)
     )
-    H = 236
+    H = 300
     svg = SVG(theme, W, H + GAP, label)
     t = svg.t
     cw = (CW - 16) / 2
     lx = PAD
     svg.card(lx, 0, cw, H, 24, "rose", blobs_for(0))
     svg.text(lx + 26, 42, "POPULARITY", "mono-md", 11, t["ink"], tracking=2.2)
-    cells = [("Stars earned", stats["stars"], True), ("Followers", stats["followers"], False),
-             ("Forks", stats["forks"], False), ("Original repos", stats["original"], False)]
-    for i, (name, value, star) in enumerate(cells):
-        cx = lx + 26 + (i % 2) * (cw / 2 - 10)
-        cy = 66 + (i // 2) * 80
-        width = svg.text(cx, cy + 40, compact(value), "display", 40, t["ink"], tracking=-1.2)
-        if star:
-            svg.add(f'<path d="{STAR}" fill="#FFC53D" transform="translate({num(cx + width + 8)} {num(cy + 16)}) scale(.9)"/>')
-        svg.text(cx + 2, cy + 62, name.upper(), "mono", 9.5, t["faint"], tracking=1.2)
+    for i, (name, value, icon) in enumerate(cells[:6]):
+        cx = lx + 26 + (i % 2) * (cw / 2 - 6)
+        cy = 62 + (i // 2) * 76
+        width = svg.text(cx, cy + 36, compact(value), "display", 36, t["ink"], tracking=-1)
+        if icon == "star":
+            svg.add(f'<path d="{STAR}" fill="#FFC53D" transform="translate({num(cx + width + 8)} {num(cy + 14)}) scale(.8)"/>')
+        else:
+            svg.icon(icon, cx + width + 9, cy + 15, 17, t["faint"], stroke=2)
+        svg.text(cx + 2, cy + 56, name.upper(), "mono", 9.5, t["faint"], tracking=1.2)
     rx = PAD + cw + 16
     svg.card(rx, 0, cw, H, 24, "teal", blobs_for(1))
     svg.text(rx + 26, 42, "LANGUAGES", "mono-md", 11, t["ink"], tracking=2.2)
@@ -938,10 +968,38 @@ def popularity(theme, stats):
     svg.add("</g>")
     for i, (name, share, color) in enumerate(langs[:8]):
         cx = bx + (i % 2) * (bar_w / 2)
-        cy = 112 + (i // 2) * 30
+        cy = 118 + (i // 2) * 42
         svg.add(f'<circle cx="{num(cx + 5)}" cy="{num(cy - 4)}" r="5" fill="{color}"/>')
         svg.text(cx + 18, cy, FACES["semi"].fit(name, 14.5, bar_w / 2 - 70), "semi", 14.5, t["ink"])
         svg.text(cx + bar_w / 2 - 14, cy, f"{share:.1f}%", "mono", 11.5, t["faint"], anchor="end")
+    return svg
+
+
+def facts(theme, stats, since):
+    joined = stats.get("joined") or ""
+    years = ""
+    if joined:
+        start = datetime.fromisoformat(joined.replace("Z", "+00:00"))
+        years = str(int((datetime.now(timezone.utc) - start).days // 365.25))
+    best = stats.get("best_day")
+    tiles = [
+        (f"{years} yrs" if years else "—", "On GitHub", f"SINCE {since}" if since else "", "ember"),
+        (compact(stats.get("all_time", 0)), "Contributions", "ALL TIME", "teal"),
+        (stats.get("busiest", "—"), "Busiest day", "OF THE WEEK", "blue"),
+        (str(stats.get("best_count", 0)), "Best day", date.fromisoformat(best).strftime("%b %-d, %Y").upper() if best else "", "rose"),
+    ]
+    label = ". ".join(f"{title}: {value}" for value, title, _, _ in tiles)
+    H = 150
+    svg = SVG(theme, W, H + GAP, label)
+    t = svg.t
+    gap = 14
+    tile = (CW - 3 * gap) / 4
+    for i, (value, title, sub, hue) in enumerate(tiles):
+        x = PAD + i * (tile + gap)
+        svg.card(x, 0, tile, H, 22, hue, blobs_for(i))
+        svg.text(x + 20, 34, sub, "mono", 9.5, t["faint"], tracking=1.2)
+        svg.text(x + 18, 86, FACES["display"].fit(value, 34, tile - 36, -1), "display", 34, t["ink"], tracking=-1)
+        svg.text(x + 20, 120, FACES["semi"].fit(title, 15, tile - 40), "semi", 15, t["ink"])
     return svg
 
 
@@ -1048,12 +1106,24 @@ def github_data(p, cache):
         if repo.get("private"):
             data["repos"].pop(name, None)
             continue
+        previous = data["repos"].get(name, {})
         data["repos"][name] = {
             "description": repo.get("description") or "",
             "language": repo.get("language") or "",
             "stars": repo.get("stargazers_count", 0),
+            "forks": repo.get("forks_count", 0),
             "url": repo.get("html_url") or f"https://github.com/{login}/{name}",
+            "downloads": previous.get("downloads", 0),
+            "version": previous.get("version", ""),
         }
+        try:
+            releases = fetch(f"https://api.github.com/repos/{login}/{name}/releases?per_page=100", headers) or []
+            published = [r for r in releases if not r.get("draft")]
+            stable = [r for r in published if not r.get("prerelease")]
+            data["repos"][name]["downloads"] = sum(a.get("download_count", 0) for r in published for a in r.get("assets", []))
+            data["repos"][name]["version"] = (stable or published)[0]["tag_name"] if published else ""
+        except Exception as error:
+            print(f"github: keeping cached releases for {name} ({error})", file=sys.stderr)
     repository = os.environ.get("GITHUB_REPOSITORY", f"{login}/{login}")
     try:
         pages = fetch(f"https://api.github.com/repos/{repository}/pages", headers)
@@ -1066,7 +1136,13 @@ def github_data(p, cache):
 STATS_QUERY = """
 query($login: String!, $from: DateTime!, $to: DateTime!, $after: String) {
   user(login: $login) {
+    createdAt
     followers { totalCount }
+    organizations { totalCount }
+    gists { totalCount }
+    pullRequests(states: MERGED) { totalCount }
+    issues { totalCount }
+    repositoriesContributedTo(contributionTypes: [COMMIT, PULL_REQUEST, ISSUE], includeUserRepositories: false) { totalCount }
     repositories(ownerAffiliations: OWNER, isFork: false, privacy: PUBLIC, first: 100, after: $after,
                  orderBy: {field: PUSHED_AT, direction: DESC}) {
       totalCount
@@ -1087,6 +1163,36 @@ query($login: String!, $from: DateTime!, $to: DateTime!, $after: String) {
 """
 
 
+YEAR_QUERY = """
+query($login: String!, $from: DateTime!, $to: DateTime!) {
+  user(login: $login) { contributionsCollection(from: $from, to: $to) { contributionCalendar { totalContributions } } }
+}
+"""
+
+
+def graphql(query, variables, headers):
+    body = json.dumps({"query": query, "variables": variables}).encode()
+    result = fetch("https://api.github.com/graphql", {**headers, "Content-Type": "application/json"}, body)
+    if result.get("errors"):
+        raise RuntimeError(result["errors"][0].get("message"))
+    return result["data"]
+
+
+def views_data(p, cache):
+    """Reads the profile view counter (komarev.com). Reading it counts as one view."""
+    login = p["me"]["github"]
+    try:
+        request = urllib.request.Request(f"https://komarev.com/ghpvc/?username={urllib.parse.quote(login)}",
+                                         headers={"User-Agent": "robyrew-profile"})
+        with urllib.request.urlopen(request, timeout=15) as response:
+            svg = response.read().decode("utf-8", "replace")
+        numbers = [m.replace(",", "") for m in re.findall(r">([\d,]+)<", svg)]
+        if numbers:
+            cache.setdefault("extra", {})["views"] = int(numbers[-1])
+    except Exception as error:
+        print(f"views: keeping cached count ({error})", file=sys.stderr)
+
+
 def stats_data(p, cache):
     headers = github_headers()
     if "Authorization" not in headers:
@@ -1097,11 +1203,7 @@ def stats_data(p, cache):
     repos, user = [], None
     try:
         while True:
-            body = json.dumps({"query": STATS_QUERY, "variables": variables}).encode()
-            result = fetch("https://api.github.com/graphql", {**headers, "Content-Type": "application/json"}, body)
-            if result.get("errors"):
-                raise RuntimeError(result["errors"][0].get("message"))
-            user = result["data"]["user"]
+            user = graphql(STATS_QUERY, variables, headers)["user"]
             page = user["repositories"]
             repos += page["nodes"]
             if not page["pageInfo"]["hasNextPage"]:
@@ -1110,6 +1212,16 @@ def stats_data(p, cache):
     except Exception as error:
         print(f"github: keeping cached stats ({error})", file=sys.stderr)
         return
+    all_time = 0
+    try:
+        for year in range(int(user["createdAt"][:4]), now.year + 1):
+            start = datetime(year, 1, 1, tzinfo=timezone.utc)
+            end = min(datetime(year, 12, 31, 23, 59, 59, tzinfo=timezone.utc), now)
+            data = graphql(YEAR_QUERY, {"login": login, "from": start.isoformat(), "to": end.isoformat()}, headers)
+            all_time += data["user"]["contributionsCollection"]["contributionCalendar"]["totalContributions"]
+    except Exception as error:
+        print(f"github: all-time count incomplete ({error})", file=sys.stderr)
+        all_time = cache.get("stats", {}).get("all_time", 0)
     collection = user["contributionsCollection"]
     calendar = [
         [(d["date"], d["contributionCount"]) for d in week["contributionDays"]]
@@ -1126,6 +1238,13 @@ def stats_data(p, cache):
             streak += 1
         elif i:  # today may still be empty
             break
+    weekdays = [0] * 7
+    best = ("", 0)
+    for week in calendar:
+        for day, count in week:
+            weekdays[date.fromisoformat(day).weekday()] += count
+            if count > best[1]:
+                best = (day, count)
     sizes = {}
     colors = {}
     for repo in repos:
@@ -1155,6 +1274,16 @@ def stats_data(p, cache):
         "followers": user["followers"]["totalCount"],
         "original": user["repositories"]["totalCount"],
         "languages": languages,
+        "all_time": all_time,
+        "merged_prs": user["pullRequests"]["totalCount"],
+        "issues_all": user["issues"]["totalCount"],
+        "contributed_to": user["repositoriesContributedTo"]["totalCount"],
+        "orgs": user["organizations"]["totalCount"],
+        "gists": user["gists"]["totalCount"],
+        "joined": user["createdAt"],
+        "busiest": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][weekdays.index(max(weekdays))],
+        "best_day": best[0],
+        "best_count": best[1],
     }
     cache["recent"] = [
         {
@@ -1170,11 +1299,20 @@ def stats_data(p, cache):
     ][:20]
 
 
-def spotify_token():
-    keys = ("SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "SPOTIFY_REFRESH_TOKEN")
-    client_id, secret, refresh = (os.environ.get(k) for k in keys)
-    if not (client_id and secret and refresh):
-        return None
+def spotify_accounts():
+    """Up to five Spotify accounts, in priority order. They can share one app (client ID and secret)."""
+    shared_id, shared_secret = os.environ.get("SPOTIFY_CLIENT_ID"), os.environ.get("SPOTIFY_CLIENT_SECRET")
+    accounts = []
+    for n in range(1, 6):
+        refresh = os.environ.get(f"SPOTIFY_REFRESH_TOKEN_{n}") or (os.environ.get("SPOTIFY_REFRESH_TOKEN") if n == 1 else None)
+        client_id = os.environ.get(f"SPOTIFY_CLIENT_ID_{n}") or shared_id
+        secret = os.environ.get(f"SPOTIFY_CLIENT_SECRET_{n}") or shared_secret
+        if refresh and client_id and secret:
+            accounts.append((n, client_id, secret, refresh))
+    return accounts
+
+
+def spotify_token(client_id, secret, refresh):
     auth = base64.b64encode(f"{client_id}:{secret}".encode()).decode()
     return fetch(
         "https://accounts.spotify.com/api/token",
@@ -1230,10 +1368,11 @@ def spotify_context(context, item, bearer):
     return ""
 
 
-def spotify_now(token):
+def spotify_now(token, user=None):
     bearer = {"Authorization": f"Bearer {token}"}
-    me = fetch("https://api.spotify.com/v1/me", bearer) or {}
-    user = me.get("display_name") or me.get("id") or ""
+    if not user:
+        me = fetch("https://api.spotify.com/v1/me", bearer) or {}
+        user = me.get("display_name") or me.get("id") or ""
     player = fetch("https://api.spotify.com/v1/me/player?additional_types=track,episode", bearer)
     if player and player.get("item"):
         item = player["item"]
@@ -1304,26 +1443,36 @@ def lastfm_now(p):
     }
 
 
-def now_data(p, cache, token):
-    spotify = lastfm = None
-    if token:
+def now_data(p, cache, accounts):
+    """The first Spotify account that is playing wins; otherwise the most recent play anywhere."""
+    users = cache.setdefault("spotify_users", {})
+    spotify = []
+    for n, client_id, secret, refresh in accounts:
         try:
-            spotify = spotify_now(token)
+            result = spotify_now(spotify_token(client_id, secret, refresh), users.get(str(n)))
         except Exception as error:
-            print(f"spotify: no playback state ({error})", file=sys.stderr)
+            print(f"spotify {n}: no playback state ({error})", file=sys.stderr)
+            continue
+        if not result:
+            continue
+        users[str(n)] = result["user"]
+        result["account"] = n
+        if result["playing"]:
+            return result
+        spotify.append(result)
+    lastfm = None
     try:
         lastfm = lastfm_now(p)
     except Exception as error:
         print(f"last.fm: no recent tracks ({error})", file=sys.stderr)
-    if spotify and lastfm and (lastfm["title"], lastfm["artist"]) == (spotify["title"], spotify["artist"]):
+    if lastfm and any((lastfm["title"], lastfm["artist"]) == (c["title"], c["artist"]) for c in spotify):
         lastfm = None  # Spotify scrobbles to Last.fm too; that's the same play
-    candidates = [c for c in (spotify, lastfm) if c]
+    if lastfm and lastfm["playing"]:
+        return lastfm
+    candidates = spotify + ([lastfm] if lastfm else [])
     if not candidates:
         return cache.get("now")
-    playing = [c for c in candidates if c["playing"]]
-    if playing:
-        return playing[0]
-    return max(candidates, key=lambda c: c.get("when") or "")
+    return max(candidates, key=lambda c: (c.get("when") or "", -c.get("account", 9)))
 
 
 def now_key(now):
@@ -1373,12 +1522,7 @@ def live(out):
     p = tomllib.loads((ROOT / "profile.toml").read_text(encoding="utf-8"))
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     p = fill_placeholders(p, cache)
-    token = None
-    try:
-        token = spotify_token()
-    except Exception as error:
-        print(f"spotify: no token ({error})", file=sys.stderr)
-    now = now_data(p, {}, token) or cache.get("now")
+    now = now_data(p, dict(cache), spotify_accounts()) or cache.get("now")
     key = now_key(now)
     out = Path(out)
     previous = None
@@ -1413,14 +1557,14 @@ def main():
     if not OFFLINE:
         github_data(p, cache)
         stats_data(p, cache)
-        token = None
-        try:
-            token = spotify_token()
-        except Exception as error:
-            print(f"spotify: no token ({error})", file=sys.stderr)
-        if token:
-            spotify_top(p, cache, token)
-        now = now_data(p, cache, token)
+        accounts = spotify_accounts()
+        if accounts:
+            try:
+                spotify_top(p, cache, spotify_token(*accounts[0][1:]))
+            except Exception as error:
+                print(f"spotify: no top tracks ({error})", file=sys.stderr)
+        views_data(p, cache)
+        now = now_data(p, cache, accounts)
         if now:
             cache["now"] = {**now, "playing": False, "paused": False}
         if os.environ.get("LIVE") in ("true", "false"):
@@ -1439,6 +1583,9 @@ def main():
                 "note": entry.get("note") or repo["description"],
                 "language": repo["language"],
                 "stars": repo["stars"],
+                "forks": repo.get("forks", 0),
+                "downloads": repo.get("downloads", 0),
+                "version": repo.get("version", ""),
                 "url": repo["url"],
                 "hue": entry.get("hue") or HUE_ORDER[i % len(HUE_ORDER)],
                 "icon": entry.get("icon") or "code",
@@ -1448,6 +1595,8 @@ def main():
     bsides = p.get("bsides", {})
     recent = [r for r in cache.get("recent", []) if r["name"].lower() not in featured][: int(bsides.get("count", 4))]
     stats = cache.get("stats")
+    if stats:
+        stats = {**stats, **cache.get("extra", {})}
     tracks = cache.get("spotify") or []
     year = datetime.now(timezone.utc).year
 
@@ -1493,6 +1642,7 @@ def main():
         add("stats-head", lambda th: section(th, "Charts", "Activity & popularity", "updated daily", "Charts: activity and popularity"))
         add("activity", lambda th: activity(th, stats))
         add("popularity", lambda th: popularity(th, stats))
+        add("facts", lambda th: facts(th, stats, str(cache.get("github", {}).get("user", {}).get("created_at", ""))[:4]))
     if tracks:
         listening = p.get("listening", {})
         add("rotation", lambda th: rotation(th, listening.get("title", "On rotation"), tracks), listening.get("profile") or None)
@@ -1526,6 +1676,8 @@ def main():
             base = live_base if (name == "hero" and live_base) else "img/"
             parts.append(picture(base, name, alts[name], width, href))
         lines.append(("&nbsp;" if row and row[0][0].startswith("link-") else "").join(parts))
+    login = p["me"]["github"]
+    lines.append(f'<img src="https://komarev.com/ghpvc/?username={login}&amp;style=flat" width="1" height="1" alt="">')
     lines.append("</div>")
     (ROOT / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 

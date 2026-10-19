@@ -45,6 +45,10 @@ jobs:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          SPOTIFY_REFRESH_TOKEN_2: ${{ secrets.SPOTIFY_REFRESH_TOKEN_2 }}
+          SPOTIFY_REFRESH_TOKEN_3: ${{ secrets.SPOTIFY_REFRESH_TOKEN_3 }}
+          SPOTIFY_REFRESH_TOKEN_4: ${{ secrets.SPOTIFY_REFRESH_TOKEN_4 }}
+          SPOTIFY_REFRESH_TOKEN_5: ${{ secrets.SPOTIFY_REFRESH_TOKEN_5 }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
         run: python3 .github/profile/build.py --live _site ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
 

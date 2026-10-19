@@ -19,22 +19,23 @@ python3 .github/profile/build.py --offline  # cached data only
 
 Every command below runs on your Mac from the repo folder, with the GitHub CLI (`gh`) logged in.
 
-## 1. Spotify
+## 1. Spotify (up to 5 accounts)
 
-Gives the deck under the record (song, artist, playlist, device, you) and the "On rotation" top tracks.
+Gives the deck under the record (song, artist, playlist, device, account) and the "On rotation" top tracks.
+With several accounts, the first one that is playing wins; account 1 also supplies the top tracks.
 
 1. Create an app at <https://developer.spotify.com/dashboard>. Use `http://127.0.0.1:8888/callback` as the
-   redirect URI and tick **Web API**.
-2. Run `python3 .github/profile/spotify_auth.py`, paste the client ID and secret, and approve access in the browser.
-3. Save the three values it prints:
+   redirect URI and tick **Web API**. The account that owns the app needs Spotify Premium.
+2. In the app, open **Settings → User Management** and add the name and email of every account you will connect.
+   A development app allows exactly 5.
+3. Connect each account, in priority order. Spotify shows which account it is approving; use **Not you?** to switch.
 
    ```sh
-   gh secret set SPOTIFY_CLIENT_ID
-   gh secret set SPOTIFY_CLIENT_SECRET
-   gh secret set SPOTIFY_REFRESH_TOKEN
+   python3 .github/profile/spotify_auth.py      # account 1
+   python3 .github/profile/spotify_auth.py 2    # account 2, and so on up to 5
    ```
 
-   Each command asks you to paste the value.
+   Each run asks for the app's client ID and secret, then offers to save the secrets with `gh` for you.
 
 ## 2. YouTube Music and Apple Music (through Last.fm)
 
