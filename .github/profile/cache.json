@@ -1,40 +1,1854 @@
 {
+  "extra": {
+    "views": 6551
+  },
   "github": {
     "repos": {
       "Download-AI-Chat-PDF": {
         "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
+        "downloads": 10,
+        "forks": 0,
         "language": "JavaScript",
         "stars": 0,
-        "url": "https://github.com/RobyRew/Download-AI-Chat-PDF"
+        "url": "https://github.com/RobyRew/Download-AI-Chat-PDF",
+        "version": "v1.1.0"
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
+        "downloads": 88,
+        "forks": 0,
         "language": "Swift",
         "stars": 1,
-        "url": "https://github.com/RobyRew/TopPresenter"
+        "url": "https://github.com/RobyRew/TopPresenter",
+        "version": "v1.0.0"
       },
       "chatforge": {
         "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+        "downloads": 0,
+        "forks": 0,
         "language": "TypeScript",
         "stars": 0,
-        "url": "https://github.com/RobyRew/chatforge"
+        "url": "https://github.com/RobyRew/chatforge",
+        "version": ""
       },
       "mapswitch": {
         "description": "Open any map link in your preferred app — privacy-first universal map redirector",
+        "downloads": 0,
+        "forks": 0,
         "language": "TypeScript",
         "stars": 1,
-        "url": "https://github.com/RobyRew/mapswitch"
+        "url": "https://github.com/RobyRew/mapswitch",
+        "version": ""
       },
       "spotify-versions-history": {
         "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+        "downloads": 0,
+        "forks": 0,
         "language": "JavaScript",
         "stars": 1,
-        "url": "https://github.com/RobyRew/spotify-versions-history"
+        "url": "https://github.com/RobyRew/spotify-versions-history",
+        "version": ""
       }
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
       "public_repos": 36
     }
+  },
+  "live": true,
+  "pages_url": "https://robyrew.github.io/RobyRew/",
+  "recent": [
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-19T23:54:19Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
+      "description": "native app for doorline apps",
+      "language": "Swift",
+      "name": "Doorline",
+      "pushed": "2026-10-18T06:03:05Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Doorline"
+    },
+    {
+      "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
+      "language": "JavaScript",
+      "name": "Download-AI-Chat-PDF",
+      "pushed": "2026-10-17T21:39:07Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Download-AI-Chat-PDF"
+    },
+    {
+      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
+      "language": "TypeScript",
+      "name": "calendar-event-generator",
+      "pushed": "2026-10-17T13:49:46Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/calendar-event-generator"
+    },
+    {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "JavaScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-10-17T06:40:27Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Personal portfolio website - cosmincalin.es",
+      "language": "HTML",
+      "name": "portfolio",
+      "pushed": "2026-10-12T22:45:07Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/portfolio"
+    },
+    {
+      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+      "language": "TypeScript",
+      "name": "chatforge",
+      "pushed": "2026-09-20T20:27:47Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
+      "language": "Swift",
+      "name": "TopPresenter",
+      "pushed": "2026-09-20T15:47:36Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/TopPresenter"
+    },
+    {
+      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
+      "language": "TypeScript",
+      "name": "powerpoint-extractor",
+      "pushed": "2026-09-05T02:29:30Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/powerpoint-extractor"
+    },
+    {
+      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
+      "language": "TypeScript",
+      "name": "mapswitch",
+      "pushed": "2026-09-05T02:29:25Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/mapswitch"
+    },
+    {
+      "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
+      "language": "CSS",
+      "name": "web-config",
+      "pushed": "2026-09-05T02:26:40Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/web-config"
+    },
+    {
+      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
+      "language": "CSS",
+      "name": "ui",
+      "pushed": "2026-09-05T02:17:00Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/ui"
+    },
+    {
+      "description": "Shared build and UI plumbing for the RobyRew app fleet",
+      "language": "Dockerfile",
+      "name": "platform",
+      "pushed": "2026-09-04T22:19:26Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/platform"
+    },
+    {
+      "description": "Split one application's traffic off through your own server",
+      "language": "Rust",
+      "name": "split-stream",
+      "pushed": "2026-08-30T12:33:48Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/split-stream"
+    },
+    {
+      "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
+      "language": "Swift",
+      "name": "pacetimer",
+      "pushed": "2026-07-31T22:38:42Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/pacetimer"
+    },
+    {
+      "description": "Descifra firmware Nokia DCT4 (MCU/PPM) y extrae sus tonos/recursos, 100% en el navegador. Port web de dct4decrypt/ToneSniffer/MidiDecode.",
+      "language": "JavaScript",
+      "name": "retro-phone-tools",
+      "pushed": "2026-07-03T20:01:55Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/retro-phone-tools"
+    },
+    {
+      "description": "The only speciality of this basic Robot is to completely destroy 9/10 a Basic Walls Robot",
+      "language": "Java",
+      "name": "WallsKiller_Robocode",
+      "pushed": "2024-04-02T17:48:17Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/WallsKiller_Robocode"
+    },
+    {
+      "description": "Old version of Chess named Shatranj on Java CLI",
+      "language": "Java",
+      "name": "Shatranj-On-Java",
+      "pushed": "2024-03-26T22:32:16Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Shatranj-On-Java"
+    },
+    {
+      "description": "",
+      "language": "HTML",
+      "name": "Remedy_Ticket_Folder_Generator",
+      "pushed": "2024-03-12T11:46:26Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Remedy_Ticket_Folder_Generator"
+    }
+  ],
+  "spotify_users": {},
+  "stats": {
+    "active_days": 87,
+    "all_time": 1067,
+    "best_count": 64,
+    "best_day": "2026-09-23",
+    "busiest": "Thursday",
+    "calendar": [
+      [
+        [
+          "2025-10-19",
+          0
+        ],
+        [
+          "2025-10-20",
+          0
+        ],
+        [
+          "2025-10-21",
+          0
+        ],
+        [
+          "2025-10-22",
+          0
+        ],
+        [
+          "2025-10-23",
+          0
+        ],
+        [
+          "2025-10-24",
+          0
+        ],
+        [
+          "2025-10-25",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-10-26",
+          0
+        ],
+        [
+          "2025-10-27",
+          0
+        ],
+        [
+          "2025-10-28",
+          0
+        ],
+        [
+          "2025-10-29",
+          0
+        ],
+        [
+          "2025-10-30",
+          0
+        ],
+        [
+          "2025-10-31",
+          0
+        ],
+        [
+          "2025-11-01",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-11-02",
+          0
+        ],
+        [
+          "2025-11-03",
+          0
+        ],
+        [
+          "2025-11-04",
+          0
+        ],
+        [
+          "2025-11-05",
+          0
+        ],
+        [
+          "2025-11-06",
+          0
+        ],
+        [
+          "2025-11-07",
+          0
+        ],
+        [
+          "2025-11-08",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-11-09",
+          0
+        ],
+        [
+          "2025-11-10",
+          0
+        ],
+        [
+          "2025-11-11",
+          0
+        ],
+        [
+          "2025-11-12",
+          0
+        ],
+        [
+          "2025-11-13",
+          0
+        ],
+        [
+          "2025-11-14",
+          0
+        ],
+        [
+          "2025-11-15",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-11-16",
+          0
+        ],
+        [
+          "2025-11-17",
+          0
+        ],
+        [
+          "2025-11-18",
+          0
+        ],
+        [
+          "2025-11-19",
+          0
+        ],
+        [
+          "2025-11-20",
+          0
+        ],
+        [
+          "2025-11-21",
+          0
+        ],
+        [
+          "2025-11-22",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-11-23",
+          0
+        ],
+        [
+          "2025-11-24",
+          0
+        ],
+        [
+          "2025-11-25",
+          0
+        ],
+        [
+          "2025-11-26",
+          0
+        ],
+        [
+          "2025-11-27",
+          0
+        ],
+        [
+          "2025-11-28",
+          0
+        ],
+        [
+          "2025-11-29",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-11-30",
+          11
+        ],
+        [
+          "2025-12-01",
+          0
+        ],
+        [
+          "2025-12-02",
+          1
+        ],
+        [
+          "2025-12-03",
+          1
+        ],
+        [
+          "2025-12-04",
+          0
+        ],
+        [
+          "2025-12-05",
+          0
+        ],
+        [
+          "2025-12-06",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-12-07",
+          0
+        ],
+        [
+          "2025-12-08",
+          0
+        ],
+        [
+          "2025-12-09",
+          0
+        ],
+        [
+          "2025-12-10",
+          4
+        ],
+        [
+          "2025-12-11",
+          37
+        ],
+        [
+          "2025-12-12",
+          5
+        ],
+        [
+          "2025-12-13",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-12-14",
+          0
+        ],
+        [
+          "2025-12-15",
+          0
+        ],
+        [
+          "2025-12-16",
+          0
+        ],
+        [
+          "2025-12-17",
+          0
+        ],
+        [
+          "2025-12-18",
+          0
+        ],
+        [
+          "2025-12-19",
+          0
+        ],
+        [
+          "2025-12-20",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-12-21",
+          0
+        ],
+        [
+          "2025-12-22",
+          0
+        ],
+        [
+          "2025-12-23",
+          0
+        ],
+        [
+          "2025-12-24",
+          0
+        ],
+        [
+          "2025-12-25",
+          0
+        ],
+        [
+          "2025-12-26",
+          0
+        ],
+        [
+          "2025-12-27",
+          0
+        ]
+      ],
+      [
+        [
+          "2025-12-28",
+          0
+        ],
+        [
+          "2025-12-29",
+          0
+        ],
+        [
+          "2025-12-30",
+          0
+        ],
+        [
+          "2025-12-31",
+          0
+        ],
+        [
+          "2026-01-01",
+          0
+        ],
+        [
+          "2026-01-02",
+          0
+        ],
+        [
+          "2026-01-03",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-01-04",
+          0
+        ],
+        [
+          "2026-01-05",
+          0
+        ],
+        [
+          "2026-01-06",
+          0
+        ],
+        [
+          "2026-01-07",
+          0
+        ],
+        [
+          "2026-01-08",
+          0
+        ],
+        [
+          "2026-01-09",
+          0
+        ],
+        [
+          "2026-01-10",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-01-11",
+          0
+        ],
+        [
+          "2026-01-12",
+          0
+        ],
+        [
+          "2026-01-13",
+          0
+        ],
+        [
+          "2026-01-14",
+          0
+        ],
+        [
+          "2026-01-15",
+          0
+        ],
+        [
+          "2026-01-16",
+          0
+        ],
+        [
+          "2026-01-17",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-01-18",
+          0
+        ],
+        [
+          "2026-01-19",
+          0
+        ],
+        [
+          "2026-01-20",
+          0
+        ],
+        [
+          "2026-01-21",
+          0
+        ],
+        [
+          "2026-01-22",
+          0
+        ],
+        [
+          "2026-01-23",
+          0
+        ],
+        [
+          "2026-01-24",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-01-25",
+          0
+        ],
+        [
+          "2026-01-26",
+          0
+        ],
+        [
+          "2026-01-27",
+          0
+        ],
+        [
+          "2026-01-28",
+          0
+        ],
+        [
+          "2026-01-29",
+          0
+        ],
+        [
+          "2026-01-30",
+          0
+        ],
+        [
+          "2026-01-31",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-02-01",
+          0
+        ],
+        [
+          "2026-02-02",
+          0
+        ],
+        [
+          "2026-02-03",
+          0
+        ],
+        [
+          "2026-02-04",
+          0
+        ],
+        [
+          "2026-02-05",
+          0
+        ],
+        [
+          "2026-02-06",
+          0
+        ],
+        [
+          "2026-02-07",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-02-08",
+          0
+        ],
+        [
+          "2026-02-09",
+          0
+        ],
+        [
+          "2026-02-10",
+          0
+        ],
+        [
+          "2026-02-11",
+          0
+        ],
+        [
+          "2026-02-12",
+          0
+        ],
+        [
+          "2026-02-13",
+          0
+        ],
+        [
+          "2026-02-14",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-02-15",
+          0
+        ],
+        [
+          "2026-02-16",
+          0
+        ],
+        [
+          "2026-02-17",
+          0
+        ],
+        [
+          "2026-02-18",
+          0
+        ],
+        [
+          "2026-02-19",
+          0
+        ],
+        [
+          "2026-02-20",
+          0
+        ],
+        [
+          "2026-02-21",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-02-22",
+          0
+        ],
+        [
+          "2026-02-23",
+          0
+        ],
+        [
+          "2026-02-24",
+          0
+        ],
+        [
+          "2026-02-25",
+          0
+        ],
+        [
+          "2026-02-26",
+          0
+        ],
+        [
+          "2026-02-27",
+          0
+        ],
+        [
+          "2026-02-28",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-03-01",
+          0
+        ],
+        [
+          "2026-03-02",
+          0
+        ],
+        [
+          "2026-03-03",
+          0
+        ],
+        [
+          "2026-03-04",
+          0
+        ],
+        [
+          "2026-03-05",
+          0
+        ],
+        [
+          "2026-03-06",
+          0
+        ],
+        [
+          "2026-03-07",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-03-08",
+          0
+        ],
+        [
+          "2026-03-09",
+          0
+        ],
+        [
+          "2026-03-10",
+          0
+        ],
+        [
+          "2026-03-11",
+          0
+        ],
+        [
+          "2026-03-12",
+          0
+        ],
+        [
+          "2026-03-13",
+          0
+        ],
+        [
+          "2026-03-14",
+          1
+        ]
+      ],
+      [
+        [
+          "2026-03-15",
+          0
+        ],
+        [
+          "2026-03-16",
+          0
+        ],
+        [
+          "2026-03-17",
+          2
+        ],
+        [
+          "2026-03-18",
+          0
+        ],
+        [
+          "2026-03-19",
+          0
+        ],
+        [
+          "2026-03-20",
+          0
+        ],
+        [
+          "2026-03-21",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-03-22",
+          0
+        ],
+        [
+          "2026-03-23",
+          0
+        ],
+        [
+          "2026-03-24",
+          0
+        ],
+        [
+          "2026-03-25",
+          0
+        ],
+        [
+          "2026-03-26",
+          0
+        ],
+        [
+          "2026-03-27",
+          0
+        ],
+        [
+          "2026-03-28",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-03-29",
+          0
+        ],
+        [
+          "2026-03-30",
+          0
+        ],
+        [
+          "2026-03-31",
+          0
+        ],
+        [
+          "2026-04-01",
+          0
+        ],
+        [
+          "2026-04-02",
+          0
+        ],
+        [
+          "2026-04-03",
+          0
+        ],
+        [
+          "2026-04-04",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-04-05",
+          2
+        ],
+        [
+          "2026-04-06",
+          0
+        ],
+        [
+          "2026-04-07",
+          0
+        ],
+        [
+          "2026-04-08",
+          0
+        ],
+        [
+          "2026-04-09",
+          0
+        ],
+        [
+          "2026-04-10",
+          0
+        ],
+        [
+          "2026-04-11",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-04-12",
+          0
+        ],
+        [
+          "2026-04-13",
+          0
+        ],
+        [
+          "2026-04-14",
+          0
+        ],
+        [
+          "2026-04-15",
+          0
+        ],
+        [
+          "2026-04-16",
+          5
+        ],
+        [
+          "2026-04-17",
+          3
+        ],
+        [
+          "2026-04-18",
+          1
+        ]
+      ],
+      [
+        [
+          "2026-04-19",
+          6
+        ],
+        [
+          "2026-04-20",
+          0
+        ],
+        [
+          "2026-04-21",
+          0
+        ],
+        [
+          "2026-04-22",
+          0
+        ],
+        [
+          "2026-04-23",
+          0
+        ],
+        [
+          "2026-04-24",
+          0
+        ],
+        [
+          "2026-04-25",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-04-26",
+          0
+        ],
+        [
+          "2026-04-27",
+          0
+        ],
+        [
+          "2026-04-28",
+          0
+        ],
+        [
+          "2026-04-29",
+          0
+        ],
+        [
+          "2026-04-30",
+          0
+        ],
+        [
+          "2026-05-01",
+          0
+        ],
+        [
+          "2026-05-02",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-05-03",
+          12
+        ],
+        [
+          "2026-05-04",
+          0
+        ],
+        [
+          "2026-05-05",
+          0
+        ],
+        [
+          "2026-05-06",
+          0
+        ],
+        [
+          "2026-05-07",
+          0
+        ],
+        [
+          "2026-05-08",
+          0
+        ],
+        [
+          "2026-05-09",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-05-10",
+          0
+        ],
+        [
+          "2026-05-11",
+          0
+        ],
+        [
+          "2026-05-12",
+          0
+        ],
+        [
+          "2026-05-13",
+          0
+        ],
+        [
+          "2026-05-14",
+          0
+        ],
+        [
+          "2026-05-15",
+          0
+        ],
+        [
+          "2026-05-16",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-05-17",
+          0
+        ],
+        [
+          "2026-05-18",
+          0
+        ],
+        [
+          "2026-05-19",
+          0
+        ],
+        [
+          "2026-05-20",
+          0
+        ],
+        [
+          "2026-05-21",
+          0
+        ],
+        [
+          "2026-05-22",
+          0
+        ],
+        [
+          "2026-05-23",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-05-24",
+          0
+        ],
+        [
+          "2026-05-25",
+          0
+        ],
+        [
+          "2026-05-26",
+          23
+        ],
+        [
+          "2026-05-27",
+          3
+        ],
+        [
+          "2026-05-28",
+          0
+        ],
+        [
+          "2026-05-29",
+          0
+        ],
+        [
+          "2026-05-30",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-05-31",
+          0
+        ],
+        [
+          "2026-06-01",
+          0
+        ],
+        [
+          "2026-06-02",
+          8
+        ],
+        [
+          "2026-06-03",
+          9
+        ],
+        [
+          "2026-06-04",
+          14
+        ],
+        [
+          "2026-06-05",
+          0
+        ],
+        [
+          "2026-06-06",
+          2
+        ]
+      ],
+      [
+        [
+          "2026-06-07",
+          0
+        ],
+        [
+          "2026-06-08",
+          0
+        ],
+        [
+          "2026-06-09",
+          0
+        ],
+        [
+          "2026-06-10",
+          0
+        ],
+        [
+          "2026-06-11",
+          3
+        ],
+        [
+          "2026-06-12",
+          2
+        ],
+        [
+          "2026-06-13",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-06-14",
+          0
+        ],
+        [
+          "2026-06-15",
+          0
+        ],
+        [
+          "2026-06-16",
+          2
+        ],
+        [
+          "2026-06-17",
+          5
+        ],
+        [
+          "2026-06-18",
+          2
+        ],
+        [
+          "2026-06-19",
+          2
+        ],
+        [
+          "2026-06-20",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-06-21",
+          1
+        ],
+        [
+          "2026-06-22",
+          7
+        ],
+        [
+          "2026-06-23",
+          1
+        ],
+        [
+          "2026-06-24",
+          2
+        ],
+        [
+          "2026-06-25",
+          1
+        ],
+        [
+          "2026-06-26",
+          6
+        ],
+        [
+          "2026-06-27",
+          13
+        ]
+      ],
+      [
+        [
+          "2026-06-28",
+          7
+        ],
+        [
+          "2026-06-29",
+          2
+        ],
+        [
+          "2026-06-30",
+          0
+        ],
+        [
+          "2026-07-01",
+          0
+        ],
+        [
+          "2026-07-02",
+          2
+        ],
+        [
+          "2026-07-03",
+          5
+        ],
+        [
+          "2026-07-04",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-07-05",
+          1
+        ],
+        [
+          "2026-07-06",
+          4
+        ],
+        [
+          "2026-07-07",
+          0
+        ],
+        [
+          "2026-07-08",
+          0
+        ],
+        [
+          "2026-07-09",
+          0
+        ],
+        [
+          "2026-07-10",
+          0
+        ],
+        [
+          "2026-07-11",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-07-12",
+          4
+        ],
+        [
+          "2026-07-13",
+          4
+        ],
+        [
+          "2026-07-14",
+          8
+        ],
+        [
+          "2026-07-15",
+          0
+        ],
+        [
+          "2026-07-16",
+          0
+        ],
+        [
+          "2026-07-17",
+          1
+        ],
+        [
+          "2026-07-18",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-07-19",
+          0
+        ],
+        [
+          "2026-07-20",
+          0
+        ],
+        [
+          "2026-07-21",
+          2
+        ],
+        [
+          "2026-07-22",
+          0
+        ],
+        [
+          "2026-07-23",
+          0
+        ],
+        [
+          "2026-07-24",
+          0
+        ],
+        [
+          "2026-07-25",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-07-26",
+          0
+        ],
+        [
+          "2026-07-27",
+          1
+        ],
+        [
+          "2026-07-28",
+          10
+        ],
+        [
+          "2026-07-29",
+          29
+        ],
+        [
+          "2026-07-30",
+          34
+        ],
+        [
+          "2026-07-31",
+          1
+        ],
+        [
+          "2026-08-01",
+          7
+        ]
+      ],
+      [
+        [
+          "2026-08-02",
+          0
+        ],
+        [
+          "2026-08-03",
+          0
+        ],
+        [
+          "2026-08-04",
+          0
+        ],
+        [
+          "2026-08-05",
+          0
+        ],
+        [
+          "2026-08-06",
+          5
+        ],
+        [
+          "2026-08-07",
+          3
+        ],
+        [
+          "2026-08-08",
+          9
+        ]
+      ],
+      [
+        [
+          "2026-08-09",
+          5
+        ],
+        [
+          "2026-08-10",
+          1
+        ],
+        [
+          "2026-08-11",
+          0
+        ],
+        [
+          "2026-08-12",
+          0
+        ],
+        [
+          "2026-08-13",
+          0
+        ],
+        [
+          "2026-08-14",
+          0
+        ],
+        [
+          "2026-08-15",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-08-16",
+          6
+        ],
+        [
+          "2026-08-17",
+          7
+        ],
+        [
+          "2026-08-18",
+          0
+        ],
+        [
+          "2026-08-19",
+          0
+        ],
+        [
+          "2026-08-20",
+          0
+        ],
+        [
+          "2026-08-21",
+          0
+        ],
+        [
+          "2026-08-22",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-08-23",
+          2
+        ],
+        [
+          "2026-08-24",
+          1
+        ],
+        [
+          "2026-08-25",
+          8
+        ],
+        [
+          "2026-08-26",
+          16
+        ],
+        [
+          "2026-08-27",
+          21
+        ],
+        [
+          "2026-08-28",
+          13
+        ],
+        [
+          "2026-08-29",
+          9
+        ]
+      ],
+      [
+        [
+          "2026-08-30",
+          3
+        ],
+        [
+          "2026-08-31",
+          0
+        ],
+        [
+          "2026-09-01",
+          1
+        ],
+        [
+          "2026-09-02",
+          0
+        ],
+        [
+          "2026-09-03",
+          2
+        ],
+        [
+          "2026-09-04",
+          20
+        ],
+        [
+          "2026-09-05",
+          23
+        ]
+      ],
+      [
+        [
+          "2026-09-06",
+          0
+        ],
+        [
+          "2026-09-07",
+          0
+        ],
+        [
+          "2026-09-08",
+          0
+        ],
+        [
+          "2026-09-09",
+          0
+        ],
+        [
+          "2026-09-10",
+          0
+        ],
+        [
+          "2026-09-11",
+          0
+        ],
+        [
+          "2026-09-12",
+          1
+        ]
+      ],
+      [
+        [
+          "2026-09-13",
+          2
+        ],
+        [
+          "2026-09-14",
+          0
+        ],
+        [
+          "2026-09-15",
+          0
+        ],
+        [
+          "2026-09-16",
+          4
+        ],
+        [
+          "2026-09-17",
+          1
+        ],
+        [
+          "2026-09-18",
+          0
+        ],
+        [
+          "2026-09-19",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-09-20",
+          20
+        ],
+        [
+          "2026-09-21",
+          6
+        ],
+        [
+          "2026-09-22",
+          0
+        ],
+        [
+          "2026-09-23",
+          64
+        ],
+        [
+          "2026-09-24",
+          19
+        ],
+        [
+          "2026-09-25",
+          0
+        ],
+        [
+          "2026-09-26",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-09-27",
+          0
+        ],
+        [
+          "2026-09-28",
+          0
+        ],
+        [
+          "2026-09-29",
+          0
+        ],
+        [
+          "2026-09-30",
+          0
+        ],
+        [
+          "2026-10-01",
+          1
+        ],
+        [
+          "2026-10-02",
+          2
+        ],
+        [
+          "2026-10-03",
+          3
+        ]
+      ],
+      [
+        [
+          "2026-10-04",
+          0
+        ],
+        [
+          "2026-10-05",
+          0
+        ],
+        [
+          "2026-10-06",
+          0
+        ],
+        [
+          "2026-10-07",
+          0
+        ],
+        [
+          "2026-10-08",
+          0
+        ],
+        [
+          "2026-10-09",
+          0
+        ],
+        [
+          "2026-10-10",
+          0
+        ]
+      ],
+      [
+        [
+          "2026-10-11",
+          0
+        ],
+        [
+          "2026-10-12",
+          6
+        ],
+        [
+          "2026-10-13",
+          2
+        ],
+        [
+          "2026-10-14",
+          0
+        ],
+        [
+          "2026-10-15",
+          9
+        ],
+        [
+          "2026-10-16",
+          4
+        ],
+        [
+          "2026-10-17",
+          6
+        ]
+      ],
+      [
+        [
+          "2026-10-18",
+          32
+        ],
+        [
+          "2026-10-19",
+          2
+        ]
+      ]
+    ],
+    "commits": 461,
+    "contributed_to": 3,
+    "contributions": 658,
+    "followers": 55,
+    "forks": 18,
+    "gists": 1,
+    "issues": 0,
+    "issues_all": 80,
+    "joined": "2019-04-08T13:49:08Z",
+    "languages": [
+      [
+        "Swift",
+        32.7,
+        "#F05138"
+      ],
+      [
+        "Objective-C",
+        27.5,
+        "#438eff"
+      ],
+      [
+        "TypeScript",
+        17.2,
+        "#3178c6"
+      ],
+      [
+        "JavaScript",
+        6.1,
+        "#f1e05a"
+      ],
+      [
+        "C",
+        2.6,
+        "#555555"
+      ],
+      [
+        "Logos",
+        2.4,
+        "#9CA3AF"
+      ],
+      [
+        "HTML",
+        2.4,
+        "#e34c26"
+      ],
+      [
+        "Other",
+        9.1,
+        "#8B949E"
+      ]
+    ],
+    "longest": 9,
+    "merged_prs": 5,
+    "orgs": 0,
+    "original": 27,
+    "prs": 6,
+    "repos_contributed": 17,
+    "reviews": 0,
+    "stars": 104,
+    "streak": 5
   }
 }
