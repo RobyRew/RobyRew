@@ -7,7 +7,7 @@
 #   {years}  years on GitHub
 #
 # Colours (hue): ember, teal, blue, rose, green, graphite
-# Icons: presentation, map, chat, pdf, layers, code
+# Icons: presentation, map, chat, pdf, layers, code, globe, send, music
 
 [me]
 github = "RobyRew"
@@ -32,13 +32,18 @@ label = "Based in"
 value = "Barcelona, Spain"
 icon = "pin"
 
+# Buttons under the hero.
 [[links]]
 label = "robyrew.com"
 url = "https://robyrew.com"
+icon = "globe"
+hue = "ember"
 
 [[links]]
-label = "Telegram"
+label = "@RobyRew on Telegram"
 url = "https://t.me/RobyRew"
+icon = "send"
+hue = "blue"
 
 # Side A. The first project gets the big card, the rest sit in a grid.
 # Language and stars come from GitHub; `note` overrides the repo description.
@@ -75,6 +80,11 @@ note = "A searchable catalog of Spotify desktop installers, logging every build 
 hue = "green"
 icon = "layers"
 
+# B-sides: your most recently pushed public repos, picked automatically (featured ones are skipped).
+[bsides]
+title = "Fresh from the studio"
+count = 4
+
 # Side B. Achievements, milestones, things you're proud of. Three fit in a row.
 [highlights]
 title = "Highlights"
@@ -92,17 +102,22 @@ note = "No emulation. The best UI framework ships with the OS."
 hue = "teal"
 
 [[highlights.items]]
-value = "0x"
+value = "Ghidra"
 title = "Reverse engineering"
-note = "Taking binaries apart in IDA Pro, just to see how they tick."
+note = "Taking binaries apart in Ghidra and IDA Pro. RE is the fun part."
 hue = "rose"
+texture = "hex"
 
-# Spotify top tracks. Shows up once the SPOTIFY_* secrets are set (see .github/profile/SETUP.md).
+# Music. Spotify plugs in directly; YouTube Music and Apple Music come in through Last.fm.
+# Setup steps are in .github/profile/SETUP.md.
 [listening]
 title = "Last four weeks"
 tracks = 5
-# Optional: your Spotify profile URL, so the card links to it.
+# Optional: your Spotify profile URL, so the top-tracks card links to it.
 profile = ""
+# Optional: your Last.fm username, and the app you scrobble from when it isn't Spotify.
+lastfm_user = ""
+lastfm_platform = "YouTube Music"
 
 # Each value is split on commas into chips.
 [credits]
@@ -122,7 +137,11 @@ value = "Docker, Nginx, Ansible"
 
 [[credits.items]]
 label = "Mixed in"
-value = "Xcode, VS Code, IDA Pro"
+value = "Xcode, VS Code"
+
+[[credits.items]]
+label = "Forensics"
+value = "Ghidra, IDA Pro"
 
 [[credits.items]]
 label = "Recorded on"
@@ -131,3 +150,7 @@ value = "Apple Silicon, arm64"
 [[credits.items]]
 label = "Lighting"
 value = "Dark mode only"
+
+[[credits.items]]
+label = "Soundtrack"
+value = "Spotify, YouTube Music, Apple Music"

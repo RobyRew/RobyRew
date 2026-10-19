@@ -20,7 +20,10 @@ import urllib.request
 import webbrowser
 
 REDIRECT = "http://127.0.0.1:8888/callback"
-SCOPES = "user-top-read user-read-recently-played"
+SCOPES = (
+    "user-top-read user-read-recently-played user-read-currently-playing "
+    "user-read-playback-state playlist-read-private"
+)
 
 
 def main():

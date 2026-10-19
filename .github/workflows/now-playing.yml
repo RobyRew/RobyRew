@@ -1,0 +1,58 @@
+name: Now playing
+
+# Publishes the hero card with whatever is playing right now to GitHub Pages,
+# so the record spins without a commit every few minutes.
+# Turn it on with the repository variable LIVE_NOW_PLAYING=true (see .github/profile/SETUP.md).
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: now-playing
+  cancel-in-progress: true
+
+jobs:
+  live:
+    if: vars.LIVE_NOW_PLAYING == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install font tools
+        run: pip install fonttools==4.67.0 brotli==1.2.0
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Render the deck
+        id: render
+        env:
+          PAGES_URL: ${{ steps.pages.outputs.base_url }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+        run: python3 .github/profile/build.py --live _site ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
+
+      - if: steps.render.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - if: steps.render.outputs.changed == 'true'
+        id: deploy
+        uses: actions/deploy-pages@v4
