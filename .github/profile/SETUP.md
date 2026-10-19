@@ -19,15 +19,40 @@ python3 .github/profile/build.py --offline  # cached data only
 
 Every command below runs on your Mac from the repo folder, with the GitHub CLI (`gh`) logged in.
 
-## 1. Spotify (up to 5 accounts)
+## 1. Music
 
-Gives the deck under the record (song, artist, playlist, device, account) and the "On rotation" top tracks.
-With several accounts, the first one that is playing wins; account 1 also supplies the top tracks.
+The deck under the record can read up to 5 Spotify accounts and up to 5 Last.fm accounts. Spotify accounts come
+first, then the Last.fm ones in the order they appear in `profile.toml`; the first one that is playing wins.
 
-1. Create an app at <https://developer.spotify.com/dashboard>. Use `http://127.0.0.1:8888/callback` as the
-   redirect URI and tick **Web API**. The account that owns the app needs Spotify Premium.
+### Last.fm (free, works for everything)
+
+Since February 2026 Spotify only lets **Premium** accounts create Web API apps, so Last.fm is the way in for free
+accounts. It also covers YouTube Music and Apple Music.
+
+1. Make a free account at <https://www.last.fm> for each music account you want on the deck (one Spotify
+   account can scrobble to one Last.fm account), and connect them:
+   - **Spotify (free or Premium):** Last.fm → Settings → Applications → Spotify scrobbling.
+   - **YouTube Music:** the Web Scrobbler browser extension, or Pano Scrobbler on Android.
+   - **Apple Music:** the Last.fm desktop scrobbler on the Mac. On iPhone, a scrobbler app.
+2. Get one API key at <https://www.last.fm/api/account/create> and save it:
+
+   ```sh
+   gh secret set LASTFM_API_KEY
+   ```
+
+3. In `profile.toml`, fill in the `[[listening.lastfm]]` blocks in priority order: the username, and the
+   `platform` label to show (Last.fm can't tell which app played a song).
+
+The first Last.fm account also supplies the "On rotation" top tracks and the scrobble count when Spotify isn't set up.
+
+### Spotify Web API (optional, needs Premium)
+
+Adds the device and playlist to the deck. The account that **owns** the app must have Spotify Premium; up to
+5 accounts can connect to it.
+
+1. Create an app at <https://developer.spotify.com/dashboard> with a Premium account. Use
+   `http://127.0.0.1:8888/callback` as the redirect URI and tick **Web API** (it is greyed out without Premium).
 2. In the app, open **Settings → User Management** and add the name and email of every account you will connect.
-   A development app allows exactly 5.
 3. Connect each account, in priority order. Spotify shows which account it is approving; use **Not you?** to switch.
 
    ```sh
@@ -37,27 +62,7 @@ With several accounts, the first one that is playing wins; account 1 also suppli
 
    Each run asks for the app's client ID and secret, then offers to save the secrets with `gh` for you.
 
-## 2. YouTube Music and Apple Music (through Last.fm)
-
-Neither has a public "now playing" API, so the deck reads them from Last.fm instead.
-
-1. Make a free account at <https://www.last.fm> and connect what you listen on:
-   - **Spotify:** Last.fm → Settings → Applications → Spotify scrobbling.
-   - **YouTube Music:** the Web Scrobbler browser extension, or Pano Scrobbler on Android.
-   - **Apple Music:** the Last.fm desktop scrobbler on the Mac. On iPhone, a scrobbler app.
-2. Get an API key at <https://www.last.fm/api/account/create>.
-3. Save the API key:
-
-   ```sh
-   gh secret set LASTFM_API_KEY
-   ```
-
-4. In `profile.toml`, set `lastfm_user` to your Last.fm username. Set `lastfm_platform` to the app that is not
-   Spotify (Last.fm can't tell which app played a song).
-
-Spotify wins when it is playing. Otherwise the deck shows whatever Last.fm says is playing or played last.
-
-## 3. Live deck (spinning record)
+## 2. Live deck (spinning record)
 
 The README is only rebuilt once a day, so on its own the record always shows "last played" with the needle parked.
 To make it live, a second workflow publishes the hero card to GitHub Pages every ten minutes. Nothing is committed
@@ -73,7 +78,7 @@ gh workflow run refresh.yml
 The first run publishes the deck; the second switches the README over to it. Expect the card to lag the music by
 up to about 15 minutes, since GitHub's scheduler and image cache both add delay.
 
-## 4. Optional: richer stats
+## 3. Optional: richer stats
 
 The activity and popularity cards use the workflow's own token, which sees public activity. To count private
 contributions too, create a fine-grained token with read-only access and save it:

@@ -549,15 +549,20 @@ def now_panel(svg, x, y, w, h, now):
         svg.add(f'<circle class="pulse" cx="{num(x + 22)}" cy="{num(y + 24)}" r="4.2" fill="{dot}"/>')
     else:
         svg.add(f'<circle cx="{num(x + 22)}" cy="{num(y + 24)}" r="4.2" fill="{dot}"/>')
-    svg.text(x + 34, y + 28, status, "mono-md", 10.5, t["ink"], tracking=1.8)
+    status_end = x + 34 + svg.text(x + 34, y + 28, status, "mono-md", 10.5, t["ink"], tracking=1.8)
     if not now:
         svg.text(x + 18, y + 62, "Nothing on the deck right now.", "semi", 16, t["ink"])
         svg.text(x + 18, y + 84, "Music is usually on. Check back soon.", "text", 13.5, t["dim"])
         return
     platform = now.get("platform", "")
+    user_shown = False
     if platform:
-        tag = f'{platform} · @{now["user"]}' if now.get("user") else platform
-        tag = FACES["mono-md"].fit(tag.upper(), 10, w - 150, 1.4)
+        room = x + w - 18 - status_end - 30
+        tag = f'{platform} · @{now["user"]}'.upper() if now.get("user") else platform.upper()
+        if now.get("user") and FACES["mono-md"].width(tag, 10, 1.4) <= room:
+            user_shown = True
+        else:
+            tag = FACES["mono-md"].fit(platform.upper(), 10, room, 1.4)
         width = FACES["mono-md"].width(tag, 10, 1.4)
         svg.add(f'<circle cx="{num(x + w - 22 - width - 8)}" cy="{num(y + 24)}" r="4" fill="{PLATFORMS.get(platform, "#9CA3AF")}"/>')
         svg.text(x + w - 18, y + 28, tag, "mono-md", 10, t["dim"], tracking=1.4, anchor="end")
@@ -572,6 +577,8 @@ def now_panel(svg, x, y, w, h, now):
         meta.append(("list", now["context"]))
     if now.get("device"):
         meta.append((DEVICE_ICONS.get((now.get("device_type") or "").lower(), "speaker"), now["device"]))
+    if now.get("user") and not user_shown:
+        meta.append(("user", "@" + now["user"]))
     cx, cy = x + 16, y + h - 20
     for icon, value in meta:
         value = FACES["text"].fit(value, 12, 150)
@@ -1003,7 +1010,7 @@ def facts(theme, stats, since):
     return svg
 
 
-def rotation(theme, title, tracks):
+def rotation(theme, title, tracks, scrobbles=None):
     label = "On rotation: " + "; ".join(f'{x["name"]} by {x["artist"]}' for x in tracks)
     H = 128 + 60 * len(tracks)
     svg = SVG(theme, W, H + GAP, label)
@@ -1023,14 +1030,20 @@ def rotation(theme, title, tracks):
     )
     svg.add(f'<g class="eq">{bars}</g>')
     svg.text(x0 + 30, 86, title, "display", 30, t["ink"], tracking=-0.8)
-    svg.text(x0 + CW - 32, 46, "TOP TRACKS · SPOTIFY", "mono", 10.5, t["faint"], tracking=1.6, anchor="end")
+    source = tracks[0].get("source", "Spotify").upper()
+    right = f"{source} · {compact(scrobbles).upper()} SCROBBLES" if scrobbles else f"TOP TRACKS · {source}"
+    svg.text(x0 + CW - 32, 46, right, "mono", 10.5, t["faint"], tracking=1.6, anchor="end")
     for n, item in enumerate(tracks):
         y = 112 + n * 60
         if n:
             svg.add(f'<line x1="{x0 + 32}" y1="{y - 8}" x2="{x0 + CW - 32}" y2="{y - 8}" {paint(t["edge"], "stroke")}/>')
         artwork(svg, x0 + 32, y, 44, item.get("cover"), item["name"])
-        minutes, seconds = divmod(round(item["ms"] / 1000), 60)
-        svg.text(x0 + CW - 32, y + 27, f"{minutes}:{seconds:02d}", "mono", 12, t["faint"], tracking=0.5, anchor="end")
+        if item.get("ms"):
+            minutes, seconds = divmod(round(item["ms"] / 1000), 60)
+            side = f"{minutes}:{seconds:02d}"
+        else:
+            side = f'{item.get("plays", 0)} PLAYS'
+        svg.text(x0 + CW - 32, y + 27, side, "mono", 12, t["faint"], tracking=0.5, anchor="end")
         room = CW - 92 - 32 - 60
         svg.text(x0 + 92, y + 19, FACES["semi"].fit(item["name"], 16.5, room), "semi", 16.5, t["ink"])
         svg.text(x0 + 92, y + 39, FACES["text"].fit(item["artist"], 14, room), "text", 14, t["dim"])
@@ -1338,15 +1351,17 @@ def spotify_top(p, cache, token):
         print(f"spotify: keeping cached top tracks ({error})", file=sys.stderr)
         return
     if items:
-        cache["spotify"] = [
+        cache["top_tracks"] = [
             {
                 "name": item["name"],
                 "artist": ", ".join(a["name"] for a in item["artists"]),
                 "ms": item["duration_ms"],
                 "cover": smallest_image(item.get("album", {}).get("images")),
+                "source": "Spotify",
             }
             for item in items
         ]
+        return True
 
 
 def spotify_context(context, item, bearer):
@@ -1409,22 +1424,42 @@ def spotify_now(token, user=None):
     return None
 
 
-def lastfm_now(p):
+LASTFM_BLANK = "2a96cbd8b46e442fc41c2b86b821562f"  # Last.fm's grey star placeholder
+
+
+def lastfm(method, **params):
     key = os.environ.get("LASTFM_API_KEY")
-    listening = p.get("listening", {})
-    user = listening.get("lastfm_user")
-    if not (key and user):
+    if not key:
         return None
-    query = urllib.parse.urlencode(
-        {"method": "user.getrecenttracks", "user": user, "api_key": key, "format": "json", "limit": 1}
-    )
-    tracks = fetch(f"https://ws.audioscrobbler.com/2.0/?{query}")["recenttracks"]["track"]
+    query = urllib.parse.urlencode({"method": method, "api_key": key, "format": "json", **params})
+    return fetch(f"https://ws.audioscrobbler.com/2.0/?{query}")
+
+
+def lastfm_users(p):
+    """Last.fm accounts in priority order, checked after the Spotify ones."""
+    listening = p.get("listening", {})
+    users = [dict(u) for u in listening.get("lastfm", []) if u.get("user")]
+    if listening.get("lastfm_user"):
+        users.insert(0, {"user": listening["lastfm_user"], "platform": listening.get("lastfm_platform", "")})
+    return users[:5]
+
+
+def lastfm_image(images, size="large"):
+    by_size = {i.get("size"): i.get("#text") for i in images or []}
+    url = by_size.get(size) or by_size.get("large") or by_size.get("medium") or by_size.get("extralarge") or ""
+    return "" if LASTFM_BLANK in url else url
+
+
+def lastfm_now(entry, account):
+    data = lastfm("user.getrecenttracks", user=entry["user"], limit=1)
+    if not data:
+        return None
+    tracks = data["recenttracks"]["track"]
     if isinstance(tracks, dict):
         tracks = [tracks]
     if not tracks:
         return None
     track = tracks[0]
-    images = {i.get("size"): i.get("#text") for i in track.get("image", [])}
     playing = track.get("@attr", {}).get("nowplaying") == "true"
     when = ""
     if not playing and track.get("date", {}).get("uts"):
@@ -1433,18 +1468,54 @@ def lastfm_now(p):
         "playing": playing,
         "title": track.get("name", ""),
         "artist": track.get("artist", {}).get("#text", ""),
-        "cover": images.get("medium") or images.get("large") or "",
+        "cover": lastfm_image(track.get("image")),
         "context": track.get("album", {}).get("#text", ""),
         "device": "",
         "device_type": "",
-        "user": user,
-        "platform": listening.get("lastfm_platform") or "Last.fm",
+        "user": entry["user"],
+        "platform": entry.get("platform") or "Last.fm",
         "when": when,
+        "account": account,
     }
 
 
+def lastfm_top(p, cache):
+    users = lastfm_users(p)
+    if not users or not os.environ.get("LASTFM_API_KEY"):
+        return
+    limit = int(p.get("listening", {}).get("tracks", 5))
+    try:
+        user = users[0]["user"]
+        items = lastfm("user.gettoptracks", user=user, period="1month", limit=limit)["toptracks"]["track"]
+        info = lastfm("user.getinfo", user=user)["user"]
+        cache.setdefault("extra", {})["scrobbles"] = int(info.get("playcount") or 0)
+    except Exception as error:
+        print(f"last.fm: keeping cached top tracks ({error})", file=sys.stderr)
+        return
+    tracks = []
+    for item in items[:limit]:
+        artist = item.get("artist", {}).get("name", "")
+        cover = lastfm_image(item.get("image"), "medium")
+        if not cover:
+            try:
+                album = lastfm("track.getInfo", artist=artist, track=item["name"])["track"].get("album", {})
+                cover = lastfm_image(album.get("image"), "medium")
+            except Exception:
+                pass
+        tracks.append({
+            "name": item["name"],
+            "artist": artist,
+            "ms": int(item.get("duration") or 0) * 1000,
+            "plays": int(item.get("playcount") or 0),
+            "cover": cover,
+            "source": "Last.fm",
+        })
+    if tracks:
+        cache["top_tracks"] = tracks
+
+
 def now_data(p, cache, accounts):
-    """The first Spotify account that is playing wins; otherwise the most recent play anywhere."""
+    """Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere."""
     users = cache.setdefault("spotify_users", {})
     spotify = []
     for n, client_id, secret, refresh in accounts:
@@ -1460,16 +1531,21 @@ def now_data(p, cache, accounts):
         if result["playing"]:
             return result
         spotify.append(result)
-    lastfm = None
-    try:
-        lastfm = lastfm_now(p)
-    except Exception as error:
-        print(f"last.fm: no recent tracks ({error})", file=sys.stderr)
-    if lastfm and any((lastfm["title"], lastfm["artist"]) == (c["title"], c["artist"]) for c in spotify):
-        lastfm = None  # Spotify scrobbles to Last.fm too; that's the same play
-    if lastfm and lastfm["playing"]:
-        return lastfm
-    candidates = spotify + ([lastfm] if lastfm else [])
+    scrobbled = []
+    for i, entry in enumerate(lastfm_users(p)):
+        try:
+            result = lastfm_now(entry, 10 + i)
+        except Exception as error:
+            print(f"last.fm {entry['user']}: no recent tracks ({error})", file=sys.stderr)
+            continue
+        if not result:
+            continue
+        if any((result["title"], result["artist"]) == (c["title"], c["artist"]) for c in spotify):
+            continue  # Spotify scrobbles to Last.fm too; that's the same play
+        if result["playing"]:
+            return result
+        scrobbled.append(result)
+    candidates = spotify + scrobbled
     if not candidates:
         return cache.get("now")
     return max(candidates, key=lambda c: (c.get("when") or "", -c.get("account", 9)))
@@ -1558,11 +1634,14 @@ def main():
         github_data(p, cache)
         stats_data(p, cache)
         accounts = spotify_accounts()
+        topped = False
         if accounts:
             try:
-                spotify_top(p, cache, spotify_token(*accounts[0][1:]))
+                topped = spotify_top(p, cache, spotify_token(*accounts[0][1:]))
             except Exception as error:
                 print(f"spotify: no top tracks ({error})", file=sys.stderr)
+        if not topped:
+            lastfm_top(p, cache)
         views_data(p, cache)
         now = now_data(p, cache, accounts)
         if now:
@@ -1597,7 +1676,7 @@ def main():
     stats = cache.get("stats")
     if stats:
         stats = {**stats, **cache.get("extra", {})}
-    tracks = cache.get("spotify") or []
+    tracks = cache.get("top_tracks") or cache.get("spotify") or []
     year = datetime.now(timezone.utc).year
 
     files = {}
@@ -1645,7 +1724,8 @@ def main():
         add("facts", lambda th: facts(th, stats, str(cache.get("github", {}).get("user", {}).get("created_at", ""))[:4]))
     if tracks:
         listening = p.get("listening", {})
-        add("rotation", lambda th: rotation(th, listening.get("title", "On rotation"), tracks), listening.get("profile") or None)
+        scrobbles = cache.get("extra", {}).get("scrobbles") if tracks[0].get("source") == "Last.fm" else None
+        add("rotation", lambda th: rotation(th, listening.get("title", "On rotation"), tracks, scrobbles), listening.get("profile") or None)
     if p.get("credits", {}).get("items"):
         add("credits", lambda th: credits(th, p["credits"]["title"], p["credits"]["items"]))
     add("colophon", lambda th: colophon(th, "Set in Bricolage Grotesque & Geist Mono", f"© {year} {p['me']['name']}"))

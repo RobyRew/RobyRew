@@ -108,16 +108,28 @@ note = "Taking binaries apart in Ghidra and IDA Pro. RE is the fun part."
 hue = "rose"
 texture = "hex"
 
-# Music. Spotify plugs in directly; YouTube Music and Apple Music come in through Last.fm.
-# Setup steps are in .github/profile/SETUP.md.
+# Music. Setup steps are in .github/profile/SETUP.md.
+# Priority: Spotify accounts 1–5 first (needs Spotify Premium), then the Last.fm accounts below, top to bottom.
+# The first one that is playing shows on the deck.
 [listening]
 title = "Last four weeks"
 tracks = 5
 # Optional: your Spotify profile URL, so the top-tracks card links to it.
 profile = ""
-# Optional: your Last.fm username, and the app you scrobble from when it isn't Spotify.
-lastfm_user = ""
-lastfm_platform = "YouTube Music"
+
+# Last.fm accounts (free, up to 5). `platform` is the label on the deck, since Last.fm can't tell which app
+# played a song. Copy the block for more accounts; blocks with an empty user are ignored.
+[[listening.lastfm]]
+user = ""
+platform = "Spotify"
+
+[[listening.lastfm]]
+user = ""
+platform = "YouTube Music"
+
+[[listening.lastfm]]
+user = ""
+platform = "Apple Music"
 
 # Each value is split on commas into chips.
 [credits]
