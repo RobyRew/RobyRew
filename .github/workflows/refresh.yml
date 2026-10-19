@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       - uses: actions/setup-python@v6
         with:
@@ -31,7 +33,7 @@ jobs:
       - name: Install font tools
         run: pip install fonttools==4.67.0 brotli==1.2.0
 
-      - name: Build README and images
+      - name: Build, commit and push to main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_STATS_TOKEN: ${{ secrets.PROFILE_TOKEN }}
@@ -45,19 +47,25 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_USERS: ${{ vars.LASTFM_USERS }}
           LIVE: ${{ vars.LIVE_NOW_PLAYING }}
-        run: python3 .github/profile/build.py
-
-      - name: Commit and push to main
         run: |
-          git add README.md img .github/profile/cache.json
-          if git diff --cached --quiet; then
-            echo "Nothing changed."
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Refresh profile [skip ci]"
-          if ! git push origin HEAD:main; then
-            echo "::error::main rejected the push. Remove the branch protection rule on main (Settings > Branches) so this workflow can update the profile."
-            exit 1
-          fi
+          # Build on the newest main; if main moves while building (a push, another run), start over.
+          for attempt in 1 2 3; do
+            git fetch --quiet origin main
+            git reset --quiet --hard origin/main
+            python3 .github/profile/build.py
+            git add README.md img .github/profile/cache.json
+            if git diff --cached --quiet; then
+              echo "Nothing changed."
+              exit 0
+            fi
+            git commit --quiet -m "Refresh profile [skip ci]"
+            if git push --quiet origin HEAD:main; then
+              exit 0
+            fi
+            echo "main moved while building, trying again ($attempt/3)"
+            sleep 10
+          done
+          echo "::error::Could not push to main after 3 tries. If main is protected, allow GitHub Actions to push to it."
+          exit 1
