@@ -43,6 +43,7 @@ jobs:
           SPOTIFY_REFRESH_TOKEN_4: ${{ secrets.SPOTIFY_REFRESH_TOKEN_4 }}
           SPOTIFY_REFRESH_TOKEN_5: ${{ secrets.SPOTIFY_REFRESH_TOKEN_5 }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          LASTFM_USERS: ${{ vars.LASTFM_USERS }}
           LIVE: ${{ vars.LIVE_NOW_PLAYING }}
         run: python3 .github/profile/build.py
 

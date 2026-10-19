@@ -870,8 +870,8 @@ def heat_colors(theme):
 
 def activity(theme, stats):
     cal = stats["calendar"]
-    total = stats["contributions"]
-    label = f"{total} contributions in the last year. Current streak {stats['streak']} days, longest {stats['longest']} days."
+    total = stats.get("contributions", 0)
+    label = f"{total} contributions in the last year. Current streak {stats.get('streak', 0)} days, longest {stats.get('longest', 0)} days."
     H = 384
     svg = SVG(theme, W, H + GAP, label)
     t = svg.t
@@ -881,12 +881,12 @@ def activity(theme, stats):
     svg.text(x0 + 30, 86, f"{total:,} contributions", "display", 30, t["ink"], tracking=-0.8)
     svg.text(x0 + CW - 32, 46, "LAST 12 MONTHS · GITHUB", "mono", 10.5, t["faint"], tracking=1.6, anchor="end")
     blocks = [
-        ("Commits", stats["commits"]),
-        ("Pull requests", stats["prs"]),
-        ("Issues", stats["issues"]),
-        ("Reviews", stats["reviews"]),
-        ("Current streak", f'{stats["streak"]}d'),
-        ("Longest streak", f'{stats["longest"]}d'),
+        ("Commits", stats.get("commits", "—")),
+        ("Pull requests", stats.get("prs", "—")),
+        ("Issues", stats.get("issues", "—")),
+        ("Reviews", stats.get("reviews", "—")),
+        ("Current streak", f'{stats.get("streak", 0)}d'),
+        ("Longest streak", f'{stats.get("longest", 0)}d'),
     ]
     bw = (CW - 64 - 5 * 10) / 6
     for i, (name, value) in enumerate(blocks):
@@ -923,18 +923,21 @@ def activity(theme, stats):
         fill = paint(t["heat"]) if i == 0 else f'fill="{colors[i]}"'
         svg.add(f'<rect x="{num(lx + i * step)}" y="{num(ly)}" width="{cell}" height="{cell}" rx="2.5" {fill}/>')
     svg.text(lx + 5 * step + 4, ly + 9, "MORE", "mono", 9, t["faint"], tracking=0.8)
-    svg.text(x0 + 32, ly + 9, f'{stats["active_days"]} ACTIVE DAYS · {stats["repos_contributed"]} REPOS', "mono", 9, t["faint"], tracking=0.8)
+    footer = [f'{stats.get("active_days", 0)} ACTIVE DAYS']
+    if stats.get("repos_contributed") is not None:
+        footer.append(f'{stats["repos_contributed"]} REPOS')
+    svg.text(x0 + 32, ly + 9, " · ".join(footer), "mono", 9, t["faint"], tracking=0.8)
     return svg
 
 
 def popularity(theme, stats):
-    langs = stats["languages"]
+    langs = stats.get("languages") or []
     cells = [
         ("Profile views", stats.get("views"), "eye"),
-        ("Stars earned", stats["stars"], "star"),
-        ("Followers", stats["followers"], "users"),
+        ("Stars earned", stats.get("stars"), "star"),
+        ("Followers", stats.get("followers"), "users"),
         ("Merged PRs", stats.get("merged_prs"), "merge"),
-        ("Forks", stats["forks"], "fork"),
+        ("Forks", stats.get("forks"), "fork"),
         ("Contributed to", stats.get("contributed_to"), "repo"),
     ]
     cells = [c for c in cells if c[1] is not None]
@@ -1146,16 +1149,9 @@ def github_data(p, cache):
         print(f"github: no pages site ({error})", file=sys.stderr)
 
 
-STATS_QUERY = """
-query($login: String!, $from: DateTime!, $to: DateTime!, $after: String) {
+REPOS_QUERY = """
+query($login: String!, $after: String) {
   user(login: $login) {
-    createdAt
-    followers { totalCount }
-    organizations { totalCount }
-    gists { totalCount }
-    pullRequests(states: MERGED) { totalCount }
-    issues { totalCount }
-    repositoriesContributedTo(contributionTypes: [COMMIT, PULL_REQUEST, ISSUE], includeUserRepositories: false) { totalCount }
     repositories(ownerAffiliations: OWNER, isFork: false, privacy: PUBLIC, first: 100, after: $after,
                  orderBy: {field: PUSHED_AT, direction: DESC}) {
       totalCount
@@ -1166,21 +1162,43 @@ query($login: String!, $from: DateTime!, $to: DateTime!, $after: String) {
         languages(first: 10, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name color } } }
       }
     }
+  }
+}
+"""
+
+CALENDAR_QUERY = """
+query($login: String!, $from: DateTime!, $to: DateTime!) {
+  user(login: $login) {
     contributionsCollection(from: $from, to: $to) {
       totalCommitContributions totalPullRequestContributions totalIssueContributions
-      totalPullRequestReviewContributions totalRepositoriesWithContributedCommits restrictedContributionsCount
+      totalPullRequestReviewContributions totalRepositoriesWithContributedCommits
       contributionCalendar { totalContributions weeks { contributionDays { date contributionCount } } }
     }
   }
 }
 """
 
-
 YEAR_QUERY = """
 query($login: String!, $from: DateTime!, $to: DateTime!) {
   user(login: $login) { contributionsCollection(from: $from, to: $to) { contributionCalendar { totalContributions } } }
 }
 """
+
+# One small query each, so a field the token can't see doesn't sink the rest.
+EXTRA_FIELDS = {
+    "merged_prs": "pullRequests(states: MERGED) { totalCount }",
+    "issues_all": "issues { totalCount }",
+    "contributed_to": "repositoriesContributedTo(contributionTypes: [COMMIT, PULL_REQUEST, ISSUE], includeUserRepositories: false) { totalCount }",
+}
+
+LANGUAGE_COLORS = {
+    **LANGUAGES, "Kotlin": "#A97BFF", "Java": "#B07219", "C": "#555555", "C++": "#F34B7D", "C#": "#178600",
+    "Go": "#00ADD8", "Rust": "#DEA584", "Ruby": "#701516", "PHP": "#4F5D95", "Objective-C": "#438EFF",
+    "Objective-C++": "#6866FB", "Dockerfile": "#384D54", "Vue": "#41B883", "SCSS": "#C6538C", "Makefile": "#427819",
+    "Lua": "#000080", "Dart": "#00B4AB", "Jupyter Notebook": "#DA5B0B", "PowerShell": "#012456", "Batchfile": "#C1F12E",
+    "Assembly": "#6E4C13", "Perl": "#0298C3", "AppleScript": "#101F1F", "Metal": "#8F14E9", "MDX": "#FCB32C",
+    "Svelte": "#FF3E00", "Astro": "#FF5A03", "Nix": "#7E7EFF", "Zig": "#EC915C", "Haskell": "#5E5086",
+}
 
 
 def graphql(query, variables, headers):
@@ -1206,110 +1224,246 @@ def views_data(p, cache):
         print(f"views: keeping cached count ({error})", file=sys.stderr)
 
 
+def github_get(path, headers):
+    return fetch(f"https://api.github.com{path}", headers)
+
+
+def search_count(kind, query, headers):
+    return github_get(f"/search/{kind}?q={urllib.parse.quote(query)}&per_page=1", headers)["total_count"]
+
+
+def repos_rest(login, headers):
+    """The same shape as REPOS_QUERY's nodes, from the REST API."""
+    found, page = [], 1
+    while True:
+        batch = github_get(f"/users/{login}/repos?type=owner&sort=pushed&per_page=100&page={page}", headers) or []
+        found += batch
+        if len(batch) < 100:
+            break
+        page += 1
+    repos = []
+    for r in found:
+        if r.get("fork") or r.get("private"):
+            continue
+        try:
+            sizes = github_get(f"/repos/{login}/{r['name']}/languages", headers) or {}
+        except Exception:
+            sizes = {}
+        repos.append({
+            "name": r["name"],
+            "description": r.get("description"),
+            "url": r["html_url"],
+            "stargazerCount": r.get("stargazers_count", 0),
+            "forkCount": r.get("forks_count", 0),
+            "pushedAt": r.get("pushed_at"),
+            "isArchived": r.get("archived", False),
+            "primaryLanguage": {"name": r["language"]} if r.get("language") else None,
+            "languages": {"edges": [{"size": size, "node": {"name": name, "color": None}} for name, size in sizes.items()]},
+        })
+    return repos
+
+
+def calendar_page(login, start=None, end=None):
+    """Reads the public contribution calendar on github.com when the API won't give it."""
+    url = f"https://github.com/users/{login}/contributions"
+    if start:
+        url += f"?from={start}&to={end}"
+    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (profile builder)", "Accept": "text/html"})
+    with urllib.request.urlopen(request, timeout=20) as response:
+        page = response.read().decode("utf-8", "replace")
+    counts = {}
+    for tip in re.finditer(r'<tool-tip[^>]*\bfor="([^"]+)"[^>]*>\s*([^<]*?)\s*</tool-tip>', page):
+        match = re.match(r"(No|\d[\d,]*)\s+contribution", tip.group(2))
+        if match:
+            counts[tip.group(1)] = 0 if match.group(1) == "No" else int(match.group(1).replace(",", ""))
+    days = {}
+    for cell in re.finditer(r"<td\b[^>]*>", page):
+        tag = cell.group(0)
+        day = re.search(r'data-date="(\d{4}-\d{2}-\d{2})"', tag)
+        if not day:
+            continue
+        ident = re.search(r'\bid="([^"]+)"', tag)
+        level = re.search(r'data-level="(\d)"', tag)
+        count = counts.get(ident.group(1)) if ident else None
+        days[day.group(1)] = count if count is not None else (int(level.group(1)) if level else 0)
+    total = re.search(r"([\d,]+)\s+contributions?\s+in\s+(?:the\s+last\s+year|\d{4})", page)
+    if not days and not total:
+        raise RuntimeError("no calendar on the page")
+    return (int(total.group(1).replace(",", "")) if total else sum(days.values())), days
+
+
+def as_weeks(days):
+    weeks, week = [], []
+    for day in sorted(days):
+        if week and date.fromisoformat(day).isoweekday() % 7 == 0:
+            weeks.append(week)
+            week = []
+        week.append((day, days[day]))
+    return weeks + [week] if week else weeks
+
+
 def stats_data(p, cache):
+    """Activity and popularity numbers. Each piece is optional and falls back to the REST API or the public page."""
     headers = github_headers()
-    if "Authorization" not in headers:
-        return
+    authed = "Authorization" in headers
     login = p["me"]["github"]
     now = datetime.now(timezone.utc)
-    variables = {"login": login, "from": (now - timedelta(days=365)).isoformat(), "to": now.isoformat(), "after": None}
-    repos, user = [], None
-    try:
+    year_ago = now - timedelta(days=365)
+    stats = dict(cache.get("stats", {}))
+
+    def attempt(label, fn):
+        try:
+            return fn()
+        except Exception as error:
+            print(f"github: {label} unavailable ({error})", file=sys.stderr)
+            return None
+
+    def graphql_repos():
+        repos, after = [], None
         while True:
-            user = graphql(STATS_QUERY, variables, headers)["user"]
-            page = user["repositories"]
+            page = graphql(REPOS_QUERY, {"login": login, "after": after}, headers)["user"]["repositories"]
             repos += page["nodes"]
             if not page["pageInfo"]["hasNextPage"]:
+                return repos
+            after = page["pageInfo"]["endCursor"]
+
+    repos = attempt("repositories via GraphQL", graphql_repos) if authed else None
+    if repos is None:
+        repos = attempt("repositories via REST", lambda: repos_rest(login, headers))
+    if repos is not None:
+        sizes, colors = {}, {}
+        for repo in repos:
+            for edge in repo["languages"]["edges"]:
+                name = edge["node"]["name"]
+                sizes[name] = sizes.get(name, 0) + edge["size"]
+                colors[name] = edge["node"].get("color") or LANGUAGE_COLORS.get(name) or "#9CA3AF"
+        total = sum(sizes.values()) or 1
+        ranked = sorted(sizes.items(), key=lambda kv: -kv[1])
+        languages = [[name, round(100 * size / total, 1), colors[name]] for name, size in ranked[:7]]
+        rest = 100 - sum(share for _, share, _ in languages)
+        if len(ranked) > 7 and rest > 0.05:
+            languages.append(["Other", round(rest, 1), "#8B949E"])
+        stats.update({
+            "languages": languages,
+            "stars": sum(r["stargazerCount"] for r in repos),
+            "forks": sum(r["forkCount"] for r in repos),
+            "original": len(repos),
+        })
+        cache["recent"] = [
+            {
+                "name": r["name"],
+                "description": r["description"] or "",
+                "url": r["url"],
+                "stars": r["stargazerCount"],
+                "language": (r["primaryLanguage"] or {}).get("name", ""),
+                "pushed": r["pushedAt"],
+            }
+            for r in sorted(repos, key=lambda r: r["pushedAt"] or "", reverse=True)
+            if not r["isArchived"]
+        ][:20]
+
+    variables = {"login": login, "from": year_ago.isoformat(), "to": now.isoformat()}
+    collection = attempt("contributions via GraphQL", lambda: graphql(CALENDAR_QUERY, variables, headers)["user"]["contributionsCollection"]) if authed else None
+    if collection:
+        stats["contributions"] = collection["contributionCalendar"]["totalContributions"]
+        stats["calendar"] = [
+            [(d["date"], d["contributionCount"]) for d in week["contributionDays"]]
+            for week in collection["contributionCalendar"]["weeks"]
+        ]
+        stats.update({
+            "commits": collection["totalCommitContributions"],
+            "prs": collection["totalPullRequestContributions"],
+            "issues": collection["totalIssueContributions"],
+            "reviews": collection["totalPullRequestReviewContributions"],
+            "repos_contributed": collection["totalRepositoriesWithContributedCommits"],
+        })
+    else:
+        scraped = attempt("contribution calendar page", lambda: calendar_page(login))
+        if scraped:
+            stats["contributions"], days = scraped
+            stats["calendar"] = as_weeks(days)
+        start = year_ago.date().isoformat()
+        for key, kind, query in (
+            ("commits", "commits", f"author:{login} committer-date:>={start}"),
+            ("prs", "issues", f"author:{login} type:pr created:>={start}"),
+            ("issues", "issues", f"author:{login} type:issue created:>={start}"),
+            ("reviews", "issues", f"reviewed-by:{login} type:pr created:>={start}"),
+        ):
+            value = attempt(f"{key} count", lambda kind=kind, query=query: search_count(kind, query, headers))
+            if value is not None:
+                stats[key] = value
+
+    if stats.get("calendar"):
+        days = [count for week in stats["calendar"] for _, count in week]
+        longest = run = 0
+        for count in days:
+            run = run + 1 if count else 0
+            longest = max(longest, run)
+        streak = 0
+        for i, count in enumerate(reversed(days)):
+            if count:
+                streak += 1
+            elif i:  # today may still be empty
                 break
-            variables["after"] = page["pageInfo"]["endCursor"]
-    except Exception as error:
-        print(f"github: keeping cached stats ({error})", file=sys.stderr)
-        return
-    all_time = 0
-    try:
-        for year in range(int(user["createdAt"][:4]), now.year + 1):
-            start = datetime(year, 1, 1, tzinfo=timezone.utc)
-            end = min(datetime(year, 12, 31, 23, 59, 59, tzinfo=timezone.utc), now)
-            data = graphql(YEAR_QUERY, {"login": login, "from": start.isoformat(), "to": end.isoformat()}, headers)
-            all_time += data["user"]["contributionsCollection"]["contributionCalendar"]["totalContributions"]
-    except Exception as error:
-        print(f"github: all-time count incomplete ({error})", file=sys.stderr)
-        all_time = cache.get("stats", {}).get("all_time", 0)
-    collection = user["contributionsCollection"]
-    calendar = [
-        [(d["date"], d["contributionCount"]) for d in week["contributionDays"]]
-        for week in collection["contributionCalendar"]["weeks"]
-    ]
-    days = [count for week in calendar for _, count in week]
-    longest = run = 0
-    for count in days:
-        run = run + 1 if count else 0
-        longest = max(longest, run)
-    streak = 0
-    for i, count in enumerate(reversed(days)):
-        if count:
-            streak += 1
-        elif i:  # today may still be empty
-            break
-    weekdays = [0] * 7
-    best = ("", 0)
-    for week in calendar:
-        for day, count in week:
-            weekdays[date.fromisoformat(day).weekday()] += count
-            if count > best[1]:
-                best = (day, count)
-    sizes = {}
-    colors = {}
-    for repo in repos:
-        for edge in repo["languages"]["edges"]:
-            name = edge["node"]["name"]
-            sizes[name] = sizes.get(name, 0) + edge["size"]
-            colors[name] = edge["node"]["color"] or "#9CA3AF"
-    total = sum(sizes.values()) or 1
-    ranked = sorted(sizes.items(), key=lambda kv: -kv[1])
-    languages = [[name, round(100 * size / total, 1), colors[name]] for name, size in ranked[:7]]
-    rest = 100 - sum(share for _, share, _ in languages)
-    if len(ranked) > 7 and rest > 0.05:
-        languages.append(["Other", round(rest, 1), "#8B949E"])
-    cache["stats"] = {
-        "contributions": collection["contributionCalendar"]["totalContributions"],
-        "commits": collection["totalCommitContributions"],
-        "prs": collection["totalPullRequestContributions"],
-        "issues": collection["totalIssueContributions"],
-        "reviews": collection["totalPullRequestReviewContributions"],
-        "repos_contributed": collection["totalRepositoriesWithContributedCommits"],
-        "active_days": sum(1 for count in days if count),
-        "streak": streak,
-        "longest": longest,
-        "calendar": calendar,
-        "stars": sum(r["stargazerCount"] for r in repos),
-        "forks": sum(r["forkCount"] for r in repos),
-        "followers": user["followers"]["totalCount"],
-        "original": user["repositories"]["totalCount"],
-        "languages": languages,
-        "all_time": all_time,
-        "merged_prs": user["pullRequests"]["totalCount"],
-        "issues_all": user["issues"]["totalCount"],
-        "contributed_to": user["repositoriesContributedTo"]["totalCount"],
-        "orgs": user["organizations"]["totalCount"],
-        "gists": user["gists"]["totalCount"],
-        "joined": user["createdAt"],
-        "busiest": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][weekdays.index(max(weekdays))],
-        "best_day": best[0],
-        "best_count": best[1],
-    }
-    cache["recent"] = [
-        {
-            "name": r["name"],
-            "description": r["description"] or "",
-            "url": r["url"],
-            "stars": r["stargazerCount"],
-            "language": (r["primaryLanguage"] or {}).get("name", ""),
-            "pushed": r["pushedAt"],
-        }
-        for r in repos
-        if not r["isArchived"]
-    ][:20]
+        weekdays = [0] * 7
+        best = ("", 0)
+        for week in stats["calendar"]:
+            for day, count in week:
+                weekdays[date.fromisoformat(day).weekday()] += count
+                if count > best[1]:
+                    best = (day, count)
+        stats.update({
+            "active_days": sum(1 for count in days if count),
+            "streak": streak,
+            "longest": longest,
+            "busiest": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][weekdays.index(max(weekdays))],
+            "best_day": best[0],
+            "best_count": best[1],
+        })
+
+    for key, fragment in EXTRA_FIELDS.items():
+        query = f"query($login: String!) {{ user(login: $login) {{ x: {fragment} }} }}"
+        value = attempt(key, lambda query=query: graphql(query, {"login": login}, headers)["user"]["x"]["totalCount"]) if authed else None
+        if value is not None:
+            stats[key] = value
+    for key, query in (("merged_prs", f"author:{login} type:pr is:merged"), ("issues_all", f"author:{login} type:issue")):
+        if key not in stats:
+            value = attempt(key, lambda query=query: search_count("issues", query, headers))
+            if value is not None:
+                stats[key] = value
+
+    user = attempt("user", lambda: github_get(f"/users/{login}", headers)) or {}
+    if user:
+        stats.update({"followers": user.get("followers", 0), "gists": user.get("public_gists", 0), "joined": user.get("created_at", "")})
+    orgs = attempt("organizations", lambda: github_get(f"/users/{login}/orgs", headers))
+    if orgs is not None:
+        stats["orgs"] = len(orgs)
+
+    joined = stats.get("joined")
+    if joined:
+        use_graphql = authed
+
+        def yearly():
+            nonlocal use_graphql
+            total = 0
+            for year in range(int(joined[:4]), now.year + 1):
+                start, end = f"{year}-01-01", f"{year}-12-31"
+                if use_graphql:
+                    try:
+                        window = {"login": login, "from": f"{start}T00:00:00Z",
+                                  "to": f"{end}T23:59:59Z" if year < now.year else now.isoformat()}
+                        total += graphql(YEAR_QUERY, window, headers)["user"]["contributionsCollection"]["contributionCalendar"]["totalContributions"]
+                        continue
+                    except Exception:
+                        use_graphql = False
+                total += calendar_page(login, start, end)[0]
+            return total
+
+        value = attempt("all-time contributions", yearly)
+        if value is not None:
+            stats["all_time"] = value
+    if stats:
+        cache["stats"] = stats
 
 
 def spotify_accounts():
@@ -1438,10 +1592,21 @@ def lastfm(method, **params):
 def lastfm_users(p):
     """Last.fm accounts in priority order, checked after the Spotify ones."""
     listening = p.get("listening", {})
-    users = [dict(u) for u in listening.get("lastfm", []) if u.get("user")]
+    users = []
+    # The LASTFM_USERS repository variable comes first: "name:Platform, other:YouTube Music".
+    for item in (os.environ.get("LASTFM_USERS") or "").split(","):
+        name, _, platform = item.strip().partition(":")
+        if name.strip():
+            users.append({"user": name.strip(), "platform": platform.strip()})
+    users += [dict(u) for u in listening.get("lastfm", []) if u.get("user")]
     if listening.get("lastfm_user"):
-        users.insert(0, {"user": listening["lastfm_user"], "platform": listening.get("lastfm_platform", "")})
-    return users[:5]
+        users.append({"user": listening["lastfm_user"], "platform": listening.get("lastfm_platform", "")})
+    seen, unique = set(), []
+    for entry in users:
+        if entry["user"].lower() not in seen:
+            seen.add(entry["user"].lower())
+            unique.append(entry)
+    return unique[:5]
 
 
 def lastfm_image(images, size="large"):
@@ -1719,9 +1884,12 @@ def main():
         add("highlights", lambda th: highlights(th, items))
     if stats:
         add("stats-head", lambda th: section(th, "Charts", "Activity & popularity", "updated daily", "Charts: activity and popularity"))
-        add("activity", lambda th: activity(th, stats))
-        add("popularity", lambda th: popularity(th, stats))
-        add("facts", lambda th: facts(th, stats, str(cache.get("github", {}).get("user", {}).get("created_at", ""))[:4]))
+        if stats.get("calendar"):
+            add("activity", lambda th: activity(th, stats))
+        if stats.get("languages") or stats.get("stars") is not None:
+            add("popularity", lambda th: popularity(th, stats))
+        if stats.get("calendar") or stats.get("all_time"):
+            add("facts", lambda th: facts(th, stats, str(cache.get("github", {}).get("user", {}).get("created_at", ""))[:4]))
     if tracks:
         listening = p.get("listening", {})
         scrobbles = cache.get("extra", {}).get("scrobbles") if tracks[0].get("source") == "Last.fm" else None

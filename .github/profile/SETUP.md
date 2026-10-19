@@ -40,8 +40,15 @@ accounts. It also covers YouTube Music and Apple Music.
    gh secret set LASTFM_API_KEY
    ```
 
-3. In `profile.toml`, fill in the `[[listening.lastfm]]` blocks in priority order: the username, and the
-   `platform` label to show (Last.fm can't tell which app played a song).
+3. Tell the workflows your Last.fm usernames, in priority order, each with the label to show
+   (Last.fm can't tell which app played a song):
+
+   ```sh
+   gh variable set LASTFM_USERS --body "yourname:Spotify"
+   gh variable set LASTFM_USERS --body "yourname:Spotify, second:YouTube Music, third:Apple Music"   # several
+   ```
+
+   The `[[listening.lastfm]]` blocks in `profile.toml` work too; the variable is checked first.
 
 The first Last.fm account also supplies the "On rotation" top tracks and the scrobble count when Spotify isn't set up.
 
