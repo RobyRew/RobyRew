@@ -5,16 +5,19 @@
 # Placeholders you can use in any text:
 #   {repos}  number of public repositories      {since}  year you joined GitHub
 #   {years}  years on GitHub
+#
+# Colours (hue): ember, teal, blue, rose, green, graphite
+# Icons: presentation, map, chat, pdf, layers, code
 
 [me]
 github = "RobyRew"
 name = "RobyRew"
-kicker = "Native apps — real silicon — no compromises"
 statement = "Native-stack purist, building apps for Apple platforms."
 aside = "If it doesn't compile to metal, I'm not interested."
 # Printed around the label of the spinning record.
 record = "RobyRew · Side A · 33⅓ RPM · Native software · Barcelona · "
 
+# The first fact goes in the pill at the top, the rest become chips.
 [[me.facts]]
 label = "Currently"
 value = "Building TopPresenter"
@@ -22,10 +25,12 @@ value = "Building TopPresenter"
 [[me.facts]]
 label = "Day job"
 value = "Deutsche Telekom"
+icon = "briefcase"
 
 [[me.facts]]
 label = "Based in"
 value = "Barcelona, Spain"
+icon = "pin"
 
 [[links]]
 label = "robyrew.com"
@@ -35,7 +40,7 @@ url = "https://robyrew.com"
 label = "Telegram"
 url = "https://t.me/RobyRew"
 
-# Side A. Each project row links to its repository.
+# Side A. The first project gets the big card, the rest sit in a grid.
 # Language and stars come from GitHub; `note` overrides the repo description.
 [work]
 title = "Selected work"
@@ -43,63 +48,69 @@ title = "Selected work"
 [[work.projects]]
 repo = "TopPresenter"
 note = "Bible & worship presentation for macOS, built natively with SwiftUI and SwiftData."
+hue = "ember"
+icon = "presentation"
 
 [[work.projects]]
 repo = "mapswitch"
 note = "Open any map link in the app you actually use. A privacy-first map redirector."
+hue = "teal"
+icon = "map"
 
 [[work.projects]]
 repo = "chatforge"
 note = "Converts chat exports from Telegram, WhatsApp, Instagram and more, in the browser."
+hue = "blue"
+icon = "chat"
 
 [[work.projects]]
 repo = "Download-AI-Chat-PDF"
 note = "Userscript that saves a whole ChatGPT, Gemini, Claude or Grok chat as a PDF."
+hue = "rose"
+icon = "pdf"
 
 [[work.projects]]
 repo = "spotify-versions-history"
-note = "A searchable catalog of Spotify desktop installers, logging every new build and its hashes."
+note = "A searchable catalog of Spotify desktop installers, logging every build and its hashes."
+hue = "green"
+icon = "layers"
 
-# Side B. Achievements, milestones, things you're proud of.
+# Side B. Achievements, milestones, things you're proud of. Three fit in a row.
 [highlights]
 title = "Highlights"
 
 [[highlights.items]]
-title = "Open source since {since}"
-note = "{repos} public repositories, from full macOS apps to small tools that fix one annoying thing."
-tag = "GitHub"
+value = "{repos}"
+title = "Public repositories"
+note = "Open source since {since}, from macOS apps to small tools."
+hue = "ember"
 
 [[highlights.items]]
+value = "arm64"
 title = "Native, always"
-note = "Apple Silicon first, no emulation. The best UI framework is the one shipped with the OS."
-tag = "Principle"
+note = "No emulation. The best UI framework ships with the OS."
+hue = "teal"
 
 [[highlights.items]]
-title = "Reverse engineering for fun"
+value = "0x"
+title = "Reverse engineering"
 note = "Taking binaries apart in IDA Pro, just to see how they tick."
-tag = "After hours"
+hue = "rose"
 
-# Spotify top tracks. Shows up once the SPOTIFY_* secrets are set (see .github/profile/README.md).
+# Spotify top tracks. Shows up once the SPOTIFY_* secrets are set (see .github/profile/SETUP.md).
 [listening]
 title = "Last four weeks"
 tracks = 5
 # Optional: your Spotify profile URL, so the card links to it.
 profile = ""
 
+# Each value is split on commas into chips.
 [credits]
 title = "Liner notes"
 
 [[credits.items]]
-label = "Written & produced by"
-value = "RobyRew"
-
-[[credits.items]]
-label = "Recorded on"
-value = "Apple Silicon, arm64 native"
-
-[[credits.items]]
 label = "Instruments"
-value = "Swift, AppKit, UIKit, SwiftUI"
+value = "Swift, SwiftUI, AppKit, UIKit"
 
 [[credits.items]]
 label = "Session players"
@@ -114,9 +125,9 @@ label = "Mixed in"
 value = "Xcode, VS Code, IDA Pro"
 
 [[credits.items]]
-label = "Lighting"
-value = "Dark mode, always"
+label = "Recorded on"
+value = "Apple Silicon, arm64"
 
 [[credits.items]]
-label = "Soundtrack"
-value = "Always on"
+label = "Lighting"
+value = "Dark mode only"

@@ -6,7 +6,7 @@
   *Refresh profile* workflow rebuilds the page. It also runs every morning to pick up new stars,
   repo counts and listening data.
 - **Rendering** is [`build.py`](build.py). It writes every section as an SVG, in a light and a dark version,
-  and embeds a small subset of Newsreader and DM Mono in each one (licence in [`fonts/OFL.txt`](fonts/OFL.txt)).
+  and embeds a small subset of Bricolage Grotesque and Geist Mono in each one (licence in [`fonts/OFL.txt`](fonts/OFL.txt)).
 - **Last known data** (repo languages, stars, tracks) is saved in [`cache.json`](cache.json), so a failed API call
   never blanks the page.
 
