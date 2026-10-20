@@ -1140,13 +1140,20 @@ def github_data(p, cache):
             data["repos"][name]["version"] = (stable or published)[0]["tag_name"] if published else ""
         except Exception as error:
             print(f"github: keeping cached releases for {name} ({error})", file=sys.stderr)
+    # The Pages address needs the workflow's own token; PROFILE_TOKEN has no access to repo settings.
     repository = os.environ.get("GITHUB_REPOSITORY", f"{login}/{login}")
+    own = {"Accept": "application/vnd.github+json"}
+    if os.environ.get("GITHUB_TOKEN"):
+        own["Authorization"] = f'Bearer {os.environ["GITHUB_TOKEN"]}'
     try:
-        pages = fetch(f"https://api.github.com/repos/{repository}/pages", headers)
+        pages = fetch(f"https://api.github.com/repos/{repository}/pages", own)
         if pages and pages.get("html_url"):
             cache["pages_url"] = pages["html_url"].rstrip("/") + "/"
     except Exception as error:
-        print(f"github: no pages site ({error})", file=sys.stderr)
+        print(f"github: pages address not readable ({error})", file=sys.stderr)
+        if not cache.get("pages_url") and "/" in repository:
+            owner, name = repository.split("/", 1)
+            cache["pages_url"] = f"https://{owner.lower()}.github.io/{name}/"
 
 
 REPOS_QUERY = """
