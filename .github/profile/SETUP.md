@@ -24,8 +24,10 @@ The cards are frosted glass with a faint tint, sized like GitHub's own interface
 they stay quick to paint. Images are linked straight to `raw.githubusercontent.com`; a relative link would cost
 every image a redirect through github.com first.
 
-- Every piece comes in four versions: `img/dark`, `img/light`, and `img/dark-m` / `img/light-m` for phones
-  (half the width, same type size, so nothing gets tiny). GitHub picks one with `<picture>` media queries.
+- Every piece comes as `img/dark` and `img/light` for computers and `img/m` for phones (half the width, same
+  type size, so nothing gets tiny). The phone file holds both themes and switches by itself: GitHub's page script
+  rewrites any `<picture>` source that mentions dark or light mode to follow the viewer's GitHub theme, and in
+  doing so drops a width condition, so the phone source asks for width only.
 - Every link has a hover tooltip.
 - The bar under the record player jumps to each section.
 - "More projects" opens a list of every other public repository.

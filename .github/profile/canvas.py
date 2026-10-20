@@ -250,17 +250,17 @@ def font_face(key, chars):
 
 
 class SVG:
-    def __init__(self, theme, width, height, label):
+    def __init__(self, theme, width, height, label, ids=""):
         self.theme = theme
         self.t = THEMES[theme]
         self.width, self.height = width, height
         self.label = label
         self.parts, self.defs, self.css, self.chars = [], [], [], {}
-        self.ids = 0
+        self.ids, self.id_prefix = 0, ids
 
     def uid(self, prefix):
         self.ids += 1
-        return f"{prefix}{self.ids}"
+        return f"{self.id_prefix}{prefix}{self.ids}"
 
     def add(self, markup):
         self.parts.append(markup)
@@ -334,6 +334,32 @@ class SVG:
             + "".join(self.parts)
             + "</svg>\n"
         )
+
+
+def render_pair(light, dark, view):
+    """Both themes in one image, switched by the page's colour scheme. Used for phones, where GitHub's own theme
+    switching can't be combined with a width condition."""
+    x, y, w, h = view
+    chars = {}
+    for svg in (light, dark):
+        for key, used in svg.chars.items():
+            chars.setdefault(key, set()).update(used)
+    fonts = "".join(font_face(k, "".join(sorted(v))) for k, v in sorted(chars.items()))
+    extra = "".join(dict.fromkeys(light.css + dark.css))
+    css = (
+        fonts
+        + "text{font-kerning:normal;text-rendering:geometricPrecision}"
+        + extra
+        + ".k{display:none}@media (prefers-color-scheme:dark){.l{display:none}.k{display:inline}}"
+        + "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
+    )
+    return (
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{num(w)}" height="{num(h)}" '
+        f'viewBox="{num(x)} {num(y)} {num(w)} {num(h)}" role="img" aria-label="{esc(light.label)}">'
+        f"<title>{esc(light.label)}</title><style>{css}</style><defs>{''.join(light.defs)}{''.join(dark.defs)}</defs>"
+        f'<g class="l">{"".join(light.parts)}</g><g class="k">{"".join(dark.parts)}</g>'
+        "</svg>\n"
+    )
 
 
 def circle_path(cx, cy, r):

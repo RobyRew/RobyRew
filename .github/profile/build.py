@@ -21,7 +21,7 @@ import canvas
 from canvas import CACHE, HUE_ORDER, LANGUAGES, ROOT, THEMES, esc
 from data import (LANGUAGE_COLORS, fetch, github_data, lastfm_music_url, lastfm_top, now_data, now_key, play_url,
                   spotify_accounts, spotify_token, spotify_top, stats_data, views_data)
-from layout import Row, WIDTH, page, render, skyline
+from layout import Row, page, render, render_phone, skyline
 
 HERE = Path(__file__).resolve().parent
 LIVE_KEYS = ("play", "song", "artist", "context", "user")
@@ -158,7 +158,8 @@ def fallback_link(cache, p):
 # ── output ───────────────────────────────────────────────────────────────────
 
 
-FOLDERS = {(theme, v): theme + ("-m" if v == "m" else "") for theme in THEMES for v in WIDTH}
+# Desktop images in a dark and a light version; phone images hold both themes in one file.
+FOLDERS = {**{theme: theme for theme in THEMES}, "phone": "m"}
 
 
 def rows_of(items):
@@ -175,10 +176,10 @@ def write_images(rows, root, only_live=False):
         for cell in row.cells:
             if only_live and not cell.live:
                 continue
-            for (theme, v), folder in FOLDERS.items():
+            for theme, folder in FOLDERS.items():
                 path = root / folder / f"{cell.file}.svg"
                 path.parent.mkdir(parents=True, exist_ok=True)
-                out = render(row, cell, theme, v)
+                out = render_phone(row, cell) if theme == "phone" else render(row, cell, theme, "d")
                 if not path.exists() or path.read_text(encoding="utf-8") != out:
                     path.write_text(out, encoding="utf-8")
                 written.add(path)
@@ -186,15 +187,19 @@ def write_images(rows, root, only_live=False):
 
 
 def picture(row, cell, base):
-    """One image in four versions. align="top" stops GitHub leaving a gap under each row of images."""
+    """One image, three files. align="top" stops GitHub leaving a gap under each row of images.
+
+    GitHub's page script rewrites any source that mentions prefers-color-scheme to follow the theme chosen in the
+    viewer's settings, and drops whatever else the query said. So the phone source asks for width only, and its
+    image switches theme by itself.
+    """
 
     def src(folder):
         return f"{base}{folder}/{cell.file}.svg"
 
     pct = row.percent(cell)
     return (
-        f'<picture><source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="{src("dark-m")}">'
-        f'<source media="(max-width: 600px)" srcset="{src("light-m")}">'
+        f'<picture><source media="(max-width: 600px)" srcset="{src("m")}">'
         f'<source media="(prefers-color-scheme: dark)" srcset="{src("dark")}">'
         f'<img src="{src("light")}" width="{pct:g}%" align="top" alt="{esc(cell.alt)}" title="{esc(cell.title)}"></picture>'
     )
