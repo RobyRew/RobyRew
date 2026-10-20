@@ -1,7 +1,7 @@
 {
   "extra": {
-    "scrobbles": 11,
-    "views": 6552
+    "scrobbles": 16,
+    "views": 6556
   },
   "github": {
     "repos": {
@@ -60,23 +60,24 @@
   "now": {
     "account": 10,
     "artist": "Jurrivh",
-    "context": "Olivia",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/1310ec4032b1a30be1f1e3d1d95c492e.jpg",
+    "context": "One Last Time",
+    "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
     "playing": false,
-    "title": "Forever",
+    "title": "One Last Time",
     "user": "RobyRew",
     "when": ""
   },
+  "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-10-19T23:58:47Z",
+      "pushed": "2026-10-20T00:05:50Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
     },
@@ -227,17 +228,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 87,
-    "all_time": 1067,
+    "active_days": 88,
+    "all_time": 1073,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-19",
-          0
-        ],
         [
           "2025-10-20",
           0
@@ -1801,12 +1798,16 @@
         [
           "2026-10-19",
           2
+        ],
+        [
+          "2026-10-20",
+          6
         ]
       ]
     ],
-    "commits": 461,
+    "commits": 467,
     "contributed_to": 3,
-    "contributions": 658,
+    "contributions": 664,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1863,7 +1864,7 @@
     "repos_contributed": 17,
     "reviews": 0,
     "stars": 104,
-    "streak": 5
+    "streak": 6
   },
   "top_tracks": [
     {
@@ -1871,7 +1872,7 @@
       "cover": "",
       "ms": 121000,
       "name": "Spring Is Coming",
-      "plays": 2,
+      "plays": 4,
       "source": "Last.fm"
     },
     {
@@ -1879,6 +1880,14 @@
       "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/ebe23f3bad0676ed4b27fce1ed800bad.png",
       "ms": 131000,
       "name": "Idea 12",
+      "plays": 2,
+      "source": "Last.fm"
+    },
+    {
+      "artist": "Jurrivh",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/1310ec4032b1a30be1f1e3d1d95c492e.png",
+      "ms": 156000,
+      "name": "Forever",
       "plays": 2,
       "source": "Last.fm"
     },
@@ -1896,14 +1905,6 @@
       "ms": 0,
       "name": "Autumn Days",
       "plays": 2,
-      "source": "Last.fm"
-    },
-    {
-      "artist": "Eldad",
-      "cover": "",
-      "ms": 333000,
-      "name": "Cuvantul Intrupat",
-      "plays": 1,
       "source": "Last.fm"
     }
   ]
