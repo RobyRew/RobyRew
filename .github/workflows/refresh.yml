@@ -14,6 +14,7 @@ on:
 permissions:
   contents: write
   pages: read
+  actions: write
 
 concurrency:
   group: refresh-profile
@@ -22,6 +23,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # A change to the code or the profile changes the record player too, so publish it alongside.
+      - name: Redeploy the live record player
+        if: github.event_name != 'schedule' && vars.LIVE_NOW_PLAYING == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run now-playing.yml --repo "$GITHUB_REPOSITORY" --ref main
+
       - uses: actions/checkout@v5
         with:
           ref: main

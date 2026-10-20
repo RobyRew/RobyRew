@@ -32,7 +32,8 @@ label = "Based in"
 value = "Barcelona, Spain"
 icon = "pin"
 
-# Buttons under the hero.
+# Buttons under the record player. The first one is also where your name links to.
+# `short` is the label on phones, where the buttons are narrower.
 [[links]]
 label = "robyrew.com"
 url = "https://robyrew.com"
@@ -41,6 +42,7 @@ hue = "ember"
 
 [[links]]
 label = "@RobyRew on Telegram"
+short = "Telegram"
 url = "https://t.me/RobyRew"
 icon = "send"
 hue = "blue"
@@ -86,6 +88,7 @@ title = "Fresh from the studio"
 count = 4
 
 # Side B. Achievements, milestones, things you're proud of. Three fit in a row.
+# `url` is where a tile links to (your repositories if left out); `tip` is the hover text.
 [highlights]
 title = "Highlights"
 
@@ -94,12 +97,16 @@ value = "{repos}"
 title = "Public repositories"
 note = "Open source since {since}, from macOS apps to small tools."
 hue = "ember"
+url = "https://github.com/RobyRew?tab=repositories"
+tip = "All my repositories"
 
 [[highlights.items]]
 value = "arm64"
 title = "Native, always"
 note = "No emulation. The best UI framework ships with the OS."
 hue = "teal"
+url = "https://github.com/RobyRew?tab=repositories&language=swift"
+tip = "My Swift repositories"
 
 [[highlights.items]]
 value = "Ghidra"
@@ -107,6 +114,8 @@ title = "Reverse engineering"
 note = "Taking binaries apart in Ghidra and IDA Pro. RE is the fun part."
 hue = "rose"
 texture = "hex"
+url = "https://ghidra-sre.org"
+tip = "Ghidra, the reverse engineering suite I use"
 
 # Music. Setup steps are in .github/profile/SETUP.md.
 # Priority: Spotify accounts 1–5 first (needs Spotify Premium), then the Last.fm accounts below, top to bottom.
@@ -131,7 +140,8 @@ platform = "YouTube Music"
 user = ""
 platform = "Apple Music"
 
-# Each value is split on commas into chips.
+# Each value is split on commas into chips (four at most), and each chip links to the tool's website.
+# Common tools are known already; add others under [credits.urls], like  "Raycast" = "https://raycast.com"
 [credits]
 title = "Liner notes"
 
@@ -166,3 +176,5 @@ value = "Dark mode only"
 [[credits.items]]
 label = "Soundtrack"
 value = "Spotify, YouTube Music, Apple Music"
+
+[credits.urls]

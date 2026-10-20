@@ -5,10 +5,27 @@
 - **Content** lives in [`profile.toml`](../../profile.toml) at the repo root. Change the text, push to `main`, and the
   *Refresh profile* workflow rebuilds the page. It also runs every morning to pick up new stars, repos,
   contribution stats and listening data.
-- **Rendering** is [`build.py`](build.py). It writes every section as an SVG, in a light and a dark version,
-  and embeds a small subset of Bricolage Grotesque and Geist Mono in each one (licence in [`fonts/OFL.txt`](fonts/OFL.txt)).
+- **Rendering:** [`layout.py`](layout.py) draws the page, [`canvas.py`](canvas.py) has the shared drawing
+  pieces (fonts, colours, icons, the record) and [`data.py`](data.py) reads GitHub, Spotify and Last.fm.
+  [`build.py`](build.py) puts it together. Every SVG embeds a small subset of Bricolage Grotesque and Geist Mono
+  (licence in [`fonts/OFL.txt`](fonts/OFL.txt)).
 - **Last known data** (repos, stats, tracks) is saved in [`cache.json`](cache.json), so a failed API call
   never blanks the page.
+
+### How the page is put together
+
+GitHub strips CSS and clickable areas inside images from READMEs, so a card can't have links on top of it.
+Instead every card is cut into pieces, one image per link: a project's stars, downloads and latest release,
+each chart number, each track and artist, each tool in the credits. Pieces in a row sit flush against each
+other. GitHub always leaves about 6 px between rows, so the cards are drawn as stacks of rounded segments.
+
+- Every piece comes in four versions: `img/dark`, `img/light`, and `img/dark-m` / `img/light-m` for phones
+  (half the width, same type size, so nothing gets tiny). GitHub picks one with `<picture>` media queries.
+- Every link has a hover tooltip.
+- The bar under the record player jumps to each section.
+- "More projects" opens a list of every other public repository.
+- The contribution calendar is also drawn as a 3D model (an STL block) you can spin on github.com. The
+  GitHub mobile app may show it as plain text instead.
 
 Build locally:
 
@@ -69,11 +86,16 @@ Adds the device and playlist to the deck. The account that **owns** the app must
 
    Each run asks for the app's client ID and secret, then offers to save the secrets with `gh` for you.
 
-## 2. Live deck (spinning record)
+## 2. Live record player
 
 The README is only rebuilt once a day, so on its own the record always shows "last played" with the needle parked.
-To make it live, a second workflow publishes the hero card to GitHub Pages every ten minutes. Nothing is committed
-and no branch is created.
+To make it live, a second workflow publishes the parts of the record player that change with the music (the deck,
+the song, the artist, the album or playlist and the listening profile) to GitHub Pages every ten minutes. Nothing
+is committed and no branch is created.
+
+Their links follow the music too: they point at small redirect pages on the same site (`go/play/`, `go/song/`,
+`go/artist/`, `go/context/`, `go/user/`), rewritten every time the song changes. A push that changes the code
+or `profile.toml` redeploys the site straight away.
 
 ```sh
 gh api -X POST repos/RobyRew/RobyRew/pages -f build_type=workflow || gh api -X PUT repos/RobyRew/RobyRew/pages -f build_type=workflow
@@ -82,8 +104,8 @@ gh workflow run now-playing.yml
 gh workflow run refresh.yml
 ```
 
-The first run publishes the deck; the second switches the README over to it. Expect the card to lag the music by
-up to about 15 minutes, since GitHub's scheduler and image cache both add delay.
+The first run publishes the record player; the second switches the README over to it. Expect it to lag the music
+by up to about 15 minutes, since GitHub's scheduler and image cache both add delay.
 
 ## 3. Optional: richer stats
 
