@@ -1,8 +1,13 @@
-"""The page as rows of linked slices.
+"""The page as a grid of glass tiles, one image per link.
 
-GitHub strips CSS and image maps from READMEs, so a card can't carry links. Instead every card is drawn whole and
-cut into one image per link. Images side by side meet flush, and `align="top"` on each image removes the gap
-GitHub would otherwise leave between rows, so the cuts don't show: a card looks like one piece.
+GitHub strips CSS and image maps from READMEs, so an image can carry only one link. Every link gets its own tile,
+and tiles of one group share a tint laid across all of them, so the colour flows from tile to tile.
+
+No tile ever touches the edge of its image: wherever two images meet there is clear space. That's on purpose.
+When an image lands between two device pixels (at 110 % or 125 % zoom, or on most phones), browsers blend its edge
+with the page, and two images painted side by side on one colour show a hairline where they meet. In clear space
+there's nothing to blend, so nothing shows at any zoom. `align="top"` on each image removes the gap GitHub would
+otherwise leave under each row.
 
 Every image also has a phone version, drawn at half the width with about the same type sizes. Both share the
 README's `width="…%"`, so a row is split the same way on phones and computers; only the heights differ.
@@ -14,25 +19,26 @@ import math
 import urllib.parse
 from datetime import date, datetime, timedelta, timezone
 
-from canvas import (FACES, HUES, PLATFORMS, STAR, SVG, artwork, blobs_for, compact, heat_colors, hexdump, num,
-                    paint, record, render_pair, tonearm, window_mock)
+from canvas import (FACES, HUES, PLATFORMS, STAR, SVG, artwork, blobs_for, compact, heat_colors, hexdump,
+                    icon_markup, image_data, num, paint, record, render_pair, tonearm, window_mock)
 
 
 WIDTH = {"d": 840, "m": 420}  # desktop and phone canvases
-OUTER = {"d": 16, "m": 13}  # corner radius of a card
-GUTTER = {"d": 12, "m": 8}  # space between cards that share a row
-SPACE = {"d": 14, "m": 12}  # room under the last row of a card, before the next one
-RULE = {"d": 18, "m": 12}  # how far the line between two rows of a card stays from its edges
-# A row of images can't be shorter than a line of text (24 px), or GitHub pads it and a seam shows. These keep every
-# row above that down to a 600 px window for the desktop images and a 340 px phone for the phone ones.
+OUTER = {"d": 16, "m": 13}  # corner radius of a big tile
+SMALL = {"d": 12, "m": 10}  # corner radius of a small one
+GAP = {"d": 10, "m": 8}  # clear space between two tiles, across or down
+SPACE = {"d": 14, "m": 12}  # room under the last row of a group, before the next heading
+INSET = 1  # how far tiles stay from the sides of the page, so their rims are never cut
+# A row of images can't be shorter than a line of text (24 px), or GitHub pads it. These keep every row above that
+# down to a 600 px window for the desktop images and a 340 px phone for the phone ones.
 MIN_HEIGHT = {"d": 40, "m": 40}
 
 
-# ── the slicing system ───────────────────────────────────────────────────────
+# ── the tiles ────────────────────────────────────────────────────────────────
 
 
 class Card:
-    """One rounded shape, possibly over several rows. Its tint is placed on the whole card."""
+    """A group of tiles in one colour. Its tint is laid across all of them."""
 
     def __init__(self, hue="graphite", style="glass", blobs=None):
         self.hue, self.style = hue, style
@@ -41,26 +47,24 @@ class Card:
 
 
 class Cell:
-    """One linked image: a part of a row."""
+    """One linked image, holding one tile."""
 
-    def __init__(self, card, span, href, title, alt, draw, live=False, key=None, whole=False):
+    def __init__(self, card, span, href, title, alt, draw, live=False, key=None):
         self.card, self.span, self.href, self.title, self.alt = card, span, href, title, alt
         self.draw, self.live, self.key = draw, live, key
-        self.whole = whole  # draws in the card's coordinates, across all its rows; the image shows its own band
         self.file = ""
         self.f0 = self.f1 = 0.0
 
 
 class Row:
-    """Cells side by side. Consecutive cells of the same card share one shape."""
+    """Cells side by side. A row of plain cells (headings, the footer) has no tiles and no gaps."""
 
-    def __init__(self, name, d, m, cells, space=False, width=100, lines=True, rule=True):
+    def __init__(self, name, d, m, cells, space=False, width=100):
         self.name, self.h, self.cells, self.space, self.width = name, {"d": d, "m": m}, cells, space, width
-        self.lines = lines  # thin lines between the cells
-        self.rule = rule  # a thin line above, when the row continues a card
+        self.tiled = any(cell.card.style != "none" for cell in cells)
         for v, minimum in MIN_HEIGHT.items():
-            if self.h[v] < minimum:
-                raise ValueError(f"row {name} is {self.h[v]} high on {v}; GitHub would show a seam under {minimum}")
+            if self.height(v) < minimum:
+                raise ValueError(f"row {name} is {self.height(v)} high on {v}; GitHub would pad it under {minimum}")
         total = sum(c.span for c in cells)
         start = 0.0
         seen = set()
@@ -71,26 +75,30 @@ class Row:
             seen.add(cell.file)
             cell.f0, start = start / total, start + cell.span
             cell.f1 = start / total
-        self.panels = []
-        for cell in cells:
-            if self.panels and self.panels[-1][0] is cell.card:
-                self.panels[-1][1].append(cell)
-            else:
-                self.panels.append((cell.card, [cell]))
-        for card, _ in self.panels:
-            card.rows.append(self)
+            if not cell.card.rows or cell.card.rows[-1] is not self:
+                cell.card.rows.append(self)
+
+    def pad(self, v):
+        """Clear space above a tile, and below it unless the row ends a group."""
+        return GAP[v] / 2 if self.tiled else 0
 
     def height(self, v):
-        return self.h[v] + (SPACE[v] if self.space else 0)
+        return self.pad(v) + self.h[v] + (SPACE[v] if self.space else self.pad(v))
 
-    def panel_box(self, i, v):
-        _, cells = self.panels[i]
-        x0, x1 = cells[0].f0 * WIDTH[v], cells[-1].f1 * WIDTH[v]
-        if i:
-            x0 += GUTTER[v] / 2
-        if i < len(self.panels) - 1:
-            x1 -= GUTTER[v] / 2
-        return x0, x1
+    def tile(self, cell, v):
+        """A tile's left and right edges: half a gap in from each neighbour, so the images meet in clear space."""
+        x0, x1 = cell.f0 * WIDTH[v], cell.f1 * WIDTH[v]
+        if not self.tiled:
+            return x0, x1
+        return x0 + (GAP[v] / 2 if cell.f0 > 1e-9 else INSET), x1 - (GAP[v] / 2 if cell.f1 < 1 - 1e-9 else INSET)
+
+    def extent(self, card, v):
+        """Where a group's tiles start and end on this row."""
+        boxes = [self.tile(cell, v) for cell in self.cells if cell.card is card]
+        return boxes[0][0], boxes[-1][1]
+
+    def radius(self, v):
+        return OUTER[v] if self.h[v] >= 80 else SMALL[v]
 
     def percent(self, cell):
         """The README width of a cell, rounded down so a row never spills onto a second line."""
@@ -98,69 +106,38 @@ class Row:
 
 
 class Ctx:
-    """What a cell's drawing function gets: the canvas and the cell's box on it.
+    """What a cell's drawing function gets: the canvas, and its tile on it (y from the tile's top, corner radius r)."""
 
-    For a `whole` cell, y is measured from the top of the card, `h` is the card's height and the image only shows
-    the band from `top` to `bottom`.
-    """
-
-    def __init__(self, svg, v, x, w, h, top=0, bottom=None):
+    def __init__(self, svg, v, x, w, h, r):
         self.svg, self.t, self.v, self.m = svg, svg.t, v, v == "m"
-        self.x, self.w, self.h = x, w, h
-        self.top, self.bottom = top, h if bottom is None else bottom
+        self.x, self.w, self.h, self.r = x, w, h, r
 
     def pick(self, desktop, phone):
         return phone if self.m else desktop
 
-    def shows(self, y0, y1):
-        return y1 >= self.top - 1 and y0 <= self.bottom + 1
 
-
-def outline(x, y, w, h, top, bottom, closed_top, closed_bottom):
-    """The visible edge of one row of a card: both sides, plus the top or bottom where the card ends."""
-    t, b = min(top, w / 2, h / 2), min(bottom, w / 2, h / 2)
-    if closed_bottom:
-        path = f"M{num(x + w - b)} {num(y + h)}H{num(x + b)}A{num(b)} {num(b)} 0 0 1 {num(x)} {num(y + h - b)}"
-    else:
-        path = f"M{num(x)} {num(y + h)}"
-    if closed_top:
-        path += (f"V{num(y + t)}A{num(t)} {num(t)} 0 0 1 {num(x + t)} {num(y)}H{num(x + w - t)}"
-                 f"A{num(t)} {num(t)} 0 0 1 {num(x + w)} {num(y + t)}")
-    else:
-        path += f"V{num(y)}M{num(x + w)} {num(y)}"
-    if closed_bottom:
-        path += f"V{num(y + h - b)}A{num(b)} {num(b)} 0 0 1 {num(x + w - b)} {num(y + h)}"
-    else:
-        path += f"V{num(y + h)}"
-    return path
-
-
-def rounded(x, y, w, h, top, bottom):
-    t, b = min(top, w / 2, h / 2), min(bottom, w / 2, h / 2)
+def rounded(x, y, w, h, r):
+    r = min(r, w / 2, h / 2)
     return (
-        f"M{num(x + t)} {num(y)}H{num(x + w - t)}A{num(t)} {num(t)} 0 0 1 {num(x + w)} {num(y + t)}"
-        f"V{num(y + h - b)}A{num(b)} {num(b)} 0 0 1 {num(x + w - b)} {num(y + h)}"
-        f"H{num(x + b)}A{num(b)} {num(b)} 0 0 1 {num(x)} {num(y + h - b)}V{num(y + t)}"
-        f"A{num(t)} {num(t)} 0 0 1 {num(x + t)} {num(y)}Z"
+        f"M{num(x + r)} {num(y)}H{num(x + w - r)}A{num(r)} {num(r)} 0 0 1 {num(x + w)} {num(y + r)}"
+        f"V{num(y + h - r)}A{num(r)} {num(r)} 0 0 1 {num(x + w - r)} {num(y + h)}"
+        f"H{num(x + r)}A{num(r)} {num(r)} 0 0 1 {num(x)} {num(y + h - r)}V{num(y + r)}"
+        f"A{num(r)} {num(r)} 0 0 1 {num(x + r)} {num(y)}Z"
     )
 
 
 def card_frame(card, row, v):
-    """How far down the card this row starts, and the card's full height."""
+    """How far down its group this row starts, and the group's full height, gaps included."""
     total, mine = 0, 0
     for r in card.rows:
         if r is row:
             mine = total
-        total += r.h[v]
+        total += r.h[v] + GAP[v]
     return mine, total
 
 
-def radii(card, row, v):
-    return (OUTER[v] if card.rows[0] is row else 0), (OUTER[v] if card.rows[-1] is row else 0)
-
-
 def vertical(svg, x, y0, y1, stops):
-    """A top-to-bottom gradient in canvas coordinates, so it carries on across rows."""
+    """A top-to-bottom gradient in canvas coordinates."""
     grad = svg.uid("lin")
     svg.defs.append(
         f'<linearGradient id="{grad}" gradientUnits="userSpaceOnUse" x1="{num(x)}" y1="{num(y0)}" x2="{num(x)}" '
@@ -170,50 +147,51 @@ def vertical(svg, x, y0, y1, stops):
     return f"url(#{grad})"
 
 
-def background(svg, card, row, x0, x1, v):
-    """Frosted glass: a see-through fill, a faint tint, a sheen at the top and a light rim."""
+def background(svg, row, cell, v):
+    """Frosted glass: a see-through fill, the group's tint, a sheen at the top, a light rim and, in light mode, a
+    soft shadow underneath. All of it stays inside the image, clear of its edges."""
+    card = cell.card
     if card.style == "none":
         return
     t = svg.t
-    h, w = row.h[v], x1 - x0
-    top, bottom = radii(card, row, v)
-    shape = rounded(x0, 0, w, h, top, bottom)
-    first, last = card.rows[0] is row, card.rows[-1] is row
-    edge = outline(x0 + 0.5, 0.5 if first else 0, w - 1, h - (0.5 if first else 0) - (0.5 if last else 0),
-                   max(top - 0.5, 0), max(bottom - 0.5, 0), first, last)
+    x0, x1 = row.tile(cell, v)
+    y0, w, h = row.pad(v), x1 - x0, row.h[v]
+    r = row.radius(v)
     offset, full = card_frame(card, row, v)
+    gx0, gx1 = row.extent(card, v)
     colors = HUES.get(card.hue, HUES["graphite"])
-    clip = svg.uid("seg")
-    svg.defs.append(f'<clipPath id="{clip}"><path d="{shape}"/></clipPath>')
-    parts = [f'<g clip-path="url(#{clip})">', f'<rect x="{num(x0)}" y="0" width="{num(w)}" height="{num(h)}" {paint(t["card"])}/>']
+    clip = svg.uid("tile")
+    svg.defs.append(f'<clipPath id="{clip}"><path d="{rounded(x0, y0, w, h, r)}"/></clipPath>')
+    parts = [f'<g clip-path="url(#{clip})">', f'<rect x="{num(x0)}" y="{num(y0)}" width="{num(w)}" height="{h}" {paint(t["card"])}/>']
     tint = t["blob"] * (1.6 if card.style == "tinted" else 1)
     for fx, fy, fr, ci, strength in card.blobs:
-        cx, cy, r = x0 + fx * w, fy * full - offset, fr * max(w, full)
-        if cy + r < 0 or cy - r > h:
+        # Placed on the whole group, so the colour carries on from one tile to the next.
+        cx, cy, br = gx0 + fx * (gx1 - gx0), fy * full - offset, fr * max(gx1 - gx0, full)
+        if cy + br < y0 or cy - br > y0 + h or cx + br < x0 or cx - br > x1:
             continue
         grad = svg.uid("blob")
         color = colors[ci]
         alpha = min(tint * strength, 0.9)
         svg.defs.append(
-            f'<radialGradient id="{grad}" gradientUnits="userSpaceOnUse" cx="{num(cx)}" cy="{num(cy)}" r="{num(r)}">'
+            f'<radialGradient id="{grad}" gradientUnits="userSpaceOnUse" cx="{num(cx)}" cy="{num(cy)}" r="{num(br)}">'
             f'<stop offset="0" stop-color="{color}" stop-opacity="{num(alpha)}"/>'
             f'<stop offset=".6" stop-color="{color}" stop-opacity="{num(alpha * 0.35)}"/>'
             f'<stop offset="1" stop-color="{color}" stop-opacity="0"/></radialGradient>'
         )
-        parts.append(f'<rect x="{num(x0)}" y="0" width="{num(w)}" height="{num(h)}" fill="url(#{grad})"/>')
-    sheen_end = min(full * 0.45, 140)
-    if offset < sheen_end:
-        color, alpha = t["sheen"]
-        fill = vertical(svg, x0, -offset, sheen_end - offset, [(0, color, alpha), (1, color, 0)])
-        parts.append(f'<rect x="{num(x0)}" y="0" width="{num(w)}" height="{num(min(h, sheen_end - offset))}" fill="{fill}"/>')
+        parts.append(f'<rect x="{num(x0)}" y="{num(y0)}" width="{num(w)}" height="{h}" fill="url(#{grad})"/>')
+    sheen = min(h * 0.5, 100)
+    color, alpha = t["sheen"]
+    fill = vertical(svg, x0, y0, y0 + sheen, [(0, color, alpha), (1, color, 0)])
+    parts.append(f'<rect x="{num(x0)}" y="{num(y0)}" width="{num(w)}" height="{num(sheen)}" fill="{fill}"/>')
     parts.append("</g>")
     color, at_top, at_bottom = t["rim"]
-    rim = vertical(svg, x0, -offset, full - offset, [(0, color, at_top), (0.5, color, (at_top + at_bottom) / 2), (1, color, at_bottom)])
-    parts.append(f'<path d="{edge}" fill="none" stroke="{rim}"/>')
-    if last and row.space and t["shadow"]:
-        # A soft shadow under the card, in the room left before the next one.
-        fill = vertical(svg, x0, h, h + SPACE[v] * 0.7, [(0, "#000000", t["shadow"]), (1, "#000000", 0)])
-        parts.append(f'<rect x="{num(x0 + bottom)}" y="{num(h)}" width="{num(w - 2 * bottom)}" height="{num(SPACE[v] * 0.7)}" fill="{fill}"/>')
+    rim = vertical(svg, x0, y0, y0 + h, [(0, color, at_top), (0.5, color, (at_top + at_bottom) / 2), (1, color, at_bottom)])
+    parts.append(f'<path d="{rounded(x0 + 0.5, y0 + 0.5, w - 1, h - 1, r - 0.5)}" fill="none" stroke="{rim}"/>')
+    below = row.height(v) - y0 - h
+    if t["shadow"] and below > 2:
+        depth = min(below - 1.5, SPACE[v] * 0.7)
+        fill = vertical(svg, x0, y0 + h, y0 + h + depth, [(0, "#000000", t["shadow"]), (1, "#000000", 0)])
+        parts.append(f'<rect x="{num(x0 + r * 0.7)}" y="{num(y0 + h)}" width="{num(w - 1.4 * r)}" height="{num(depth)}" fill="{fill}"/>')
     svg.add("".join(parts))
 
 
@@ -233,34 +211,14 @@ def draw(row, cell, theme, v, ids=""):
     W, H = WIDTH[v], row.height(v)
     x0, x1 = cell.f0 * W, cell.f1 * W
     svg = SVG(theme, W, H, cell.alt, ids)
-    box = (x0, x1)
-    for i, (card, cells) in enumerate(row.panels):
-        px0, px1 = row.panel_box(i, v)
-        if cell in cells:
-            box = (max(x0, px0), min(x1, px1))
-        if px1 <= x0 or px0 >= x1:
-            continue
-        background(svg, card, row, px0, px1, v)
-        if card.style == "none":
-            continue
-        if row.lines:
-            inset = min(12, row.h[v] * 0.24)
-            for other in cells[1:]:
-                sx = other.f0 * W + 0.5
-                if x0 <= sx <= x1:
-                    svg.add(
-                        f'<line x1="{num(sx)}" y1="{num(inset)}" x2="{num(sx)}" y2="{num(row.h[v] - inset)}" '
-                        f'{paint(svg.t["edge"], "stroke")}/>'
-                    )
-        if row.rule and card.rows[0] is not row:
-            svg.add(f'<line x1="{num(px0 + RULE[v])}" y1=".5" x2="{num(px1 - RULE[v])}" y2=".5" {paint(svg.t["edge"], "stroke")}/>')
-    if cell.whole:
-        top, full = card_frame(cell.card, row, v)
-        svg.add(f'<g transform="translate(0 {num(-top)})">')
-        cell.draw(Ctx(svg, v, box[0], box[1] - box[0], full, top, top + row.h[v]))
+    background(svg, row, cell, v)
+    tx0, tx1 = row.tile(cell, v)
+    pad = row.pad(v)
+    if pad:
+        svg.add(f'<g transform="translate(0 {num(pad)})">')
+    cell.draw(Ctx(svg, v, tx0, tx1 - tx0, row.h[v], row.radius(v)))
+    if pad:
         svg.add("</g>")
-    else:
-        cell.draw(Ctx(svg, v, box[0], box[1] - box[0], row.h[v]))
     return svg, (x0, 0, x1 - x0, H)
 
 
@@ -374,13 +332,14 @@ def search(query, kind):
 
 # ── the record player ────────────────────────────────────────────────────────
 
-# One row: who I am, with a ticker of what's playing along the bottom, and the record taking the full height on the
-# right. It has to be a single row: a spinning record cut across two images would turn out of step.
+# One row of two tiles: who I am, and the record player with what's on it, beside the record on computers and under
+# it on phones. The record must stay in one image: cut across two, its halves would turn out of step.
 HERO = {
-    "d": {"h": 216, "cx": 676, "cy": 108, "r": 90, "pad": 24, "ticker": (168, 30)},
-    "m": {"h": 186, "cx": 330, "cy": 93, "r": 58, "pad": 13, "ticker": (146, 26)},
+    # cx, cy: the record's centre from the tile's top left. info: where what's playing starts, and its right margin.
+    "d": {"h": 216, "pad": 26, "cx": 106, "cy": 108, "r": 88, "info": (246, 18)},
+    "m": {"h": 200, "pad": 14, "cx": 64, "cy": 62, "r": 50, "info": (13, 12)},
 }
-SPLIT = 0.62  # the record's column starts here
+SPLIT = 0.5
 # The arm, in the record's own units (radius 146): hinged at the top right, swung slightly out onto its rest when
 # parked, or in by 24 degrees so the needle sits in the outer grooves.
 ARM_PIVOT = (172, -100)
@@ -388,6 +347,15 @@ ARM_PARKED, ARM_PLAYING = -4, 24
 ARM_REST = (186, 53)  # where the parked tube crosses, worked out from its curve
 # Seconds per turn: always turning, a lazy idle, and a real 33 1/3 RPM while a song plays.
 SPIN_IDLE, SPIN_PLAYING = 6, 1.8
+
+# Set while build.py draws the templates the Worker fills in on each visit (see .github/worker/now.js): what's on the
+# deck is left as a slot, with its measurements, and the record's cover as a placeholder.
+TEMPLATES = False
+COVER_SLOT = "{{cover}}"
+# Every character a song, artist or album is likely to use: the templates carry these, the rest fall back to the
+# system font.
+INFO_CHARS = "".join(map(chr, range(0x20, 0x7F))) + "".join(map(chr, range(0xA0, 0x180))) + "‘’‚“”„–—…•·′″€™"
+STATUS_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ·"
 
 
 def status_text(now):
@@ -401,135 +369,289 @@ def status_text(now):
     return f"LAST PLAYED · {stamp}" if stamp else "LAST PLAYED"
 
 
-def ticker_items(now):
-    """What scrolls past, as (icon, text) pairs."""
+def info_items(now):
+    """What's on the deck, ready to print."""
     if not now:
-        return [("disc", "Nothing on the deck right now"), ("music", "Music is usually on, check back soon")]
-    items = [("music", now.get("title") or "Untitled")]
-    if now.get("artist"):
-        items.append(("mic", now["artist"]))
-    if now.get("context"):
-        items.append(("list" if now.get("context_kind") == "Playlist" else "disc", now["context"]))
-    platform = now.get("platform") or "Last.fm"
-    items.append(("dot", f'@{now["user"]} on {platform}' if now.get("user") else f"on {platform}"))
-    return items
+        return {"status": "OFF AIR", "title": "Nothing on the deck", "artist": "Music is usually on, check back soon",
+                "album": "", "kind": "", "platform": "", "user": ""}
+    return {"status": status_text(now), "title": now.get("title") or "Untitled", "artist": now.get("artist") or "",
+            "album": now.get("context") or "", "kind": now.get("context_kind") or "",
+            "platform": now.get("platform") or "Last.fm", "user": now.get("user") or ""}
 
 
-def ticker(c, now, x0, x1, y, h):
-    """A glass strip: the status stays put, the song, artist, album and listener scroll past for ever."""
-    svg, t = c.svg, c.t
+def info_params(c, x, w, y0, y1):
+    """Where what's playing goes and how it looks. The Worker gets the same numbers, so both draw it alike."""
+    t = c.t
+    return {
+        "ids": c.svg.id_prefix, "x": x, "w": w, "y0": y0, "y1": y1, "phone": c.m,
+        "status": c.pick(7.5, 7), "title": c.pick(17, 12.5), "lh": c.pick(20, 15), "lines": c.pick(2, 1),
+        "artist": c.pick(12.5, 10), "album": c.pick(10.5, 9), "gaps": c.pick([12, 7, 7, 12], [8, 5, 5, 0]),
+        "ink": t["ink"], "dim": t["dim"], "faint": t["faint"], "glass": t["glass"], "edge": t["edge"],
+    }
+
+
+def info_markup(svg, k, now):
+    """Status, title, artist, album and where it played, stacked and centred in their space. Self-contained, with its
+    own style, so the Worker can drop the same thing into a template. No kerning, like the Worker."""
+    semi, mono = FACES["semi"], FACES["mono"]
+
+    def text(x, y, s, font, size, color, tracking=0):
+        return svg.text_markup(x, y, s, font, size, color, tracking, kern=False)[0]
+
+    item = info_items(now)
     playing = bool(now and now.get("playing"))
-    svg.add(f'<rect x="{num(x0)}" y="{num(y)}" width="{num(x1 - x0)}" height="{h}" rx="{h / 2}" '
-            f'{paint(t["panel"])} {paint(t["edge"], "stroke")}/>')
-    small = c.pick(7.5, 7)
-    label = status_text(now) if not c.m else status_text(now).split(" · ")[0]
-    badge = FACES["mono"].width(label, small, 1.2) + c.pick(28, 22)
-    bx = x0 + 3
-    svg.add(f'<rect x="{num(bx)}" y="{num(y + 3)}" width="{num(badge)}" height="{h - 6}" rx="{(h - 6) / 2}" {paint(t["glass"])}/>')
+    x, w, phone = k["x"], k["w"], k["phone"]
+    gaps = k["gaps"]
+    status = item["status"].split(" · ")[0] if phone else item["status"]
+    titles = semi.wrap(item["title"], k["title"], w, k["lines"], kern=False) or [""]
+    artist = item["artist"]
+    album = item["album"]
+    where = item["platform"] + (f' · @{item["user"]}' if item["user"] else "")
+    if phone:
+        artist = " · ".join(part for part in (artist, album) if part)
+        album = ""
+    # The block's height, from the top of the status line to the bottom of its last line, to centre it.
+    cap = 0.72
+    height = k["status"] * cap + gaps[0] + k["title"] * cap + (len(titles) - 1) * k["lh"]
+    if artist:
+        height += gaps[1] + k["artist"] * cap
+    if album:
+        height += gaps[2] + k["album"] * cap
+    pill = 20 if not phone else 0
+    if item["platform"]:
+        height += gaps[3] + pill if not phone else gaps[2] + k["album"] * cap
+    y = k["y0"] + (k["y1"] - k["y0"] - height) / 2 + k["status"] * cap
+    out, style = [], []
     dot = "#30D158" if playing else "#8E8E93"
     if playing:
-        svg.css.append(".pulse{animation:pulse 1.6s ease-in-out infinite alternate}@keyframes pulse{to{opacity:.3}}")
+        style.append(".pulse{animation:pulse 1.6s ease-in-out infinite alternate}@keyframes pulse{to{opacity:.3}}")
     pulse = ' class="pulse"' if playing else ""
-    svg.add(f'<circle{pulse} cx="{num(bx + c.pick(12, 10))}" cy="{num(y + h / 2)}" r="3" fill="{dot}"/>')
-    svg.text(bx + c.pick(20, 16), y + h / 2 + small * 0.36, label, "mono", small, t["dim"], tracking=1.2)
-    # The scrolling part, faded in and out at its ends.
-    sx0, sx1 = bx + badge + 6, x1 - h / 2
-    size = c.pick(12, 10.5)
-    gap = c.pick(30, 22)
-    base = y + h / 2 + size * 0.36
-    parts, x = [], 0.0
-    for icon, text in ticker_items(now):
-        parts.append((x, icon, text))
-        x += (size * 0.6 if icon == "dot" else size) + 6 + FACES["semi"].width(text, size) + gap
-    loop = x
-    copies = max(2, math.ceil((sx1 - sx0) / loop) + 1)
-    mask, clip = svg.uid("fade"), svg.uid("lane")
-    fade = min(24, (sx1 - sx0) * 0.12)
-    svg.defs.append(
-        f'<linearGradient id="{mask}g" gradientUnits="userSpaceOnUse" x1="{num(sx0)}" y1="0" x2="{num(sx1)}" y2="0">'
-        f'<stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="{num(fade / (sx1 - sx0))}" stop-color="#fff"/>'
-        f'<stop offset="{num(1 - fade / (sx1 - sx0))}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>'
-        f'</linearGradient><mask id="{mask}"><rect x="{num(sx0)}" y="{num(y)}" width="{num(sx1 - sx0)}" height="{h}" fill="url(#{mask}g)"/></mask>'
-        f'<clipPath id="{clip}"><rect x="{num(sx0)}" y="{num(y)}" width="{num(sx1 - sx0)}" height="{h}"/></clipPath>'
+    out.append(f'<circle{pulse} cx="{num(x + 3)}" cy="{num(y - k["status"] * 0.36)}" r="3" fill="{dot}"/>')
+    label = mono.fit(status, k["status"], w - 30, 1.2, kern=False)
+    out.append(text(x + 11, y, label, "mono", k["status"], k["dim"], 1.2))
+    if playing:
+        # Bars bouncing to the music, after the status.
+        bx = x + 11 + mono.width(label, k["status"], 1.2, kern=False) + 7
+        style.append(".eq rect{transform-box:fill-box;transform-origin:50% 100%;animation:eq .9s ease-in-out infinite alternate}"
+                     "@keyframes eq{from{transform:scaleY(.3)}}")
+        bars = "".join(
+            f'<rect x="{num(bx + i * 3.6)}" y="{num(y - 8)}" width="2.2" height="8" rx=".8" fill="#30D158" '
+            f'style="animation-delay:{num(-0.27 * i * (i + 1))}s"/>'
+            for i in range(4)
+        )
+        out.append(f'<g class="eq">{bars}</g>')
+    y += gaps[0] + k["title"] * cap
+    for i, line in enumerate(titles):
+        out.append(text(x, y, line, "semi", k["title"], k["ink"], -0.2))
+        if i < len(titles) - 1:
+            y += k["lh"]
+    if artist:
+        y += gaps[1] + k["artist"] * cap
+        out.append(text(x, y, semi.fit(artist, k["artist"], w, kern=False), "semi", k["artist"], k["dim"]))
+    if album:
+        y += gaps[2] + k["album"] * cap
+        size = k["album"] + 1
+        out.append(icon_markup("list" if item["kind"] == "Playlist" else "disc", x, y - size * 0.82, size, paint(k["faint"], "stroke"), 2))
+        out.append(text(x + size + 5, y, semi.fit(album, k["album"], w - size - 5, kern=False), "semi", k["album"], k["faint"]))
+    if item["platform"]:
+        color = PLATFORMS.get(item["platform"], "#9CA3AF")
+        if phone:
+            y += gaps[2] + k["album"] * cap
+            out.append(f'<circle cx="{num(x + 3)}" cy="{num(y - k["album"] * 0.34)}" r="2.6" fill="{color}"/>')
+            out.append(text(x + 10, y, semi.fit(where, k["album"], w - 10, kern=False), "semi", k["album"], k["faint"]))
+        else:
+            y += gaps[3]
+            size = 9.5
+            label = semi.fit(where, size, w - 26, kern=False)
+            width = semi.width(label, size, kern=False) + 26
+            out.append(f'<rect x="{num(x)}" y="{num(y)}" width="{num(width)}" height="{pill}" rx="{pill / 2}" '
+                       f'{paint(k["glass"])} {paint(k["edge"], "stroke")}/>')
+            out.append(f'<circle cx="{num(x + 10)}" cy="{num(y + pill / 2)}" r="3" fill="{color}"/>')
+            out.append(text(x + 18, y + pill / 2 + size * 0.36, label, "semi", size, k["dim"]))
+    return (f"<style>{''.join(style)}</style>" if style else "") + "".join(out)
+
+
+SPARKLE = "M0-1C.12-.12.12-.12 1 0C.12.12.12.12 0 1C-.12.12-.12.12-1 0C-.12-.12-.12-.12 0-1Z"
+
+
+def aurora(c):
+    """Three soft lights drifting behind the text, slowly, for ever."""
+    svg = c.svg
+    clip = svg.uid("aur")
+    svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(c.x)}" y="0" width="{num(c.w)}" height="{num(c.h)}" rx="{c.r}"/></clipPath>')
+    strength = 0.3 if svg.theme == "dark" else 0.2
+    reach = c.pick(1, 0.55)
+    svg.css.append(
+        ".au{transform-box:fill-box;transform-origin:center}"
+        f".a1{{animation:a1 19s ease-in-out infinite alternate}}@keyframes a1{{to{{transform:translate({num(70 * reach)}px,{num(16 * reach)}px) scale(1.3)}}}}"
+        f".a2{{animation:a2 23s ease-in-out infinite alternate}}@keyframes a2{{to{{transform:translate({num(-60 * reach)}px,{num(-14 * reach)}px) scale(.8)}}}}"
+        f".a3{{animation:a3 29s ease-in-out infinite alternate}}@keyframes a3{{to{{transform:translate({num(40 * reach)}px,{num(-22 * reach)}px) scale(1.2)}}}}"
     )
-    speed = c.pick(32, 24)
-    svg.css.append(f".tick{{animation:tick {num(loop / speed)}s linear infinite}}@keyframes tick{{to{{transform:translateX(-{num(loop)}px)}}}}")
-    svg.add(f'<g clip-path="url(#{clip})" mask="url(#{mask})"><g class="tick">')
-    for k in range(copies):
-        for offset, icon, text in parts:
-            px = sx0 + k * loop + offset
-            if icon == "dot":
-                platform = (now or {}).get("platform") or "Last.fm"
-                svg.add(f'<circle cx="{num(px + size * 0.3)}" cy="{num(y + h / 2)}" r="{num(size * 0.28)}" fill="{PLATFORMS.get(platform, "#9CA3AF")}"/>')
-                tx = px + size * 0.6 + 6
-            else:
-                svg.icon(icon, px, y + h / 2 - size / 2, size, t["faint"], stroke=2)
-                tx = px + size + 6
-            svg.text(tx, base, text, "semi", size, t["ink"] if icon == "music" else t["dim"])
-    svg.add("</g></g>")
+    parts = [f'<g clip-path="url(#{clip})">']
+    for n, (fx, fy, fr, color) in enumerate(((0.18, 0.2, 0.5, "#FF6A2B"), (0.85, 0.85, 0.45, "#D62F4B"), (0.6, 0.05, 0.35, "#FFB347")), 1):
+        grad = svg.uid("aug")
+        svg.defs.append(f'<radialGradient id="{grad}"><stop offset="0" stop-color="{color}" stop-opacity="{num(strength)}"/>'
+                        f'<stop offset="1" stop-color="{color}" stop-opacity="0"/></radialGradient>')
+        r = fr * c.w
+        parts.append(f'<circle class="au a{n}" cx="{num(c.x + fx * c.w)}" cy="{num(fy * c.h)}" r="{num(r)}" fill="url(#{grad})"/>')
+    svg.add("".join(parts) + "</g>")
 
 
-def identity(c, me, now):
-    """What I'm doing, my name, bio and facts, with the now-playing ticker along the bottom."""
+def lively_name(c, x, y, name, size):
+    """The name, with a sweep of colour through it now and then, and a short glitch every so often."""
+    svg, t = c.svg, c.t
+    tracking = -size * 0.035
+    main, width = svg.text_markup(x, y, name, "display", size, t["ink"], tracking)
+    top, height = y - size * 0.78, size * 0.98
+    # The glitch: a red and a cyan copy, each cut to a band of the letters, knocked sideways for a moment.
+    bands = []
+    for n, (color, b0, b1) in enumerate((("#FF2D6F", 0.0, 0.46), ("#22D3EE", 0.52, 1.0)), 1):
+        band = svg.uid("band")
+        svg.defs.append(f'<clipPath id="{band}"><rect x="{num(x - 8)}" y="{num(top + b0 * height)}" width="{num(width + 16)}" '
+                        f'height="{num((b1 - b0) * height)}"/></clipPath>')
+        copy = svg.text_markup(x, y, name, "display", size, (color, 0.85), tracking)[0]
+        bands.append(f'<g clip-path="url(#{band})"><g class="g{n}">{copy}</g></g>')
+    svg.css.append(
+        ".g1,.g2{opacity:0;animation:g1 9s steps(1,end) infinite}.g2{animation-name:g2}"
+        "@keyframes g1{0%,90%{opacity:0;transform:none}91%{opacity:1;transform:translate(-4px,0)}92.4%{transform:translate(3px,0)}"
+        "93.8%{transform:translate(-2px,0)}95%,100%{opacity:0;transform:none}}"
+        "@keyframes g2{0%,90%{opacity:0;transform:none}91%{opacity:1;transform:translate(4px,0)}92.4%{transform:translate(-3px,0)}"
+        "93.8%{transform:translate(2px,0)}95%,100%{opacity:0;transform:none}}"
+        ".jolt{animation:jolt 9s steps(1,end) infinite}@keyframes jolt{0%,90.6%{transform:none}91.2%{transform:translate(1.5px,0)}"
+        "92.6%{transform:translate(-1px,0)}94%,100%{transform:none}}"
+    )
+    # The sweep: a band of warm colour passing through the letters.
+    letters, shine = svg.uid("letters"), svg.uid("shine")
+    sweep = width * 0.45
+    svg.defs.append(
+        f'<clipPath id="{letters}">{main}</clipPath>'
+        f'<linearGradient id="{shine}"><stop offset="0" stop-color="#FFB37A" stop-opacity="0"/>'
+        f'<stop offset=".45" stop-color="#FFB37A" stop-opacity=".95"/><stop offset=".6" stop-color="#FF6A2B" stop-opacity=".95"/>'
+        f'<stop offset="1" stop-color="#FF6A2B" stop-opacity="0"/></linearGradient>'
+    )
+    svg.css.append(
+        f".sweep{{animation:sweep 6.5s cubic-bezier(.5,0,.3,1) infinite}}"
+        f"@keyframes sweep{{0%,64%{{transform:translateX(0)}}100%{{transform:translateX({num(width + sweep)}px)}}}}"
+    )
+    svg.add("".join(bands) + f'<g class="jolt">{main}</g>'
+            f'<g clip-path="url(#{letters})"><rect class="sweep" x="{num(x - sweep)}" y="{num(top - 4)}" width="{num(sweep)}" '
+            f'height="{num(height + 8)}" fill="url(#{shine})"/></g>')
+    return width
+
+
+def sparkles(c, points):
+    """Little stars that light up and fade, one after another."""
+    color = "#FFD2A6" if c.svg.theme == "dark" else "#F06A2E"
+    c.svg.css.append(
+        ".tw{transform-box:fill-box;transform-origin:center;opacity:0;animation:tw 5.2s ease-in-out infinite}"
+        "@keyframes tw{0%,60%,100%{opacity:0;transform:scale(.2) rotate(0)}72%{opacity:1;transform:scale(1) rotate(45deg)}"
+        "86%{opacity:0;transform:scale(.3) rotate(90deg)}}"
+    )
+    for i, (x, y, size) in enumerate(points):
+        c.svg.add(f'<path class="tw" d="{SPARKLE}" fill="{color}" transform="translate({num(x)} {num(y)}) scale({num(size)})" '
+                  f'style="animation-delay:{num(i * 1.7)}s"/>')
+
+
+def identity(c, me):
+    """My name, what I do and where, with a little life in it: a slow aurora behind, a sweep of colour through the
+    name, a glitch and some sparkle now and then, and a blinking cursor."""
     svg, t = c.svg, c.t
     g = HERO[c.v]
     left = c.x + g["pad"]
-    room = c.x + c.w - left - c.pick(16, 6)
+    room = c.x + c.w - left - g["pad"]
+    aurora(c)
     facts = me.get("facts", [])
-    if facts:
-        size = c.pick(8.5, 7.5)
-        y = c.pick(40, 28)
-        text = facts[0]["value"] if c.m else f'{facts[0]["label"]} · {facts[0]["value"]}'
-        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="5.5" fill="#F2A65A" fill-opacity=".2"/>')
-        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="2.6" fill="#F2A65A"/>')
-        svg.text(left + 13, y, fit(text.upper(), "mono", size, room - 13, 1.4), "mono", size, t["dim"], tracking=1.4)
-    size = c.pick(40, 26)
+    kick = c.pick(8.5, 7.5)
+    size = c.pick(40, 28)
     while size > 20 and FACES["display"].width(me["name"], size, -size * 0.035) > room:
         size -= 1
-    base = c.pick(84, 58)
-    svg.text(left - size * 0.03, base, me["name"], "display", size, t["ink"], tracking=-size * 0.035)
     fs, lh = c.pick(14, 11.5), c.pick(19, 14.5)
-    y = base + c.pick(26, 18)
-    for line in FACES["text"].wrap(me["statement"], fs, room, 2):
+    statement = FACES["text"].wrap(me["statement"], fs, room, c.pick(2, 3))
+    aside = FACES["semi"].wrap(me["aside"], fs, room - 8, 2)
+    rest = facts[1:]
+    # Lay the block out from 0, then centre it in the tile.
+    name_y = (c.pick(16, 11) + size * 0.76) if facts else size * 0.76
+    text_y = name_y + c.pick(26, 19)
+    end_y = text_y + len(statement) * lh + c.pick(1, 2) + len(aside) * lh  # the line after the last one
+    facts_y = end_y + c.pick(4, 3) if rest else end_y - lh
+    shift = (c.h - facts_y - kick * 0.72) / 2 + kick * 0.72  # the kicker's baseline, so the block sits in the middle
+    if facts:
+        y = shift
+        text = facts[0]["value"] if c.m else f'{facts[0]["label"]} · {facts[0]["value"]}'
+        svg.css.append(".ping{transform-box:fill-box;transform-origin:center;animation:ping 2.4s ease-out infinite}"
+                       "@keyframes ping{from{transform:scale(1);opacity:.55}to{transform:scale(3.2);opacity:0}}")
+        cy = y - kick * 0.35
+        svg.add(f'<circle class="ping" cx="{num(left + 3)}" cy="{num(cy)}" r="2.6" fill="#F2A65A"/>'
+                f'<circle cx="{num(left + 3)}" cy="{num(cy)}" r="2.6" fill="#F2A65A"/>')
+        svg.text(left + 13, y, fit(text.upper(), "mono", kick, room - 13, 1.4), "mono", kick, t["dim"], tracking=1.4)
+    width = lively_name(c, left - size * 0.03, shift + name_y, me["name"], size)
+    y = shift + text_y
+    for line in statement:
         svg.text(left, y, line, "text", fs, t["dim"])
         y += lh
     y += c.pick(1, 2)
-    for line in FACES["semi"].wrap(me["aside"], fs, room, 2):
-        svg.text(left, y, line, "semi", fs, t["aside"])
+    end = left
+    for line in aside:
+        end = left + svg.text(left, y, line, "semi", fs, t["aside"])
+        last = y
         y += lh
-    rest = facts[1:]
+    if aside:
+        # A cursor after the last word, as if it were still being typed.
+        svg.css.append(".caret{animation:caret 1.1s steps(1,end) infinite}@keyframes caret{50%{opacity:0}}")
+        svg.add(f'<rect class="caret" x="{num(end + 3)}" y="{num(last - fs * 0.8)}" width="{c.pick(2, 1.6)}" '
+                f'height="{num(fs * 0.98)}" rx=".6" {paint(t["aside"])}/>')
     if rest:
-        size = c.pick(8.5, 7.5)
-        svg.text(left, y + c.pick(4, 3), fit(" · ".join(f["value"] for f in rest).upper(), "mono", size, room, 1.2),
-                 "mono", size, t["faint"], tracking=1.2)
-    ty, th = g["ticker"]
-    ticker(c, now, left - c.pick(6, 4), c.x + c.w - c.pick(12, 4), ty, th)
+        svg.text(left, shift + facts_y, fit(" · ".join(f["value"] for f in rest).upper(), "mono", kick, room, 1.2),
+                 "mono", kick, t["faint"], tracking=1.2)
+    name_x = left - size * 0.03
+    sparkles(c, [(name_x + width + c.pick(10, 7), shift + name_y - size * 0.72, c.pick(5, 3.6)),
+                 (name_x + width * 0.42, shift + name_y - size * 0.98, c.pick(3.5, 2.6)),
+                 (c.x + c.w - c.pick(34, 18), c.pick(30, 20), c.pick(4.2, 3))])
 
 
 def deck(c, me, now):
+    """The record, its arm, and what's on it."""
     svg = c.svg
     g = HERO[c.v]
     playing = bool(now and now.get("playing"))
-    clip = svg.uid("deck")  # the card's own shape, so the record's shadow stays inside it
-    svg.defs.append(f'<clipPath id="{clip}"><rect x="0" y="0" width="{WIDTH[c.v]}" height="{num(c.h)}" rx="{OUTER[c.v]}"/></clipPath>')
-    svg.add(f'<g clip-path="url(#{clip})"><g transform="translate({num(g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
-    record(svg, 0, 0, 146, me["record"], SPIN_PLAYING if playing else SPIN_IDLE)
+    clip = svg.uid("deck")  # the tile's own shape, so the record's shadow stays inside it
+    svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(c.x)}" y="0" width="{num(c.w)}" height="{num(c.h)}" rx="{c.r}"/></clipPath>')
+    if TEMPLATES:
+        cover = COVER_SLOT if (now or {}).get("cover") else None
+    else:
+        cover = image_data((now or {}).get("cover"))
+    svg.add(f'<g clip-path="url(#{clip})"><g transform="translate({num(c.x + g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
+    record(svg, 0, 0, 146, me["record"], SPIN_PLAYING if playing else SPIN_IDLE, cover)
     tonearm(svg, *ARM_PIVOT, ARM_PLAYING if playing else ARM_PARKED, ARM_REST)
     svg.add("</g></g>")
+    ix, right = g["info"]
+    if c.m:
+        y0, y1 = g["cy"] + g["r"] + 8, c.h - 8
+    else:
+        y0, y1 = 0, c.h
+    params = info_params(c, c.x + ix, c.w - ix - right, y0, y1)
+    if TEMPLATES:
+        svg.slots.append(params)
+        svg.add(f"<!--now:{params['ids']}-->")
+        svg.use("semi", INFO_CHARS)
+        svg.use("mono", STATUS_CHARS)
+        return
+    svg.add(info_markup(svg, params, now))
 
 
-def hero_rows(p, now, hrefs):
-    """The record player card. `hrefs` says where its live parts link to (Pages redirects, or the song itself)."""
+def hero_rows(p, now, hrefs, home):
+    """The record player row. `hrefs` says where the deck links to (the Worker, Pages redirects, or the song itself);
+    `home` is where my own tile goes."""
     me = p["me"]
     card = Card("ember", blobs=[(0.96, 0.4, 0.5, 0, 0.9), (0.04, 0.95, 0.5, 1, 0.7), (0.45, -0.25, 0.4, 2, 0.5)])
-    platform = (now or {}).get("platform") or "Last.fm"
     bio = f'{me["name"]}. {me["statement"]} {me["aside"]}'
+    facts = me.get("facts", [])
     return [Row("hero", HERO["d"]["h"], HERO["m"]["h"], [
-        Cell(card, SPLIT, hrefs["song"], "What I'm listening to", f"{bio} Now playing and last played below.",
-             lambda c: identity(c, me, now), live=True, key="me"),
-        Cell(card, 1 - SPLIT, hrefs["play"], f"Play it on {platform}", "The record player: it spins while I'm listening",
+        Cell(card, SPLIT, home, f'{facts[0]["label"]}: {facts[0]["value"]}' if facts else me["name"], bio,
+             lambda c: identity(c, me), key="me"),
+        Cell(card, 1 - SPLIT, hrefs["play"], "Play what's on the deck", "The record player, with what I'm listening to",
              lambda c: deck(c, me, now), live=True, key="deck"),
-    ], lines=False, rule=False, space=True)]
+    ], space=True)]
 
 
 # ── section headers ──────────────────────────────────────────────────────────
@@ -553,7 +675,7 @@ def header(c, kicker_text, title, side, arrow, bars=False):
 
 
 def header_row(name, kicker_text, title, side, side_href, anchor, bars=False):
-    return Row(name, 60, 56, [
+    return Row(name, 55, 52, [
         Cell(Card(style="none"), 1, side_href or f"#{anchor}", side if side_href else title, f"{kicker_text}: {title}",
              lambda c: header(c, kicker_text, title, side, bool(side_href), bars), key="head"),
     ])
@@ -648,48 +770,6 @@ def project_rows(projects, login):
     return rows
 
 
-def bside_main(c, repo, n):
-    svg, t = c.svg, c.t
-    badge = c.pick(28, 24)
-    bx = c.x + c.pick(16, 10)
-    svg.glass(bx, (c.h - badge) / 2, badge, badge, badge * 0.3)
-    svg.text(bx + badge / 2, c.h / 2 + c.pick(3.5, 3.2), f"{n:02d}", "mono", c.pick(9.5, 8.5), t["dim"], tracking=0.4, anchor="middle")
-    tx = bx + badge + c.pick(12, 9)
-    room = c.x + c.w - tx - c.pick(14, 8)
-    description = repo.get("description") or "No description yet."
-    size, name = shrink(repo["name"], "semi", c.pick(13.5, 12.5), room)
-    if c.m:
-        svg.text(tx, 23, name, "semi", size, t["ink"])
-        y = 39
-        for line in FACES["text"].wrap(description, 11, room, 2):
-            svg.text(tx, y, line, "text", 11, t["dim"])
-            y += 13.5
-        return
-    svg.text(tx, c.h / 2 - 2, name, "semi", size, t["ink"])
-    svg.text(tx, c.h / 2 + 13, fit(description, "text", 11.5, room), "text", 11.5, t["dim"])
-
-
-def bside_rows(recent):
-    rows = []
-    card = Card("graphite", blobs=[(0.02, 0.1, 0.45, 0, 0.8), (1.0, 0.9, 0.4, 2, 0.6), (0.6, 0.5, 0.3, 1, 0.35)])
-    for n, repo in enumerate(recent, 1):
-        url = repo["url"]
-        stars = repo.get("stars", 0)
-        language = repo.get("language") or "Code"
-        updated = when_label(repo.get("pushed")) or "—"
-        rows.append(Row(f"bside-{n}", 48, 58, [
-            Cell(card, 0.6, url, f'Open {repo["name"]} on GitHub', f'{repo["name"]}: {repo.get("description") or ""}'.strip(": "),
-                 lambda c, repo=repo, n=n: bside_main(c, repo, n), key="repo"),
-            Cell(card, 0.2, f"{url}/stargazers", f'Who starred {repo["name"]}', f"{stars} stars, {language}",
-                 lambda c, stars=stars, language=language, color=repo.get("language_color"):
-                 meta_stat(c, compact(stars), language, star=True) if stars else
-                 meta_stat(c, language, "Language", dot=color or "#9CA3AF"), key="stars"),
-            Cell(card, 0.2, f"{url}/commits", f'Latest commits in {repo["name"]}', f"Updated {updated}",
-                 lambda c, updated=updated: meta_stat(c, updated, "Updated", icon="clock"), key="updated"),
-        ], space=n == len(recent)))
-    return rows
-
-
 # ── highlights ───────────────────────────────────────────────────────────────
 
 
@@ -718,14 +798,14 @@ def highlight(c, item, n):
     if item.get("texture") == "disasm":
         clip = svg.uid("asm")
         svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(c.x)}" y="0" width="{num(c.w)}" height="{num(c.h)}" '
-                        f'rx="{OUTER[c.v]}"/></clipPath>')
+                        f'rx="{c.r}"/></clipPath>')
         svg.add(f'<g clip-path="url(#{clip})">')
         disasm(svg, c.x + c.pick(14, 9), c.pick(18, 14), c.w - c.pick(20, 12), c.h - 10, c.pick(7.5, 6.5))
         svg.add("</g>")
     elif item.get("texture") == "hex":
         clip = svg.uid("hex")
         svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(c.x)}" y="0" width="{num(c.w)}" height="{num(c.h)}" '
-                        f'rx="{OUTER[c.v]}"/></clipPath>')
+                        f'rx="{c.r}"/></clipPath>')
         svg.add(f'<g clip-path="url(#{clip})">')
         hexdump(svg, c.x + 10, 16, c.w - 14, c.h - 14, item["title"], size=c.pick(8, 7))
         svg.add("</g>")
@@ -804,7 +884,8 @@ def activity_head(c, stats, three_d):
     svg.text(c.x + pad, ly + cell - 1.5, " · ".join(footer_text), "mono", tiny, t["faint"], tracking=0.6)
 
 
-def languages_head(c, stats):
+def languages(c, stats):
+    """The language bar, with a legend of the top eight under it."""
     svg, t = c.svg, c.t
     pad = c.pick(22, 14)
     langs = stats.get("languages") or []
@@ -823,20 +904,57 @@ def languages_head(c, stats):
         parts.append(f'<rect x="{num(bx + offset)}" y="{by}" width="{num(width + 0.5)}" height="{bh}" fill="{color}" fill-opacity=".85"/>')
         offset += width
     svg.add("".join(parts) + "</g>")
+    columns = c.pick(4, 3)
+    column = bar_w / columns
+    size, small = c.pick(12.5, 11.5), c.pick(9, 8.5)
+    for i, (name, share, color) in enumerate(langs[:8]):
+        x = bx + (i % columns) * column
+        y = by + bh + c.pick(26, 24) + (i // columns) * c.pick(24, 22)
+        svg.add(f'<circle cx="{num(x + 4)}" cy="{num(y - size * 0.34)}" r="{c.pick(4, 3.5)}" fill="{color}"/>')
+        share_text = f"{share:.1f}%"
+        right = x + column - c.pick(18, 12)
+        width = svg.text(right, y, share_text, "mono", small, t["faint"], anchor="end")
+        svg.text(x + 14, y, fit(name, "semi", size, right - width - 8 - x - 14), "semi", size, t["ink"])
 
 
-def language_cell(c, name, share, color):
-    svg, t = c.svg, c.t
-    if c.m:
-        x = c.x + 12
-        svg.add(f'<circle cx="{num(x + 3.5)}" cy="21.5" r="3.5" fill="{color}"/>')
-        svg.text(x + 11, 25.5, fit(name, "semi", 11.5, c.w - 28), "semi", 11.5, t["ink"])
-        svg.text(x + 11, 39, f"{share:.1f}%", "mono", 8.5, t["faint"])
-        return
-    x = c.x + 18
-    svg.add(f'<circle cx="{num(x + 4)}" cy="{num(c.h / 2 - 0.5)}" r="4" fill="{color}"/>')
-    svg.text(c.x + c.w - 16, c.h / 2 + 3.2, f"{share:.1f}%", "mono", 9, t["faint"], anchor="end")
-    svg.text(x + 14, c.h / 2 + 4, fit(name, "semi", 12.5, c.w - 90), "semi", 12.5, t["ink"])
+def stat_value(value, unit=""):
+    """How a number reads on its tile, or None when there's nothing worth showing: it's missing, or zero."""
+    if value in (None, "", 0):
+        return None
+    return (compact(value) if isinstance(value, int) else str(value)) + unit
+
+
+def balanced(items, most):
+    """Splits items into as few rows of at most `most` as possible, filled evenly: six by four become three and three."""
+    if not items:
+        return []
+    count = math.ceil(len(items) / most)
+    base, extra = divmod(len(items), count)
+    rows, start = [], 0
+    for i in range(count):
+        size = base + (i < extra)
+        rows.append(items[start:start + size])
+        start += size
+    return rows
+
+
+def stat_rows(name, card, entries, most, d, m, size=None):
+    """Tiles for the numbers that have something to show, in even rows. An entry is
+    (label, short label, value, unit, icon, url, tooltip)."""
+    shown = [(entry, stat_value(entry[2], entry[3])) for entry in entries]
+    shown = [(entry, value) for entry, value in shown if value is not None]
+    groups = balanced(shown, most)
+    rows = []
+    for gi, group in enumerate(groups):
+        cells = []
+        for (label, short, _, _, icon, url, tip), value in group:
+            cells.append(Cell(card, 1, url, tip, f"{label}: {value}",
+                              lambda c, value=value, label=label, short=short, icon=icon:
+                              big_stat(c, value, c.pick(label, short), icon=None if icon == "star" else icon,
+                                       star=icon == "star", size=size and c.pick(*size)),
+                              key=short.split(" ")[0].lower()))
+        rows.append(Row(f"{name}-{gi + 1}", d, m, cells, space=gi == len(groups) - 1))
+    return rows
 
 
 def chart_rows(stats, login, since, skyline_url):
@@ -851,86 +969,47 @@ def chart_rows(stats, login, since, skyline_url):
                                                      lambda c: activity_head(c, stats, bool(skyline_url)))]))
         best = stats.get("best_day") or ""
         best_label = date.fromisoformat(best).strftime("%b %-d") if best else ""
-        groups = [
-            [
-                ("Commits", "Commits", stats.get("commits"), "commit", search(f"author:{login} committer-date:>{year_ago}", "commits"), "My commits this year"),
-                ("Pull requests", "PRs", stats.get("prs"), "merge", search(f"author:{login} type:pr created:>{year_ago}", "pullrequests"), "My pull requests this year"),
-                ("Issues", "Issues", stats.get("issues"), "issue", search(f"author:{login} type:issue created:>{year_ago}", "issues"), "Issues I opened this year"),
-                ("Reviews", "Reviews", stats.get("reviews"), "eye", search(f"reviewed-by:{login} type:pr created:>{year_ago}", "pullrequests"), "Pull requests I reviewed"),
-            ],
-            [
-                ("Current streak", "Streak", f'{stats.get("streak", 0)}d', "flame", f"{profile}?tab=overview", "Days in a row with a contribution"),
-                ("Longest streak", "Longest", f'{stats.get("longest", 0)}d', "flame", f"{profile}?tab=overview", "Longest run this year"),
-                ("Active days", "Active", stats.get("active_days"), "calendar", f"{profile}?tab=overview", "Days with at least one contribution"),
-                (f"Best day · {best_label}" if best_label else "Best day", f"Best · {best_label}" if best_label else "Best day",
-                 stats.get("best_count"), "spark",
-                 f"{profile}?tab=overview&from={best}&to={best}" if best else f"{profile}?tab=overview", "My busiest day this year"),
-            ],
+        activity = [
+            ("Commits", "Commits", stats.get("commits"), "", "commit", search(f"author:{login} committer-date:>{year_ago}", "commits"), "My commits this year"),
+            ("Pull requests", "PRs", stats.get("prs"), "", "merge", search(f"author:{login} type:pr created:>{year_ago}", "pullrequests"), "My pull requests this year"),
+            ("Issues", "Issues", stats.get("issues"), "", "issue", search(f"author:{login} type:issue created:>{year_ago}", "issues"), "Issues I opened this year"),
+            ("Reviews", "Reviews", stats.get("reviews"), "", "eye", search(f"reviewed-by:{login} type:pr created:>{year_ago}", "pullrequests"), "Pull requests I reviewed"),
+            ("Current streak", "Streak", stats.get("streak"), "d", "flame", f"{profile}?tab=overview", "Days in a row with a contribution"),
+            ("Longest streak", "Longest", stats.get("longest"), "d", "flame", f"{profile}?tab=overview", "Longest run this year"),
+            ("Active days", "Active", stats.get("active_days"), "", "calendar", f"{profile}?tab=overview", "Days with at least one contribution"),
+            (f"Best day · {best_label}" if best_label else "Best day", f"Best · {best_label}" if best_label else "Best day",
+             stats.get("best_count"), "", "spark",
+             f"{profile}?tab=overview&from={best}&to={best}" if best else f"{profile}?tab=overview", "My busiest day this year"),
         ]
-        for gi, group in enumerate(groups):
-            cells = []
-            for label, short, value, icon, url, tip in group:
-                shown = compact(value) if isinstance(value, int) else (value if value is not None else "—")
-                cells.append(Cell(card, 1, url, tip, f"{label}: {shown}",
-                                  lambda c, shown=shown, label=label, short=short, icon=icon:
-                                  big_stat(c, shown, c.pick(label, short), icon=icon), key=short.split(" ")[0].lower()))
-            rows.append(Row(f"activity-{gi + 1}", 54, 56, cells, space=gi == len(groups) - 1))
+        rows += stat_rows("activity", card, activity, 4, 54, 56)
 
     joined = stats.get("joined") or ""
-    years = ""
+    years = None
     if joined:
         start = datetime.fromisoformat(joined.replace("Z", "+00:00"))
-        years = str(int((datetime.now(timezone.utc) - start).days // 365.25))
+        years = int((datetime.now(timezone.utc) - start).days // 365.25)
     popularity = [
-        [
-            ("Profile views", "Views", stats.get("views"), "eye", profile, "This page's view counter"),
-            ("Stars earned", "Stars", stats.get("stars"), "star", f"{profile}?tab=repositories&sort=stargazers", "My repositories by stars"),
-            ("Followers", "Followers", stats.get("followers"), "users", f"{profile}?tab=followers", "Who follows me"),
-        ],
-        [
-            ("Merged PRs", "Merged PRs", stats.get("merged_prs"), "merge", search(f"author:{login} type:pr is:merged", "pullrequests"), "My merged pull requests"),
-            ("Forks of my repos", "Forks", stats.get("forks"), "fork", f"{profile}?tab=repositories", "My repositories"),
-            ("Contributed to", "Contributed", stats.get("contributed_to"), "repo", search(f"author:{login} -user:{login} type:pr", "pullrequests"), "Pull requests to other people's projects"),
-        ],
-        [
-            ("Years on GitHub", f"Since {since}" if since else "On GitHub", f"{years} yrs" if years else None, "clock", profile, f"On GitHub since {since}"),
-            ("All-time contributions", "All-time", stats.get("all_time"), "chart", f"{profile}?tab=overview", "Every contribution since I joined"),
-            ("Busiest day of the week", "Busiest day", stats.get("busiest"), "calendar", f"{profile}?tab=overview", "The weekday I code the most"),
-        ],
+        ("Profile views", "Views", stats.get("views"), "", "eye", profile, "This page's view counter"),
+        ("Stars earned", "Stars", stats.get("stars"), "", "star", f"{profile}?tab=repositories&sort=stargazers", "My repositories by stars"),
+        ("Followers", "Followers", stats.get("followers"), "", "users", f"{profile}?tab=followers", "Who follows me"),
+        ("Merged PRs", "Merged PRs", stats.get("merged_prs"), "", "merge", search(f"author:{login} type:pr is:merged", "pullrequests"), "My merged pull requests"),
+        ("Forks of my repos", "Forks", stats.get("forks"), "", "fork", f"{profile}?tab=repositories", "My repositories"),
+        ("Contributed to", "Contributed", stats.get("contributed_to"), "", "repo", search(f"author:{login} -user:{login} type:pr", "pullrequests"), "Pull requests to other people's projects"),
+        ("Years on GitHub", f"Since {since}" if since else "On GitHub", years, " yrs", "clock", profile, f"On GitHub since {since}"),
+        ("All-time contributions", "All-time", stats.get("all_time"), "", "chart", f"{profile}?tab=overview", "Every contribution since I joined"),
+        ("Busiest day of the week", "Busiest day", stats.get("busiest"), "", "calendar", f"{profile}?tab=overview", "The weekday I code the most"),
     ]
-    popularity = [[cell for cell in group if cell[2] is not None] for group in popularity]
-    popularity = [group for group in popularity if group]
-    if popularity:
-        card = Card("rose", blobs=[(0.95, 0.05, 0.5, 0, 0.9), (0.05, 0.95, 0.5, 1, 0.7), (0.5, 0.5, 0.3, 2, 0.35)])
-        for gi, group in enumerate(popularity):
-            cells = []
-            for label, short, value, icon, url, tip in group:
-                shown = compact(value) if isinstance(value, int) else value
-                cells.append(Cell(card, 1, url, tip, f"{label}: {shown}",
-                                  lambda c, shown=shown, label=label, short=short, icon=icon:
-                                  big_stat(c, shown, c.pick(label, short), icon=None if icon == "star" else icon,
-                                           star=icon == "star", size=c.pick(21, 17)),
-                                  key=short.split(" ")[0].lower()))
-            rows.append(Row(f"popularity-{gi + 1}", 58, 58, cells, space=gi == len(popularity) - 1))
+    card = Card("rose", blobs=[(0.95, 0.05, 0.5, 0, 0.9), (0.05, 0.95, 0.5, 1, 0.7), (0.5, 0.5, 0.3, 2, 0.35)])
+    rows += stat_rows("popularity", card, popularity, 3, 58, 58, size=(21, 17))
 
     langs = stats.get("languages") or []
     if langs:
         card = Card("teal", blobs=[(0.05, 0.0, 0.5, 0, 0.9), (1.0, 1.0, 0.45, 1, 0.75), (0.6, 0.3, 0.3, 2, 0.4)])
-        rows.append(Row("languages", 58, 56, [Cell(card, 1, f"{profile}?tab=repositories", "All my repositories",
-                                                    "Languages: " + ", ".join(f"{n} {s:.0f}%" for n, s, _ in langs),
-                                                    lambda c: languages_head(c, stats))]))
-        shown = langs[:8]
-        for gi in range(0, len(shown), 4):
-            group = shown[gi:gi + 4]
-            cells = []
-            for name, share, color in group:
-                url = f"{profile}?tab=repositories" + ("" if name == "Other" else f"&language={urllib.parse.quote(name.lower())}")
-                tip = f"My {name} repositories" if name != "Other" else "All my repositories"
-                cells.append(Cell(card, 1, url, tip, f"{name} {share:.1f}%",
-                                  lambda c, name=name, share=share, color=color: language_cell(c, name, share, color)))
-            while len(cells) < 4:
-                cells.append(Cell(card, 1, f"{profile}?tab=repositories", "All my repositories", "", lambda c: None))
-            rows.append(Row(f"languages-{gi // 4 + 1}", 42, 50, cells, space=gi + 4 >= len(shown)))
+        lines = {"d": math.ceil(min(len(langs), 8) / 4), "m": math.ceil(min(len(langs), 8) / 3)}
+        rows.append(Row("languages", 64 + 24 * lines["d"], 62 + 22 * lines["m"], [
+            Cell(card, 1, f"{profile}?tab=repositories", "All my repositories",
+                 "Languages: " + ", ".join(f"{n} {s:.0f}%" for n, s, _ in langs), lambda c: languages(c, stats)),
+        ], space=True))
     return rows
 
 
@@ -976,7 +1055,8 @@ def skyline(calendar):
 # ── music ────────────────────────────────────────────────────────────────────
 
 
-def track_cell(c, track, n):
+def track_cell(c, track, n, value, label):
+    """A track with its cover, and how often I played it on the right."""
     svg, t = c.svg, c.t
     art = c.pick(30, 32)
     if c.m:
@@ -986,7 +1066,12 @@ def track_cell(c, track, n):
         ax = c.x + 42
     artwork(svg, ax, (c.h - art) / 2, art, track.get("cover"), track["name"], r=6)
     tx = ax + art + c.pick(12, 9)
-    room = c.x + c.w - tx - c.pick(14, 8)
+    right = c.x + c.w - c.pick(18, 11)
+    size = c.pick(13.5, 12)
+    svg.text(right, c.h / 2 - 1, value, "semi", size, t["ink"], anchor="end")
+    svg.text(right, c.h / 2 + 12, label.upper(), "mono", 7.5, t["faint"], tracking=1, anchor="end")
+    meta = max(FACES["semi"].width(value, size), FACES["mono"].width(label, 7.5, 1))
+    room = right - meta - c.pick(18, 10) - tx
     if c.m:
         lines = FACES["semi"].wrap(track["name"], 12, room, 2)
         y = c.h / 2 + (4.3 if len(lines) == 1 else -3)
@@ -1034,13 +1119,10 @@ def rotation_rows(tracks):
         else:
             value, label = f"#{n}", "Rank"
         rows.append(Row(f"rotation-{n}", 46, 56, [
-            Cell(card, 0.58, url, f'{track["name"]} by {track["artist"]}', f'{n}. {track["name"]}',
-                 lambda c, track=track, n=n: track_cell(c, track, n), key="track"),
-            Cell(card, 0.27, artist_url, f'More from {track["artist"]}', track["artist"],
+            Cell(card, 0.7, url, f'{track["name"]} by {track["artist"]}', f'{n}. {track["name"]}, {value} {label.lower()}',
+                 lambda c, track=track, n=n, value=value, label=label: track_cell(c, track, n, value, label), key="track"),
+            Cell(card, 0.3, artist_url, f'More from {track["artist"]}', track["artist"],
                  lambda c, name=track["artist"]: artist_cell(c, name), key="artist"),
-            Cell(card, 0.15, track.get("plays_url") or url, "My plays of this track", f"{value} {label.lower()}",
-                 lambda c, value=value, label=label: meta_stat(c, value, label, icon="music" if label == "Plays" else None),
-                 key="plays"),
         ], space=n == len(tracks)))
     return rows
 
@@ -1114,12 +1196,14 @@ def credit_rows(items, urls, anchor):
 # ── the rest ─────────────────────────────────────────────────────────────────
 
 
-def catalogue_cell(c, repo):
+def repo_cell(c, repo):
+    """A repository: its name and description, with language, stars and last push on the right."""
     svg, t = c.svg, c.t
     pad = c.pick(18, 11)
     room = c.w - 2 * pad
     language = repo.get("language") or ""
     stars = repo.get("stars", 0)
+    pushed = when_label(repo.get("pushed"))
     meta_w = 0
     if not c.m:
         x = c.x + c.w - pad
@@ -1131,6 +1215,9 @@ def catalogue_cell(c, repo):
             width = svg.text(x, 22, str(stars), "mono", 8, t["faint"], anchor="end")
             mark(c, x - width - 12, 22.5, 10, star=True)
             x -= width + 18
+        if pushed and x - (c.x + pad) > room * 0.55:
+            width = svg.text(x, 22, pushed, "mono", 8, t["faint"], tracking=1, anchor="end")
+            x -= width + 12
         meta_w = c.x + c.w - pad - x
     size, name = shrink(repo["name"], "semi", c.pick(13, 12), room - meta_w - 8, 0.85)
     svg.text(c.x + pad, c.pick(23, 21), name, "semi", size, t["ink"])
@@ -1144,7 +1231,7 @@ def catalogue_cell(c, repo):
     svg.text(c.x + pad, 40, fit(description, "text", 11.5, room), "text", 11.5, t["dim"])
 
 
-def catalogue_all(c, total):
+def repo_all(c, total):
     svg, t = c.svg, c.t
     label = f"Browse all {total} repositories" if total else "Browse all repositories"
     size, label = shrink(label, "semi", c.pick(12.5, 11.5), c.w - 50, 0.85)
@@ -1154,21 +1241,21 @@ def catalogue_all(c, total):
     svg.icon("arrow", x + width - 11, c.h / 2 - 5.5, 11, t["dim"], stroke=2.2)
 
 
-def catalogue_rows(more, login, total, limit=9):
-    """The projects not shown above, two to a row, ending with a way to every repository."""
+def repo_rows(repos, login, total):
+    """My other repositories, latest push first, two to a row, ending with a way to every repository."""
     card = Card("graphite", blobs=[(0.0, 0.0, 0.55, 0, 0.6), (1.0, 1.0, 0.5, 2, 0.5), (0.5, 0.5, 0.35, 1, 0.3)])
     everything = f"https://github.com/{login}?tab=repositories"
     cells = [
         Cell(card, 1, repo["url"], f'Open {repo["name"]} on GitHub', f'{repo["name"]}: {repo.get("description") or ""}'.strip(": "),
-             lambda c, repo=repo: catalogue_cell(c, repo), key=repo["name"].lower()[:40])
-        for repo in more[:limit]
+             lambda c, repo=repo: repo_cell(c, repo), key=repo["name"].lower()[:40])
+        for repo in repos
     ]
     cells.append(Cell(card, 1, everything, "All my repositories", "Browse all repositories",
-                      lambda c: catalogue_all(c, total), key="all"))
+                      lambda c: repo_all(c, total), key="all"))
     rows = []
     for n, i in enumerate(range(0, len(cells), 2), 1):
         pair = cells[i:i + 2]
-        rows.append(Row(f"catalogue-{n}", 54 if len(pair) == 2 else 44, 62 if len(pair) == 2 else 44, pair,
+        rows.append(Row(f"repos-{n}", 54 if len(pair) == 2 else 44, 62 if len(pair) == 2 else 44, pair,
                         space=i + 2 >= len(cells)))
     return rows
 
@@ -1190,11 +1277,12 @@ def page(p, data, hrefs, skyline_url=None):
     me = p["me"]
     login = me["github"]
     profile = f"https://github.com/{login}"
-    projects, recent, more, stats, tracks = data["projects"], data["recent"], data["more"], data["stats"], data["tracks"]
+    projects, recent, stats, tracks = data["projects"], data["recent"], data["stats"], data["tracks"]
     since = data.get("since", "")
     items = []
 
-    items += hero_rows(p, data["now"], hrefs)
+    home = projects[0]["url"] if projects else profile
+    items += hero_rows(p, data["now"], hrefs, home)
 
     if projects:
         repos = data.get("repo_count")
@@ -1204,7 +1292,7 @@ def page(p, data, hrefs, skyline_url=None):
     if recent:
         title = p.get("bsides", {}).get("title", "Fresh from the studio")
         items.append(header_row("b-sides", "B-sides", title, "Latest pushes", f"{profile}?tab=repositories&sort=updated", "work"))
-        items += bside_rows(recent)
+        items += repo_rows(recent, login, data.get("repo_count"))
     highlights = p.get("highlights", {}).get("items", [])
     if highlights:
         items.append(header_row("side-b", "Side B", p["highlights"]["title"], f"{len(highlights):02d} tracks", None, "work"))
@@ -1233,11 +1321,6 @@ def page(p, data, hrefs, skyline_url=None):
         items.append(header_row("liner-notes", "Credits", credits.get("title", "Liner notes"), "Stack & tools", None, "credits"))
         items += credit_rows(credits["items"], credits.get("urls"), "#credits")
 
-    if more:
-        repos = data.get("repo_count")
-        items.append(header_row("catalogue", "More", "Back catalogue", f"All {repos} repos" if repos else "All repos",
-                                f"{profile}?tab=repositories", "work"))
-        items += catalogue_rows(more, login, repos)
     items.append(Row("footer", 42, 42, [
         Cell(Card(style="none"), 1, "#top", "Back to the top", "Set in Bricolage Grotesque and Geist Mono",
              lambda c: footer(c, me["name"]), key="end"),

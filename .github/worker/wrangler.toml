@@ -1,0 +1,11 @@
+# The now-playing Worker (now.js). Deployed by .github/workflows/worker.yml; see .github/profile/SETUP.md.
+name = "robyrew-now"
+main = "now.js"
+compatibility_date = "2025-06-01"
+workers_dev = true
+
+[vars]
+# Published by the "Now playing" workflow: the deck's templates and whose music to look up.
+KIT_URL = "https://robyrew.github.io/RobyRew/kit.json"
+# The copy of the deck it hands over if it can't draw one itself.
+PAGES_URL = "https://robyrew.github.io/RobyRew/"

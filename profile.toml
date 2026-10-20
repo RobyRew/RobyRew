@@ -67,10 +67,16 @@ note = "A searchable catalog of Spotify desktop installers, logging every build 
 hue = "green"
 icon = "layers"
 
-# B-sides: your most recently pushed public repos, picked automatically (featured ones are skipped).
+# B-sides: your other public repos, latest push first, two to a row (featured ones are skipped).
 [bsides]
 title = "Fresh from the studio"
-count = 4
+count = 10
+# Repos to leave out of the list.
+exclude = ["WallsKiller_Robocode", "Shatranj-On-Java", "Remedy_Ticket_Folder_Generator"]
+
+# Your own description for a repo, instead of the one on GitHub.
+[bsides.notes]
+retro-phone-tools = "Decrypts Nokia DCT4 firmware (MCU/PPM) and pulls out its ringtones and resources, all in the browser."
 
 # Side B. Achievements, milestones, things you're proud of. Three fit in a row.
 # `url` is where a tile links to (your repositories if left out); `tip` is the hover text.
@@ -111,6 +117,9 @@ title = "Last four weeks"
 tracks = 5
 # Optional: your Spotify profile URL, so the top-tracks card links to it.
 profile = ""
+# Optional: the address of the now-playing Worker, once it's deployed (see .github/profile/SETUP.md). The record
+# player then shows what's playing on every visit, instead of every few minutes.
+worker = ""
 
 # Last.fm accounts (free, up to 5). `platform` is the label on the deck, since Last.fm can't tell which app
 # played a song. Copy the block for more accounts; blocks with an empty user are ignored.

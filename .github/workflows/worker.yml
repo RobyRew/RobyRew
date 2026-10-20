@@ -1,0 +1,59 @@
+name: Now-playing Worker
+
+# Puts .github/worker on Cloudflare Workers (free plan), so the record player shows what's playing on every visit
+# instead of every few minutes. Runs once the repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID are
+# set (see .github/profile/SETUP.md), and again whenever the Worker changes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/worker/**
+      - .github/workflows/worker.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - if: env.READY != 'true'
+        run: echo "Add the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets to deploy the Worker."
+
+      - if: env.READY == 'true'
+        uses: actions/checkout@v5
+
+      - if: env.READY == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Deploy
+        if: env.READY == 'true'
+        working-directory: .github/worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          SPOTIFY_REFRESH_TOKEN_2: ${{ secrets.SPOTIFY_REFRESH_TOKEN_2 }}
+          SPOTIFY_REFRESH_TOKEN_3: ${{ secrets.SPOTIFY_REFRESH_TOKEN_3 }}
+          SPOTIFY_REFRESH_TOKEN_4: ${{ secrets.SPOTIFY_REFRESH_TOKEN_4 }}
+          SPOTIFY_REFRESH_TOKEN_5: ${{ secrets.SPOTIFY_REFRESH_TOKEN_5 }}
+        run: |
+          npx --yes wrangler@4 deploy
+          # Only the secrets that are set, so an unused Spotify slot doesn't stop the deploy.
+          node -e '
+            const names = ["LASTFM_API_KEY", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "SPOTIFY_REFRESH_TOKEN",
+              ...[2, 3, 4, 5].map((n) => `SPOTIFY_REFRESH_TOKEN_${n}`)];
+            const set = Object.fromEntries(names.filter((n) => process.env[n]).map((n) => [n, process.env[n]]));
+            require("fs").writeFileSync("secrets.json", JSON.stringify(set));
+          '
+          npx --yes wrangler@4 secret bulk secrets.json
+          rm secrets.json

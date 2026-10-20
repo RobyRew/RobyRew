@@ -9,6 +9,7 @@
 import hashlib
 import json
 import os
+import re
 import sys
 import tomllib
 import urllib.parse
@@ -16,10 +17,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import canvas
-from canvas import CACHE, HUE_ORDER, LANGUAGES, ROOT, THEMES, esc
-from data import (LANGUAGE_COLORS, fetch, github_data, lastfm_music_url, lastfm_top, now_data, now_key, play_url,
-                  spotify_accounts, spotify_token, spotify_top, stats_data, views_data)
-from layout import Row, page, render, render_phone, skyline
+import layout
+from canvas import CACHE, FACES, HUE_ORDER, ICONS, LANGUAGES, PLATFORMS, ROOT, THEMES, esc, render_pair
+from data import (LANGUAGE_COLORS, PLAY_SEARCH, fetch, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
+                  now_key, play_url, spotify_accounts, spotify_token, spotify_top, stats_data, views_data)
+from layout import Row, draw, hero_rows, page, render, render_phone, skyline
 
 HERE = Path(__file__).resolve().parent
 LIVE_KEYS = ("play", "song", "artist", "context", "user")
@@ -88,11 +90,13 @@ def collect(p, cache):
             "hue": entry.get("hue") or HUE_ORDER[i % len(HUE_ORDER)],
             "icon": entry.get("icon") or "code",
         })
-    featured = {pr["name"].lower() for pr in projects} | {login.lower()}
-    count = int(p.get("bsides", {}).get("count", 4))
+    bsides = p.get("bsides", {})
+    skipped = {pr["name"].lower() for pr in projects} | {login.lower()} | {name.lower() for name in bsides.get("exclude", [])}
+    notes = {name.lower(): note for name, note in bsides.get("notes", {}).items()}
     others = [
-        {**r, "language_color": LANGUAGE_COLORS.get(r.get("language") or "", "#9CA3AF")}
-        for r in cache.get("recent", []) if r["name"].lower() not in featured
+        {**r, "description": notes.get(r["name"].lower(), r.get("description")),
+         "language_color": LANGUAGE_COLORS.get(r.get("language") or "", "#9CA3AF")}
+        for r in cache.get("recent", []) if r["name"].lower() not in skipped
     ]
     stats = cache.get("stats")
     if stats:
@@ -100,8 +104,7 @@ def collect(p, cache):
     tracks = cache.get("top_tracks") or []
     return {
         "projects": projects,
-        "recent": others[:count],
-        "more": others[count:],
+        "recent": others[:int(bsides.get("count", 10))],
         "stats": stats,
         "tracks": tracks,
         "now": cache.get("now"),
@@ -243,6 +246,58 @@ def redirect_page(url):
     )
 
 
+def kit(p, cache, now):
+    """Everything the Worker (.github/worker/now.js) needs to draw the deck on each visit: the deck in each of its
+    looks (idle or playing, with a cover or without) with a slot for what's on it, the fonts they share, the numbers
+    to measure text with, and whose music to look up."""
+    templates, fonts = {}, {}
+
+    def shared_fonts(svg):
+        # Each font is stored once and named by its hash; the templates only name it.
+        def keep(match):
+            key = hashlib.sha256(match.group(1).encode()).hexdigest()[:10]
+            fonts[key] = match.group(1)
+            return "{{font:" + key + "}}"
+        return re.sub(r"(?<=data:font/woff2;base64,)([A-Za-z0-9+/=]+)", keep, svg)
+
+    layout.TEMPLATES = True
+    try:
+        for playing in (False, True):
+            for cover in (False, True):
+                look = f'{"playing" if playing else "idle"}-{"cover" if cover else "label"}'
+                row = hero_rows(p, {"playing": playing, "cover": "yes" if cover else ""}, {"play": ""}, "")[0]
+                cell = next(c for c in row.cells if c.live)
+                versions = {}
+                for theme in THEMES:
+                    svg, view = draw(row, cell, theme, "d")
+                    versions[theme] = {"svg": shared_fonts(svg.render(view=view)), "slots": svg.slots}
+                light, view = draw(row, cell, "light", "m", "l")
+                dark, _ = draw(row, cell, "dark", "m", "k")
+                versions["m"] = {"svg": shared_fonts(render_pair(light, dark, view)), "slots": light.slots + dark.slots}
+                templates[look] = versions
+    finally:
+        layout.TEMPLATES = False
+
+    def metrics(key, chars):
+        face = FACES[key]
+        return {"upm": face.upm, "advance": {ch: face.advance[face.cmap[ord(ch)]] for ch in chars if ord(ch) in face.cmap}}
+
+    return {
+        "version": version(),
+        "file": next(c.file for c in hero_rows(p, now, {"play": ""}, "")[0].cells if c.live),
+        "templates": templates,
+        "fonts": fonts,
+        "faces": {"semi": metrics("semi", layout.INFO_CHARS), "mono": metrics("mono", layout.STATUS_CHARS)},
+        "icons": {name: ICONS[name] for name in ("disc", "list")},
+        "platforms": PLATFORMS,
+        "play_search": PLAY_SEARCH,
+        "lastfm": lastfm_users(p),
+        "now": now,
+        "fallback": fallback_link(cache, p),
+        "profile": f'https://github.com/{p["me"]["github"]}',
+    }
+
+
 def live(out):
     """Renders the parts of the record player that change with the music, plus a redirect for each link."""
     p, cache = load()
@@ -269,6 +324,7 @@ def live(out):
         (folder / "index.html").write_text(redirect_page(url), encoding="utf-8")
     (out / "now.json").write_text(json.dumps({"key": key, "now": now, "links": links}, ensure_ascii=False, indent=2),
                                   encoding="utf-8")
+    (out / "kit.json").write_text(json.dumps(kit(p, cache, now), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (out / "index.html").write_text(redirect_page(f'https://github.com/{p["me"]["github"]}'), encoding="utf-8")
     (out / ".nojekyll").write_text("", encoding="utf-8")
     if os.environ.get("GITHUB_OUTPUT"):
@@ -310,7 +366,9 @@ def main():
         refresh(p, cache)
     p = fill_placeholders(p, cache)
     data = collect(p, cache)
-    live_base = cache.get("pages_url") if cache.get("live") else None
+    # The deck comes from the Worker when there is one (drawn on each visit), else from Pages (redrawn every 5 minutes).
+    worker = p.get("listening", {}).get("worker", "").strip()
+    live_base = (worker.rstrip("/") + "/") if worker else (cache.get("pages_url") if cache.get("live") else None)
     hrefs = live_links(live_base) if live_base else now_links(data["now"], fallback_link(cache, p))
     folder = ROOT / "img"
     folder.mkdir(exist_ok=True)
@@ -340,7 +398,7 @@ def main():
     cells = sum(len(row.cells) for row in rows)
     print(
         f"built {cells} linked images × {len(FOLDERS)} versions, {len(data['projects'])} projects, "
-        f"{len(data['recent'])} b-sides, {'stats' if data['stats'] else 'no stats'}, {len(data['tracks'])} tracks, "
+        f"{len(data['recent'])} other repos, {'stats' if data['stats'] else 'no stats'}, {len(data['tracks'])} tracks, "
         f"now: {now_key(data['now'])}"
     )
 

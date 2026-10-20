@@ -501,7 +501,7 @@ def spotify_item(item, context, bearer, user, playing, paused, device, when):
         "paused": paused,
         "title": item.get("name", ""),
         "artist": ", ".join(a["name"] for a in artists) or item.get("show", {}).get("name", ""),
-        "cover": smallest_image(item.get("album", {}).get("images") or item.get("images")),
+        "cover": smallest_image(item.get("album", {}).get("images") or item.get("images"), 160),  # big enough for the record
         "context": name,
         "context_kind": kind,
         "device": device.get("name", ""),
@@ -571,6 +571,11 @@ def lastfm_image(images, size="large"):
     return "" if LASTFM_BLANK in url else url
 
 
+def as_jpeg(url):
+    """Last.fm sends a cover as JPEG when its name ends in .jpg: about a fifth of the PNG's weight."""
+    return url[:-4] + ".jpg" if url.endswith(".png") and ".fastly.net/" in url else url
+
+
 def lastfm_now(entry, account):
     data = lastfm("user.getrecenttracks", user=entry["user"], limit=1, extended=1)
     if not data:
@@ -595,7 +600,7 @@ def lastfm_now(entry, account):
         "paused": False,
         "title": title,
         "artist": artist_name,
-        "cover": lastfm_image(track.get("image")),
+        "cover": as_jpeg(lastfm_image(track.get("image"))),  # 174 px, the record's label
         "context": album,
         "context_kind": "Album" if album else "",
         "device": "",

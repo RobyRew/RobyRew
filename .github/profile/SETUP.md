@@ -14,27 +14,38 @@
 
 ### How the page is put together
 
-GitHub strips CSS and clickable areas inside images from READMEs, so a card can't have links on top of it.
-Instead every card is cut into pieces, one image per link: a project's stars, downloads and latest release,
-each chart number, each track and artist. Pieces in a row sit flush against each other, and `align="top"` on
-every image stops GitHub leaving a gap under each row, so a card still looks like one piece. A row can't be
-shorter than a line of text (24 px) without a seam showing, so `layout.py` refuses rows under 40 units.
+GitHub strips CSS and clickable areas inside images from READMEs, so an image can carry only one link. That is why the
+page is a grid of glass tiles, one image per link: a project, its stars, downloads and latest release, each chart
+number, each track and artist. Tiles of one group share a tint laid across all of them.
 
-The cards are frosted glass with a faint tint, sized like GitHub's own interface, and drawn without filters so
+No tile touches the edge of its image: wherever two images meet there is clear space, half a gap from each side.
+When an image lands between two device pixels (at 110 % or 125 % zoom, or on most phones), browsers blend its edge
+with the page, so two images painted flush on one colour always show a hairline where they meet. In clear space
+there is nothing to blend, so no zoom level or screen can show a cut. `align="top"` on every image stops GitHub
+leaving a gap under each row, and `layout.py` refuses rows under 40 units, which GitHub would pad to a line of
+text (24 px).
+
+The tiles are frosted glass with a faint tint, sized like GitHub's own interface, and drawn without filters so
 they stay quick to paint. Images are linked straight to `raw.githubusercontent.com`; a relative link would cost
 every image a redirect through github.com first.
 
-- Every piece comes as `img/dark` and `img/light` for computers and `img/m` for phones (half the width, same
+- Every tile comes as `img/dark` and `img/light` for computers and `img/m` for phones (half the width, same
   type size, so nothing gets tiny). The phone file holds both themes and switches by itself: GitHub's page script
   rewrites any `<picture>` source that mentions dark or light mode to follow the viewer's GitHub theme, and in
   doing so drops a width condition, so the phone source asks for width only.
 - Every link has a hover tooltip.
-- The record player is a single row: a spinning record cut across two images would turn out of step. What's
-  playing scrolls along the bottom of it as a ticker. A link is a fixed area of an image, so the moving ticker is
-  one link (the song) and the record is another (play it).
-- "More projects" opens a list of every other public repository.
+- The top row is two tiles. Yours has your name, with a slow aurora behind it, a sweep of colour through the name,
+  a glitch and some sparkle now and then, and a blinking cursor (all CSS, no filters, and still for anyone who
+  asks their system for reduced motion); it links to the project you're building. The turntable shows the album
+  cover as the record's label and what's playing beside the record (under it on phones), and plays the song.
+  The record stays in one image: cut across two, its halves would turn out of step.
+- "Fresh from the studio" lists your other public repositories, latest push first, two to a row, and ends with a
+  tile to all of them. `[bsides]` in `profile.toml` sets how many, which to leave out and your own descriptions.
+- Numbers that are zero or missing are left out, and the rest fill their rows evenly.
+- The fonts carry no kerning table: the kerning is worked out at build time and written into each line of text,
+  which makes every image lighter.
 - The contribution calendar is also saved as a 3D model, [`img/contributions.stl`](../../img/contributions.stl),
-  which GitHub shows in its own 3D viewer. The activity card links to it, so the profile itself doesn't load
+  which GitHub shows in its own 3D viewer. The activity tile links to it, so the profile itself doesn't load
   the viewer.
 
 Build locally:
@@ -118,7 +129,33 @@ gh workflow run refresh.yml
 The first run publishes the record player; the second switches the README over to it. Expect it to lag the music
 by roughly 5 to 15 minutes, since GitHub's scheduler and image cache both add delay.
 
-## 3. Optional: richer stats
+## 3. Optional: an instant record player (Cloudflare Worker)
+
+With a free Cloudflare Worker, the deck is drawn on every visit, so it shows what's playing right now instead of a
+few minutes ago. Its answers tell GitHub's image proxy not to keep them. It fills in the templates that step 2
+publishes (`kit.json` on Pages), and if anything goes wrong it hands over the Pages copy, so keep step 2 running.
+
+1. Make a free account at <https://dash.cloudflare.com> and open **Workers & Pages** once; it asks you to pick
+   your `workers.dev` subdomain.
+2. Create an API token: **My Profile → API Tokens → Create Token**, template **Edit Cloudflare Workers**. Copy your
+   **Account ID** from the Workers & Pages overview.
+3. Save both and deploy:
+
+   ```sh
+   gh secret set CLOUDFLARE_API_TOKEN
+   gh secret set CLOUDFLARE_ACCOUNT_ID
+   gh workflow run worker.yml
+   ```
+
+   The run's log shows the Worker's address, like `https://robyrew-now.<you>.workers.dev`. Open
+   `<address>/now.json` to check it sees your music.
+4. Put that address in `profile.toml` as `worker` under `[listening]`, and push. The README switches over on the
+   next build.
+
+The Worker reuses `LASTFM_API_KEY` and the Spotify secrets (`worker.yml` copies them over on each deploy). To go
+back, empty `worker` again.
+
+## 4. Optional: richer stats
 
 The activity and popularity cards use the workflow's own token, which sees public activity. To count private
 contributions too, create a fine-grained token with read-only access and save it:

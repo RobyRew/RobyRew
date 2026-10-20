@@ -177,6 +177,37 @@ def compact(n):
 # ── type ─────────────────────────────────────────────────────────────────────
 
 
+def kerning_lookups(font):
+    """The font's pair kerning, as lookups of subtables: (kind, first glyphs, data). Read here and written into the
+    text as offsets, so the embedded fonts can leave out their kerning table, the biggest part of a small subset."""
+    if "GPOS" not in font:
+        return []
+    table = font["GPOS"].table
+    wanted = sorted({i for record in table.FeatureList.FeatureRecord if record.FeatureTag == "kern"
+                     for i in record.Feature.LookupListIndex})
+    lookups = []
+    for index in wanted:
+        lookup = table.LookupList.Lookup[index]
+        subtables = []
+        for sub in lookup.SubTable:
+            if lookup.LookupType == 9:
+                if sub.ExtensionLookupType != 2:
+                    continue
+                sub = sub.ExtSubTable
+            elif lookup.LookupType != 2:
+                continue
+            first = sub.Coverage.glyphs
+            if sub.Format == 1:
+                pairs = {glyph: {r.SecondGlyph: getattr(r.Value1, "XAdvance", 0) or 0 for r in pair_set.PairValueRecord}
+                         for glyph, pair_set in zip(first, sub.PairSet)}
+                subtables.append((1, set(first), pairs))
+            else:
+                values = [[getattr(r.Value1, "XAdvance", 0) or 0 for r in c1.Class2Record] for c1 in sub.Class1Record]
+                subtables.append((2, set(first), (sub.ClassDef1.classDefs, sub.ClassDef2.classDefs, values)))
+        lookups.append(subtables)
+    return lookups
+
+
 class Face:
     def __init__(self, key):
         file, self.stack, self.weight = FONTS[key]
@@ -185,31 +216,60 @@ class Face:
         self.cmap = font.getBestCmap()
         self.advance = {g: a for g, (a, _) in font["hmtx"].metrics.items()}
         self.upm = font["head"].unitsPerEm
+        self.lookups = kerning_lookups(font)
 
-    def width(self, text, size, tracking=0.0):
+    @lru_cache(maxsize=None)
+    def pair(self, left, right):
+        """Kerning between two characters, in font units: what the first subtable that covers them says, per lookup."""
+        a, b = self.cmap.get(ord(left)), self.cmap.get(ord(right))
+        if a is None or b is None:
+            return 0
+        total = 0
+        for subtables in self.lookups:
+            for kind, first, data in subtables:
+                if a not in first:
+                    continue
+                if kind == 1:
+                    if b in data[a]:
+                        total += data[a][b]
+                        break
+                    continue
+                classes1, classes2, values = data
+                row = values[classes1.get(a, 0)]
+                second = classes2.get(b, 0)
+                if second < len(row):
+                    total += row[second]
+                    break
+        return total
+
+    def kerns(self, text):
+        """The kerning before each character, in font units."""
+        return [0] + [self.pair(a, b) for a, b in zip(text, text[1:])]
+
+    def width(self, text, size, tracking=0.0, kern=True):
         units = sum(
             self.advance[self.cmap[ord(c)]] if ord(c) in self.cmap else self.upm * 0.55
             for c in text
-        )
+        ) + (sum(self.kerns(text)) if kern else 0)
         return units * size / self.upm + tracking * len(text)
 
-    def fit(self, text, size, max_width, tracking=0.0):
-        if self.width(text, size, tracking) <= max_width:
+    def fit(self, text, size, max_width, tracking=0.0, kern=True):
+        if self.width(text, size, tracking, kern) <= max_width:
             return text
-        while text and self.width(text + "…", size, tracking) > max_width:
+        while text and self.width(text + "…", size, tracking, kern) > max_width:
             text = text[:-1]
         return text.rstrip(" ,.;:—-·") + "…"
 
-    def wrap(self, text, size, max_width, max_lines=99):
+    def wrap(self, text, size, max_width, max_lines=99, kern=True):
         lines, line = [], ""
         words = text.split()
         for i, word in enumerate(words):
             trial = f"{line} {word}".strip()
-            if line and self.width(trial, size) > max_width:
+            if line and self.width(trial, size, 0, kern) > max_width:
                 lines.append(line)
                 line = word
                 if len(lines) == max_lines:
-                    lines[-1] = self.fit(" ".join([lines[-1]] + words[i:]), size, max_width)
+                    lines[-1] = self.fit(" ".join([lines[-1]] + words[i:]), size, max_width, 0, kern)
                     return lines
             else:
                 line = trial
@@ -225,13 +285,13 @@ def font_face(key, chars):
     options = subset.Options()
     options.flavor = "woff2"
     options.hinting = False
-    # Just what the labels need: kerning, no names or ligature tables. Keeps every image small.
-    options.layout_features = [] if key == "mono" else ["kern"]  # a monospace font has nothing to kern
+    # Just the outlines and metrics: no names, no layout tables. The kerning is already in the text (see SVG.text).
+    options.layout_features = []
     options.name_IDs = []
     options.name_legacy = False
     options.glyph_names = False
     options.notdef_outline = False
-    options.drop_tables += ["GSUB", "GDEF", "STAT", "meta"] + (["GPOS"] if key == "mono" else [])
+    options.drop_tables += ["GSUB", "GPOS", "GDEF", "STAT", "meta", "kern"]
     font = TTFont(face.path, recalcTimestamp=False)
     subsetter = subset.Subsetter(options)
     subsetter.populate(text=chars)
@@ -249,6 +309,14 @@ def font_face(key, chars):
 # ── canvas ───────────────────────────────────────────────────────────────────
 
 
+def icon_markup(name, x, y, size, stroke_paint, stroke=1.8):
+    return (
+        f'<g transform="translate({num(x)} {num(y)}) scale({num(size / 24)})" fill="none" '
+        f'{stroke_paint} stroke-width="{num(stroke * 24 / size)}" stroke-linecap="round" '
+        f'stroke-linejoin="round">{ICONS.get(name, ICONS["spark"])}</g>'
+    )
+
+
 class SVG:
     def __init__(self, theme, width, height, label, ids=""):
         self.theme = theme
@@ -257,6 +325,7 @@ class SVG:
         self.label = label
         self.parts, self.defs, self.css, self.chars = [], [], [], {}
         self.ids, self.id_prefix = 0, ids
+        self.slots = []  # parts the Worker draws on each visit, in a template (see layout.TEMPLATES)
 
     def uid(self, prefix):
         self.ids += 1
@@ -269,27 +338,34 @@ class SVG:
         self.chars.setdefault(font, set()).update(text)
 
     def text(self, x, y, s, font, size, color, tracking=0, anchor="start", extra=""):
+        markup, width = self.text_markup(x, y, s, font, size, color, tracking, anchor, extra)
+        self.add(markup)
+        return width
+
+    def text_markup(self, x, y, s, font, size, color, tracking=0, anchor="start", extra="", kern=True):
+        """A line of text and its width. Kerning goes in as `dx` offsets, so the fonts don't need to carry it."""
         if not s:
-            return 0
-        width = FACES[font].width(s, size, tracking)
+            return "", 0
+        face = FACES[font]
+        width = face.width(s, size, tracking, kern)
         if anchor == "end":
             x -= width
         elif anchor == "middle":
             x -= width / 2
         self.use(font, s)
         spacing = f' letter-spacing="{num(tracking)}"' if tracking else ""
-        self.add(
-            f'<text x="{num(x)}" y="{num(y)}" class="f-{font}" font-size="{num(size)}" '
+        offsets = [num(k * size / face.upm) for k in face.kerns(s)] if kern else []
+        while offsets and offsets[-1] in ("0", "-0"):
+            offsets.pop()
+        kerning = f' dx="{" ".join(offsets)}"' if offsets else ""
+        markup = (
+            f'<text x="{num(x)}" y="{num(y)}"{kerning} class="f-{font}" font-size="{num(size)}" '
             f'{paint(color)}{spacing}{extra}>{esc(s)}</text>'
         )
-        return width
+        return markup, width
 
     def icon(self, name, x, y, size, color, stroke=1.8):
-        self.add(
-            f'<g transform="translate({num(x)} {num(y)}) scale({num(size / 24)})" fill="none" '
-            f'{paint(color, "stroke")} stroke-width="{num(stroke * 24 / size)}" stroke-linecap="round" '
-            f'stroke-linejoin="round">{ICONS.get(name, ICONS["spark"])}</g>'
-        )
+        self.add(icon_markup(name, x, y, size, paint(color, "stroke"), stroke))
 
     def glass(self, x, y, w, h, r, fill=None):
         self.add(
@@ -323,7 +399,7 @@ class SVG:
         fonts = "".join(font_face(k, "".join(sorted(v))) for k, v in sorted(self.chars.items()))
         css = (
             fonts
-            + "text{font-kerning:normal;text-rendering:geometricPrecision}"
+            + "text{font-kerning:none;text-rendering:geometricPrecision}"
             + "".join(self.css)
             + "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
         )
@@ -348,7 +424,7 @@ def render_pair(light, dark, view):
     extra = "".join(dict.fromkeys(light.css + dark.css))
     css = (
         fonts
-        + "text{font-kerning:normal;text-rendering:geometricPrecision}"
+        + "text{font-kerning:none;text-rendering:geometricPrecision}"
         + extra
         + ".k{display:none}@media (prefers-color-scheme:dark){.l{display:none}.k{display:inline}}"
         + "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
@@ -356,7 +432,7 @@ def render_pair(light, dark, view):
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{num(w)}" height="{num(h)}" '
         f'viewBox="{num(x)} {num(y)} {num(w)} {num(h)}" role="img" aria-label="{esc(light.label)}">'
-        f"<title>{esc(light.label)}</title><style>{css}</style><defs>{''.join(light.defs)}{''.join(dark.defs)}</defs>"
+        f"<title>{esc(light.label)}</title><style>{css}</style><defs>{''.join(dict.fromkeys(light.defs + dark.defs))}</defs>"
         f'<g class="l">{"".join(light.parts)}</g><g class="k">{"".join(dark.parts)}</g>'
         "</svg>\n"
     )
@@ -422,8 +498,9 @@ def artwork(svg, x, y, size, url, seed, r=9):
 # ── shared shapes ─────────────────────────────────────────────────────────────
 
 
-def record(svg, cx, cy, r, words, period):
-    """A vinyl record turning once every `period` seconds."""
+def record(svg, cx, cy, r, words, period, cover=None):
+    """A vinyl record turning once every `period` seconds. With `cover` (an image as a data URI), the album art is
+    its label; without, a label of my own."""
     label_r, hole_r = 0.38 * r, 4
     disc, label, shadow = svg.uid("disc"), svg.uid("label"), svg.uid("shadow")
     svg.defs.append(
@@ -456,6 +533,22 @@ def record(svg, cx, cy, r, words, period):
         i += 1
     for gap in (r * 0.6, r * 0.74, r * 0.87):
         parts.append(f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(gap)}" fill="none" stroke="#000" stroke-opacity=".7" stroke-width="2.4"/>')
+    if cover:
+        # Defined once with a fixed id, so the phone image, which holds both themes, carries the picture only once.
+        svg.defs.append(f'<image id="cover" href="{cover}" x="{num(cx - label_r)}" y="{num(cy - label_r)}" '
+                        f'width="{num(2 * label_r)}" height="{num(2 * label_r)}" preserveAspectRatio="xMidYMid slice"/>')
+        art = svg.uid("art")
+        svg.defs.append(f'<clipPath id="{art}"><circle cx="{num(cx)}" cy="{num(cy)}" r="{num(label_r)}"/></clipPath>')
+        parts.append(
+            f'<g clip-path="url(#{art})"><use href="#cover"/></g>'
+            f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(label_r - 0.8)}" fill="none" stroke="#000" stroke-opacity=".35" '
+            f'stroke-width="1.6"/>'
+            f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(hole_r + 3)}" fill="#0B0B0D" fill-opacity=".55"/>'
+            f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(hole_r)}" fill="#C9C9CF"/>'
+            "</g>"
+        )
+        finish(svg, parts, cx, cy, r, label_r)
+        return
     parts.append(
         f'<path d="{circle_path(cx, cy, label_r)}{circle_path(cx, cy, hole_r)}" fill="url(#{label})" fill-rule="evenodd"/>'
     )
@@ -470,17 +563,17 @@ def record(svg, cx, cy, r, words, period):
         f'<text class="f-mono" font-size="{size}" letter-spacing="{num(tracking)}" fill="#2A0E04" fill-opacity=".72">'
         f'<textPath href="#{ring_id}">{esc(words)}</textPath></text>'
     )
-    svg.use("display", "RobyRew")
-    parts.append(
-        f'<text x="{num(cx)}" y="{num(cy - 10)}" text-anchor="middle" class="f-display" font-size="13" '
-        f'letter-spacing="-.4" fill="#2A0E04" fill-opacity=".86">RobyRew</text>'
-    )
+    parts.append(svg.text_markup(cx, cy - 10, "RobyRew", "display", 13, ("#2A0E04", 0.86), tracking=-0.4, anchor="middle")[0])
     svg.use("mono", "SIDE A")
     parts.append(
         f'<text x="{num(cx)}" y="{num(cy + 18)}" text-anchor="middle" class="f-mono" font-size="6.5" '
         f'letter-spacing="1.6" fill="#2A0E04" fill-opacity=".7">SIDE A</text>'
     )
     parts.append("</g>")
+    finish(svg, parts, cx, cy, r, label_r)
+
+
+def finish(svg, parts, cx, cy, r, label_r):
     # Light catching the grooves; it stays put while the disc turns.
     for base in (-50, 130):
         for spread in (30, 22, 15, 9, 4):
