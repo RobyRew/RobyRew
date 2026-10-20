@@ -7,10 +7,8 @@
 """
 
 import hashlib
-import html
 import json
 import os
-import re
 import sys
 import tomllib
 import urllib.parse
@@ -166,8 +164,6 @@ def rows_of(items):
     for item in items:
         if isinstance(item, Row):
             yield item
-        elif isinstance(item, tuple) and item[0] == "details":
-            yield item[1]
 
 
 def write_images(rows, root, only_live=False):
@@ -214,26 +210,7 @@ def row_html(row, live_base, static_base):
     return "".join(parts)
 
 
-def markdown_text(text):
-    """Plain text that Markdown won't turn into anything."""
-    return re.sub(r"([\\`*_{}\[\]<>#|~])", r"\\\1", html.unescape(text))
-
-
-def more_list(more, login, total):
-    lines = []
-    for repo in more:
-        description = " ".join((repo.get("description") or "").split())
-        if len(description) > 110:
-            description = description[:108].rsplit(" ", 1)[0].rstrip(",.;:—-") + "…"
-        extra = f" · {markdown_text(description)}" if description else ""
-        language = f" `{repo['language']}`" if repo.get("language") else ""
-        lines.append(f'- [**{markdown_text(repo["name"])}**]({repo["url"]}){language}{extra}')
-    label = f"All {total} repositories" if total else "All repositories"
-    lines += ["", f"[**{label} →**](https://github.com/{login}?tab=repositories)"]
-    return "\n".join(lines)
-
-
-def readme(items, p, live_base, repo_count, static_base):
+def readme(items, p, live_base, static_base):
     login = p["me"]["github"]
     views = f'<img src="https://komarev.com/ghpvc/?username={login}&amp;style=flat" width="1" height="1" alt="">'
     lines = [
@@ -245,12 +222,6 @@ def readme(items, p, live_base, repo_count, static_base):
     for item in items:
         if isinstance(item, tuple) and item[0] == "anchor":
             anchor += f'<a name="{item[1]}"></a>'
-        elif isinstance(item, tuple) and item[0] == "details":
-            # Outside the centred block, so the list inside can be real Markdown.
-            row, more = item[1], item[2]
-            lines += ["</div>", "", f"<details>\n<summary>{anchor}{row_html(row, None, static_base)}</summary>", "",
-                      more_list(more, login, repo_count), "", "</details>", "", '<div align="center">']
-            anchor = ""
         elif isinstance(item, Row):
             lines.append(anchor + row_html(item, live_base, static_base))
             anchor = ""
@@ -364,7 +335,7 @@ def main():
         if empty.is_dir() and not any(empty.iterdir()):
             empty.rmdir()
 
-    (ROOT / "README.md").write_text(readme(items, p, live_base, data["repo_count"], raw_base(p)), encoding="utf-8")
+    (ROOT / "README.md").write_text(readme(items, p, live_base, raw_base(p)), encoding="utf-8")
     CACHE.write_text(json.dumps(cache, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
     cells = sum(len(row.cells) for row in rows)
     print(

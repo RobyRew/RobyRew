@@ -108,12 +108,13 @@ hue = "teal"
 url = "https://github.com/RobyRew?tab=repositories&language=swift"
 tip = "My Swift repositories"
 
+# A value starting with 0x is set in the mono font. texture = "disasm" puts an arm64 listing behind the tile.
 [[highlights.items]]
-value = "Ghidra"
+value = "0xFEEDFACF"
 title = "Reverse engineering"
-note = "Taking binaries apart in Ghidra and IDA Pro. RE is the fun part."
+note = "The Mach-O magic. Taking binaries apart in Ghidra is the fun part."
 hue = "rose"
-texture = "hex"
+texture = "disasm"
 url = "https://ghidra-sre.org"
 tip = "Ghidra, the reverse engineering suite I use"
 
@@ -139,42 +140,3 @@ platform = "YouTube Music"
 [[listening.lastfm]]
 user = ""
 platform = "Apple Music"
-
-# Each value is split on commas into chips (four at most), and each chip links to the tool's website.
-# Common tools are known already; add others under [credits.urls], like  "Raycast" = "https://raycast.com"
-[credits]
-title = "Liner notes"
-
-[[credits.items]]
-label = "Instruments"
-value = "Swift, SwiftUI, AppKit, UIKit"
-
-[[credits.items]]
-label = "Session players"
-value = "TypeScript, React, Vite, Tailwind"
-
-[[credits.items]]
-label = "Live sound"
-value = "Docker, Nginx, Ansible"
-
-[[credits.items]]
-label = "Mixed in"
-value = "Xcode, VS Code"
-
-[[credits.items]]
-label = "Forensics"
-value = "Ghidra, IDA Pro"
-
-[[credits.items]]
-label = "Recorded on"
-value = "Apple Silicon, arm64"
-
-[[credits.items]]
-label = "Lighting"
-value = "Dark mode only"
-
-[[credits.items]]
-label = "Soundtrack"
-value = "Spotify, YouTube Music, Apple Music"
-
-[credits.urls]

@@ -374,43 +374,41 @@ def search(query, kind):
 
 # ── the record player ────────────────────────────────────────────────────────
 
-# The record player card, in three rows: who I am next to the spinning record, a slim now-playing bar across the
-# card (each part of it its own link), and the buttons.
+# The record player card, in three rows: the spinning record with who I am beside it (like an artist page), a slim
+# now-playing bar across the card (each part of it its own link), and the buttons.
 HERO = {
-    "d": {"rows": (184, 50, 46), "cx": 668, "cy": 92, "r": 66, "bar": 20},
-    "m": {"rows": (158, 50, 44), "cx": 334, "cy": 76, "r": 52, "bar": 12},
+    "d": {"rows": (172, 48, 46), "cx": 100, "cy": 88, "r": 64, "bar": 20},
+    "m": {"rows": (132, 48, 44), "cx": 50, "cy": 66, "r": 38, "bar": 12},
 }
-SPLIT = 0.62  # where the record's column starts
+SPLIT = 0.27  # the record's column, on the left; wide enough for the parked tonearm on phones too
 NOW = (0.34, 0.22, 0.22, 0.22)  # song, artist, album or playlist, listener
 
 
 def identity(c, me):
-    """Name, bio and facts, next to the record."""
+    """What I'm doing, my name, bio and facts, next to the record."""
     svg, t = c.svg, c.t
-    left = c.x + c.pick(24, 13)
-    room = c.x + c.w - left - c.pick(16, 8)
+    left = c.x + c.pick(8, 4)
     facts = me.get("facts", [])
+    chips = max((24 + 21 + FACES["semi"].width(f["value"], 11.5) for f in facts[1:]), default=0)
+    room = c.x + c.w - left - (c.pick(chips + 40, 12) if chips else c.pick(22, 12))
     if facts:
-        size, ph = c.pick(8.5, 7.5), c.pick(22, 18)
-        y = c.pick(22, 14)
+        size = c.pick(8.5, 7.5)
+        y = c.pick(40, 30)
         text = facts[0]["value"] if c.m else f'{facts[0]["label"]} · {facts[0]["value"]}'
-        pill = fit(text.upper(), "mono", size, room - ph - 10, 1.2)
-        width = FACES["mono"].width(pill, size, 1.2) + ph + 8
-        svg.glass(left, y, width, ph, ph / 2)
-        svg.add(f'<circle cx="{num(left + ph / 2)}" cy="{num(y + ph / 2)}" r="{num(ph / 4.2)}" fill="#F2A65A" fill-opacity=".22"/>')
-        svg.add(f'<circle cx="{num(left + ph / 2)}" cy="{num(y + ph / 2)}" r="{num(ph / 8)}" fill="#F2A65A"/>')
-        svg.text(left + ph - 3, y + ph / 2 + size * 0.36, pill, "mono", size, t["ink"], tracking=1.2)
-    size = c.pick(40, 28)
-    while size > 22 and FACES["display"].width(me["name"], size, -size * 0.035) > room:
+        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="5.5" fill="#F2A65A" fill-opacity=".2"/>')
+        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="2.6" fill="#F2A65A"/>')
+        svg.text(left + 13, y, fit(text.upper(), "mono", size, room - 13, 1.4), "mono", size, t["dim"], tracking=1.4)
+    size = c.pick(38, 26)
+    while size > 20 and FACES["display"].width(me["name"], size, -size * 0.035) > room:
         size -= 1
-    base = c.pick(88, 60)
+    base = c.pick(78, 58)
     svg.text(left - size * 0.03, base, me["name"], "display", size, t["ink"], tracking=-size * 0.035)
-    fs, lh = c.pick(14, 12), c.pick(19, 15)
-    y = base + c.pick(26, 20)
+    fs, lh = c.pick(14, 11.5), c.pick(19, 14.5)
+    y = base + c.pick(24, 18)
     for line in FACES["text"].wrap(me["statement"], fs, room, 2):
         svg.text(left, y, line, "text", fs, t["dim"])
         y += lh
-    y += c.pick(1, 3)
+    y += c.pick(1, 2)
     for line in FACES["semi"].wrap(me["aside"], fs, room, 2):
         svg.text(left, y, line, "semi", fs, t["aside"])
         y += lh
@@ -418,12 +416,16 @@ def identity(c, me):
     if not rest:
         return
     if c.m:
-        line = fit(" · ".join(f["value"] for f in rest), "semi", 10.5, room)
-        svg.text(left, c.h - 12, line, "semi", 10.5, t["faint"])
+        line = fit(" · ".join(f["value"] for f in rest), "semi", 10, room)
+        svg.text(left, y + 6, line, "semi", 10, t["faint"])
         return
-    x = left
+    # Day job and city on the right, stacked, so the row is balanced.
+    right = c.x + c.w - 20
+    y = (c.h - len(rest) * 24 - (len(rest) - 1) * 8) / 2
     for fact in rest:
-        x += svg.chip(x, c.h - 12 - 24, fact["value"], h=24, size=11.5, icon=fact.get("icon", "spark")) + 8
+        width = 24 + 21 + FACES["semi"].width(fact["value"], 11.5)
+        svg.chip(right - width, y, fact["value"], h=24, size=11.5, icon=fact.get("icon", "spark"))
+        y += 32
 
 
 def deck(c, me, now):
@@ -580,7 +582,7 @@ def hero_rows(p, now, hrefs, sections):
     """The record player card. `hrefs` says where its live parts link to (Pages redirects, or the song itself)."""
     me = p["me"]
     links = p.get("links", [])[:2]
-    card = Card("ember", blobs=[(0.92, 0.2, 0.5, 0, 0.9), (0.04, 0.9, 0.5, 1, 0.7), (0.5, -0.15, 0.4, 2, 0.55)])
+    card = Card("ember", blobs=[(0.06, 0.25, 0.45, 0, 0.9), (0.96, 0.85, 0.5, 1, 0.7), (0.55, -0.2, 0.4, 2, 0.5)])
     info = now or {}
     platform = info.get("platform") or "Last.fm"
     home = links[0]["url"] if links else f'https://github.com/{me["github"]}'
@@ -589,10 +591,10 @@ def hero_rows(p, now, hrefs, sections):
     kind = info.get("context_kind") or ("Album" if info.get("context") else "From")
     rows = [
         Row("hero", d[0], m[0], [
-            Cell(card, SPLIT, home, f"Visit {links[0]['label']}" if links else "My GitHub", bio,
-                 lambda c: identity(c, me), key="me"),
-            Cell(card, 1 - SPLIT, hrefs["play"], f"Play it on {platform}", "The record player: it spins while I'm listening",
+            Cell(card, SPLIT, hrefs["play"], f"Play it on {platform}", "The record player: it spins while I'm listening",
                  lambda c: deck(c, me, now), live=True, key="deck"),
+            Cell(card, 1 - SPLIT, home, f"Visit {links[0]['label']}" if links else "My GitHub", bio,
+                 lambda c: identity(c, me), key="me"),
         ], lines=False, rule=False),
         Row("hero-now", d[1], m[1], [
             Cell(card, NOW[0], hrefs["song"], "The song on my record player", "What I'm listening to",
@@ -783,9 +785,36 @@ def bside_rows(recent):
 # ── highlights ───────────────────────────────────────────────────────────────
 
 
+# A real arm64 prologue and epilogue, as Ghidra would list it: address, bytes, instruction.
+DISASM = (
+    "100003f40  fd 7b bf a9  stp   x29, x30, [sp, #-0x10]!",
+    "100003f44  fd 03 00 91  mov   x29, sp",
+    "100003f48  00 00 00 90  adrp  x0, 0x100003000",
+    "100003f4c  00 e0 3e 91  add   x0, x0, #0xfb8",
+    "100003f50  05 00 00 94  bl    _puts",
+    "100003f54  00 00 80 52  mov   w0, #0x0",
+    "100003f58  fd 7b c1 a8  ldp   x29, x30, [sp], #0x10",
+    "100003f5c  c0 03 5f d6  ret",
+)
+
+
+def disasm(svg, x, y, w, h, size):
+    step = size * 1.55
+    for i in range(int(h // step)):
+        line = DISASM[i % len(DISASM)]
+        svg.text(x, y + i * step, fit(line, "mono", size, w), "mono", size, (svg.t["ink"], 0.07))
+
+
 def highlight(c, item, n):
     svg, t = c.svg, c.t
-    if item.get("texture") == "hex":
+    if item.get("texture") == "disasm":
+        clip = svg.uid("asm")
+        svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(c.x)}" y="0" width="{num(c.w)}" height="{num(c.h)}" '
+                        f'rx="{OUTER[c.v]}"/></clipPath>')
+        svg.add(f'<g clip-path="url(#{clip})">')
+        disasm(svg, c.x + c.pick(14, 9), c.pick(18, 14), c.w - c.pick(20, 12), c.h - 10, c.pick(7.5, 6.5))
+        svg.add("</g>")
+    elif item.get("texture") == "hex":
         clip = svg.uid("hex")
         svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(c.x)}" y="0" width="{num(c.w)}" height="{num(c.h)}" '
                         f'rx="{OUTER[c.v]}"/></clipPath>')
@@ -793,9 +822,10 @@ def highlight(c, item, n):
         hexdump(svg, c.x + 10, 16, c.w - 14, c.h - 14, item["title"], size=c.pick(8, 7))
         svg.add("</g>")
     pad = c.pick(16, 11)
+    face, track = ("mono", 0) if item["value"].lower().startswith("0x") else ("display", -0.6)
     if c.m:
-        size, value = shrink(item["value"], "display", 20, c.w - 2 * pad, 0.75, -0.6)
-        svg.text(c.x + pad - 1, 36, value, "display", size, t["ink"], tracking=-0.6)
+        size, value = shrink(item["value"], face, 20 if face == "display" else 16, c.w - 2 * pad, 0.7, track)
+        svg.text(c.x + pad - 1, 36, value, face, size, t["ink"], tracking=track)
         y = 56
         for line in FACES["semi"].wrap(item["title"], 11.5, c.w - 2 * pad, 2):
             svg.text(c.x + pad, y, line, "semi", 11.5, t["dim"])
@@ -805,8 +835,9 @@ def highlight(c, item, n):
     tag_w = FACES["mono"].width(tag, 8, 1) + 14
     svg.glass(c.x + c.w - pad - tag_w, 14, tag_w, 18, 9)
     svg.text(c.x + c.w - pad - tag_w / 2, 26, tag, "mono", 8, t["dim"], tracking=1, anchor="middle")
-    size, value = shrink(item["value"], "display", 30, c.w - 2 * pad - tag_w - 6, 0.75, -1)
-    svg.text(c.x + pad - 1, 48, value, "display", size, t["ink"], tracking=-1)
+    size, value = shrink(item["value"], face, 30 if face == "display" else 24, c.w - 2 * pad - tag_w - 6, 0.7,
+                         -1 if face == "display" else 0)
+    svg.text(c.x + pad - 1, 48, value, face, size, t["ink"], tracking=-1 if face == "display" else 0)
     svg.text(c.x + pad, 70, fit(item["title"], "semi", 13, c.w - 2 * pad), "semi", 13, t["ink"])
     y = 88
     for line in FACES["text"].wrap(item["note"], 11.5, c.w - 2 * pad, 2):
@@ -1175,26 +1206,63 @@ def credit_rows(items, urls, anchor):
 # ── the rest ─────────────────────────────────────────────────────────────────
 
 
-def more_summary(c, count):
+def catalogue_cell(c, repo):
     svg, t = c.svg, c.t
-    pad = c.pick(16, 12)
-    box = c.pick(28, 26)
-    svg.glass(c.x + pad, (c.h - box) / 2, box, box, box * 0.3)
-    svg.icon("repo", c.x + pad + box * 0.25, (c.h - box) / 2 + box * 0.25, box * 0.5, t["dim"])
-    tx = c.x + pad + box + c.pick(12, 10)
-    svg.text(tx, c.h / 2 - c.pick(1.5, 2), "More projects", "semi", c.pick(13.5, 12.5), t["ink"])
-    sub = f"{count} more on GitHub · tap to open the list" if not c.m else f"{count} more · tap to open"
-    svg.text(tx, c.h / 2 + 13, sub, "text", c.pick(11.5, 11), t["dim"])
-    size = c.pick(24, 22)
-    gx = c.x + c.w - pad - size
-    svg.glass(gx, (c.h - size) / 2, size, size, size / 2)
-    svg.icon("chevron", gx + size * 0.22, (c.h - size) / 2 + size * 0.24, size * 0.56, t["dim"], stroke=2.2)
+    pad = c.pick(18, 11)
+    room = c.w - 2 * pad
+    language = repo.get("language") or ""
+    stars = repo.get("stars", 0)
+    meta_w = 0
+    if not c.m:
+        x = c.x + c.w - pad
+        if language:
+            width = svg.text(x, 22, fit(language.upper(), "mono", 8, room * 0.3, 1), "mono", 8, t["faint"], tracking=1, anchor="end")
+            svg.add(f'<circle cx="{num(x - width - 7)}" cy="19.2" r="3.2" fill="{repo.get("language_color", "#9CA3AF")}"/>')
+            x -= width + 16
+        if stars:
+            width = svg.text(x, 22, str(stars), "mono", 8, t["faint"], anchor="end")
+            mark(c, x - width - 12, 22.5, 10, star=True)
+            x -= width + 18
+        meta_w = c.x + c.w - pad - x
+    size, name = shrink(repo["name"], "semi", c.pick(13, 12), room - meta_w - 8, 0.85)
+    svg.text(c.x + pad, c.pick(23, 21), name, "semi", size, t["ink"])
+    description = " ".join((repo.get("description") or "No description yet.").split())
+    if c.m:
+        y = 36
+        for line in FACES["text"].wrap(description, 10.5, room, 2):
+            svg.text(c.x + pad, y, line, "text", 10.5, t["dim"])
+            y += 13
+        return
+    svg.text(c.x + pad, 40, fit(description, "text", 11.5, room), "text", 11.5, t["dim"])
 
 
-def more_row(count):
-    card = Card("graphite", blobs=[(0.0, 0.5, 0.5, 0, 0.7), (1.0, 0.5, 0.4, 2, 0.5)])
-    return Row("more", 48, 52, [Cell(card, 1, "", "Show more projects", f"More projects: {count} more",
-                                     lambda c: more_summary(c, count))])
+def catalogue_all(c, total):
+    svg, t = c.svg, c.t
+    label = f"Browse all {total} repositories" if total else "Browse all repositories"
+    size, label = shrink(label, "semi", c.pick(12.5, 11.5), c.w - 50, 0.85)
+    width = FACES["semi"].width(label, size) + 18
+    x = c.x + (c.w - width) / 2
+    svg.text(x, c.h / 2 + size * 0.36, label, "semi", size, t["ink"])
+    svg.icon("arrow", x + width - 11, c.h / 2 - 5.5, 11, t["dim"], stroke=2.2)
+
+
+def catalogue_rows(more, login, total, limit=9):
+    """The projects not shown above, two to a row, ending with a way to every repository."""
+    card = Card("graphite", blobs=[(0.0, 0.0, 0.55, 0, 0.6), (1.0, 1.0, 0.5, 2, 0.5), (0.5, 0.5, 0.35, 1, 0.3)])
+    everything = f"https://github.com/{login}?tab=repositories"
+    cells = [
+        Cell(card, 1, repo["url"], f'Open {repo["name"]} on GitHub', f'{repo["name"]}: {repo.get("description") or ""}'.strip(": "),
+             lambda c, repo=repo: catalogue_cell(c, repo), key=repo["name"].lower()[:40])
+        for repo in more[:limit]
+    ]
+    cells.append(Cell(card, 1, everything, "All my repositories", "Browse all repositories",
+                      lambda c: catalogue_all(c, total), key="all"))
+    rows = []
+    for n, i in enumerate(range(0, len(cells), 2), 1):
+        pair = cells[i:i + 2]
+        rows.append(Row(f"catalogue-{n}", 54 if len(pair) == 2 else 44, 62 if len(pair) == 2 else 44, pair,
+                        space=i + 2 >= len(cells)))
+    return rows
 
 
 def footer(c, name):
@@ -1272,7 +1340,10 @@ def page(p, data, hrefs, skyline_url=None):
         items += credit_rows(credits["items"], credits.get("urls"), "#credits")
 
     if more:
-        items.append(("details", more_row(len(more)), more))
+        repos = data.get("repo_count")
+        items.append(header_row("catalogue", "More", "Back catalogue", f"All {repos} repos" if repos else "All repos",
+                                f"{profile}?tab=repositories", "work"))
+        items += catalogue_rows(more, login, repos)
     items.append(Row("footer", 42, 42, [
         Cell(Card(style="none"), 1, "#top", "Back to the top", "Set in Bricolage Grotesque and Geist Mono",
              lambda c: footer(c, me["name"]), key="end"),
