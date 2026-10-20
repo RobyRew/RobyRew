@@ -21,7 +21,7 @@ import canvas
 from canvas import CACHE, HUE_ORDER, LANGUAGES, ROOT, THEMES, esc
 from data import (LANGUAGE_COLORS, fetch, github_data, lastfm_music_url, lastfm_top, now_data, now_key, play_url,
                   spotify_accounts, spotify_token, spotify_top, stats_data, views_data)
-from layout import Html, Markdown, Row, WIDTH, hero_rows, page, render
+from layout import Row, WIDTH, page, render, skyline
 
 HERE = Path(__file__).resolve().parent
 LIVE_KEYS = ("play", "song", "artist", "context", "user")
@@ -138,6 +138,15 @@ def now_links(now, fallback):
     }
 
 
+def repository(p):
+    return os.environ.get("GITHUB_REPOSITORY") or f'{p["me"]["github"]}/{p["me"]["github"]}'
+
+
+def raw_base(p):
+    """Images are linked straight to the raw file host. A relative link costs a redirect through github.com each."""
+    return f"https://raw.githubusercontent.com/{repository(p)}/main/img/"
+
+
 def live_links(base):
     return {key: f"{base}go/{key}/" for key in LIVE_KEYS}
 
@@ -191,10 +200,10 @@ def picture(row, cell, base):
     )
 
 
-def row_html(row, live_base):
+def row_html(row, live_base, static_base):
     parts = []
     for cell in row.cells:
-        base = f"{live_base}img/" if (cell.live and live_base) else "img/"
+        base = f"{live_base}img/" if (cell.live and live_base) else static_base
         tag = picture(row, cell, base)
         parts.append(f'<a href="{esc(cell.href)}" title="{esc(cell.title)}">{tag}</a>' if cell.href else tag)
     return "".join(parts)
@@ -219,7 +228,7 @@ def more_list(more, login, total):
     return "\n".join(lines)
 
 
-def readme(items, p, live_base, repo_count):
+def readme(items, p, live_base, repo_count, static_base):
     login = p["me"]["github"]
     views = f'<img src="https://komarev.com/ghpvc/?username={login}&amp;style=flat" width="1" height="1" alt="">'
     lines = [
@@ -234,16 +243,12 @@ def readme(items, p, live_base, repo_count):
         elif isinstance(item, tuple) and item[0] == "details":
             # Outside the centred block, so the list inside can be real Markdown.
             row, more = item[1], item[2]
-            lines += ["</div>", "", f"<details>\n<summary>{anchor}{row_html(row, None)}</summary>", "",
+            lines += ["</div>", "", f"<details>\n<summary>{anchor}{row_html(row, None, static_base)}</summary>", "",
                       more_list(more, login, repo_count), "", "</details>", "", '<div align="center">']
             anchor = ""
         elif isinstance(item, Row):
-            lines.append(anchor + row_html(item, live_base))
+            lines.append(anchor + row_html(item, live_base, static_base))
             anchor = ""
-        elif isinstance(item, Html):
-            lines.append(item.text)
-        elif isinstance(item, Markdown):
-            lines += ["</div>", "", item.text, "", '<div align="center">']
     lines.append(views)
     lines.append("</div>")
     return "\n".join(lines) + "\n"
@@ -278,8 +283,9 @@ def live(out):
         except Exception as error:
             print(f"live: no previous state ({error})", file=sys.stderr)
     changed = previous != key or "--force" in sys.argv
-    rows = hero_rows(p, now, live_links(base))
-    write_images(rows, out / "img", only_live=True)
+    data = collect(p, cache)
+    data["now"] = now
+    write_images(rows_of(page(p, data, live_links(base))), out / "img", only_live=True)
     links = now_links(now, fallback_link(cache, p))
     for name, url in links.items():
         folder = out / "go" / name
@@ -330,10 +336,21 @@ def main():
     data = collect(p, cache)
     live_base = cache.get("pages_url") if cache.get("live") else None
     hrefs = live_links(live_base) if live_base else now_links(data["now"], fallback_link(cache, p))
-    items = page(p, data, hrefs)
+    folder = ROOT / "img"
+    folder.mkdir(exist_ok=True)
+    # The contribution calendar in 3D, as a file GitHub shows in its own 3D viewer (linked from the activity card).
+    model = folder / "contributions.stl"
+    skyline_url = None
+    if (data["stats"] or {}).get("calendar"):
+        stl = skyline(data["stats"]["calendar"])
+        if not model.exists() or model.read_text(encoding="utf-8") != stl:
+            model.write_text(stl, encoding="utf-8")
+        skyline_url = f"https://github.com/{repository(p)}/blob/main/img/contributions.stl"
+    elif model.exists():
+        model.unlink()
+    items = page(p, data, hrefs, skyline_url)
     rows = list(rows_of(items))
 
-    folder = ROOT / "img"
     written = write_images(rows, folder)
     for stale in folder.rglob("*.svg"):
         if stale not in written:
@@ -342,7 +359,7 @@ def main():
         if empty.is_dir() and not any(empty.iterdir()):
             empty.rmdir()
 
-    (ROOT / "README.md").write_text(readme(items, p, live_base, data["repo_count"]), encoding="utf-8")
+    (ROOT / "README.md").write_text(readme(items, p, live_base, data["repo_count"], raw_base(p)), encoding="utf-8")
     CACHE.write_text(json.dumps(cache, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
     cells = sum(len(row.cells) for row in rows)
     print(

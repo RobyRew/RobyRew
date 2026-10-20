@@ -16,16 +16,22 @@
 
 GitHub strips CSS and clickable areas inside images from READMEs, so a card can't have links on top of it.
 Instead every card is cut into pieces, one image per link: a project's stars, downloads and latest release,
-each chart number, each track and artist, each tool in the credits. Pieces in a row sit flush against each
-other. GitHub always leaves about 6 px between rows, so the cards are drawn as stacks of rounded segments.
+each chart number, each track and artist. Pieces in a row sit flush against each other, and `align="top"` on
+every image stops GitHub leaving a gap under each row, so a card still looks like one piece. A row can't be
+shorter than a line of text (24 px) without a seam showing, so `layout.py` refuses rows under 40 units.
+
+The cards are frosted glass with a faint tint, sized like GitHub's own interface, and drawn without filters so
+they stay quick to paint. Images are linked straight to `raw.githubusercontent.com`; a relative link would cost
+every image a redirect through github.com first.
 
 - Every piece comes in four versions: `img/dark`, `img/light`, and `img/dark-m` / `img/light-m` for phones
   (half the width, same type size, so nothing gets tiny). GitHub picks one with `<picture>` media queries.
 - Every link has a hover tooltip.
 - The bar under the record player jumps to each section.
 - "More projects" opens a list of every other public repository.
-- The contribution calendar is also drawn as a 3D model (an STL block) you can spin on github.com. The
-  GitHub mobile app may show it as plain text instead.
+- The contribution calendar is also saved as a 3D model, [`img/contributions.stl`](../../img/contributions.stl),
+  which GitHub shows in its own 3D viewer. The activity card links to it, so the profile itself doesn't load
+  the viewer.
 
 Build locally:
 

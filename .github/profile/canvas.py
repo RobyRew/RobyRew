@@ -32,8 +32,7 @@ FONTS = {
     "display": ("BricolageGrotesque-ExtraBold.ttf", SANS, 800),
     "semi": ("BricolageGrotesque-SemiBold.ttf", SANS, 600),
     "text": ("BricolageGrotesque-Regular.ttf", SANS, 400),
-    "mono": ("GeistMono-Regular.ttf", MONO, 400),
-    "mono-md": ("GeistMono-Medium.ttf", MONO, 500),
+    "mono": ("GeistMono-Medium.ttf", MONO, 500),
 }
 
 HUES = {
@@ -46,42 +45,47 @@ HUES = {
 }
 HUE_ORDER = ("ember", "teal", "blue", "rose", "green")
 
+# Cards are frosted glass over the page: a see-through fill, a faint tint, a sheen at the top and a light rim.
 THEMES = {
     "dark": {
-        "base": "#121014",
-        "ink": "#F7F4EF",
-        "dim": ("#FFFFFF", 0.7),
-        "faint": ("#FFFFFF", 0.48),
-        "glass": ("#FFFFFF", 0.08),
-        "edge": ("#FFFFFF", 0.12),
-        "blob": 0.8,
-        "grain": 0.09,
-        "veil": 0.55,
+        "page": "#0D1117",
+        "card": ("#FFFFFF", 0.035),
+        "ink": "#F0F3F6",
+        "dim": ("#FFFFFF", 0.68),
+        "faint": ("#FFFFFF", 0.46),
+        "glass": ("#FFFFFF", 0.06),
+        "edge": ("#FFFFFF", 0.09),
+        "rim": ("#FFFFFF", 0.24, 0.05),  # colour, opacity at the top, opacity at the bottom
+        "sheen": ("#FFFFFF", 0.06),
+        "blob": 0.3,
+        "shadow": 0,
         "head": "#F0F6FC",
         "muted": "#8B949E",
-        "accent": "#FF8A5B",
-        "aside": "#FFC4A3",
-        "window": "#1B1A1F",
-        "heat": ("#FFFFFF", 0.07),
-        "panel": ("#0B0A0D", 0.42),
+        "accent": "#F2A27E",
+        "aside": "#F5B795",
+        "window": "#161B22",
+        "heat": ("#FFFFFF", 0.06),
+        "panel": ("#FFFFFF", 0.045),
     },
     "light": {
-        "base": "#FFFBF7",
-        "ink": "#17151A",
-        "dim": ("#000000", 0.64),
-        "faint": ("#000000", 0.46),
-        "glass": ("#FFFFFF", 0.62),
-        "edge": ("#000000", 0.08),
-        "blob": 0.42,
-        "grain": 0.06,
-        "veil": 0.6,
+        "page": "#FFFFFF",
+        "card": ("#F2F4F7", 0.78),
+        "ink": "#1F2328",
+        "dim": ("#000000", 0.62),
+        "faint": ("#000000", 0.45),
+        "glass": ("#FFFFFF", 0.72),
+        "edge": ("#000000", 0.07),
+        "rim": ("#000000", 0.09, 0.11),
+        "sheen": ("#FFFFFF", 0.7),
+        "blob": 0.2,
+        "shadow": 0.06,
         "head": "#1F2328",
         "muted": "#656D76",
-        "accent": "#E8590C",
-        "aside": "#C2410C",
+        "accent": "#C4511F",
+        "aside": "#B4461C",
         "window": "#FFFFFF",
-        "heat": ("#000000", 0.06),
-        "panel": ("#FFFFFF", 0.7),
+        "heat": ("#000000", 0.05),
+        "panel": ("#FFFFFF", 0.6),
     },
 }
 
@@ -221,7 +225,13 @@ def font_face(key, chars):
     options = subset.Options()
     options.flavor = "woff2"
     options.hinting = False
-    options.layout_features = ["kern", "liga", "calt", "ccmp", "locl", "mark", "mkmk"]
+    # Just what the labels need: kerning, no names or ligature tables. Keeps every image small.
+    options.layout_features = [] if key == "mono" else ["kern"]  # a monospace font has nothing to kern
+    options.name_IDs = []
+    options.name_legacy = False
+    options.glyph_names = False
+    options.notdef_outline = False
+    options.drop_tables += ["GSUB", "GDEF", "STAT", "meta"] + (["GPOS"] if key == "mono" else [])
     font = TTFont(face.path, recalcTimestamp=False)
     subsetter = subset.Subsetter(options)
     subsetter.populate(text=chars)
@@ -247,7 +257,6 @@ class SVG:
         self.label = label
         self.parts, self.defs, self.css, self.chars = [], [], [], {}
         self.ids = 0
-        self.grain = False
 
     def uid(self, prefix):
         self.ids += 1
@@ -307,51 +316,6 @@ class SVG:
             cx += 21
         self.text(cx, y + h / 2 + size * 0.35, label, "semi", size, self.t["ink"])
         return width
-
-    def card(self, x, y, w, h, r, hue, blobs, drift=False):
-        t = self.t
-        clip = self.uid("clip")
-        self.defs.append(
-            f'<clipPath id="{clip}"><rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" rx="{num(r)}"/></clipPath>'
-        )
-        parts = [f'<g clip-path="url(#{clip})">', f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" fill="{t["base"]}"/>']
-        colors = HUES.get(hue, HUES["ember"])
-        for fx, fy, fr, ci, strength in blobs:
-            grad = self.uid("blob")
-            color = colors[ci]
-            self.defs.append(
-                f'<radialGradient id="{grad}"><stop offset="0" stop-color="{color}" stop-opacity="{num(t["blob"] * strength)}"/>'
-                f'<stop offset=".55" stop-color="{color}" stop-opacity="{num(t["blob"] * strength * 0.45)}"/>'
-                f'<stop offset="1" stop-color="{color}" stop-opacity="0"/></radialGradient>'
-            )
-            klass = ' class="drift"' if drift else ""
-            parts.append(
-                f'<circle{klass} cx="{num(x + fx * w)}" cy="{num(y + fy * h)}" r="{num(fr * max(w, h))}" fill="url(#{grad})"/>'
-            )
-        if not self.grain:
-            self.defs.append(
-                '<filter id="grain" x="0" y="0" width="100%" height="100%">'
-                '<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/>'
-                '<feColorMatrix type="saturate" values="0"/></filter>'
-            )
-            self.grain = True
-        parts.append(
-            f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" filter="url(#grain)" '
-            f'opacity="{num(t["grain"])}" style="mix-blend-mode:overlay"/>'
-        )
-        parts.append("</g>")
-        parts.append(
-            f'<rect x="{num(x + 0.5)}" y="{num(y + 0.5)}" width="{num(w - 1)}" height="{num(h - 1)}" rx="{num(r)}" '
-            f'fill="none" {paint(t["edge"], "stroke")} stroke-width="1"/>'
-        )
-        self.add("".join(parts))
-
-    def heading(self, x, y, kicker, title, right=""):
-        t = self.t
-        self.text(x, y, kicker.upper(), "mono-md", 11, t["ink"], tracking=2.2)
-        self.text(x - 2, y + 40, title, "display", 30, t["ink"], tracking=-0.8)
-        if right:
-            self.text(self.width - x, y, right.upper(), "mono", 10.5, t["faint"], tracking=1.6, anchor="end")
 
     def render(self, view=None):
         """The whole canvas, or only the (x, y, w, h) part of it given as `view`."""
@@ -439,8 +403,10 @@ def record(svg, cx, cy, r, words, spinning):
         f'<radialGradient id="{disc}"><stop offset="0" stop-color="#2A2A2E"/><stop offset=".5" stop-color="#121214"/>'
         f'<stop offset="1" stop-color="#050506"/></radialGradient>'
         f'<radialGradient id="{label}" cx=".35" cy=".3"><stop offset="0" stop-color="#FFB37A"/>'
-        f'<stop offset=".6" stop-color="#FF6A2B"/><stop offset="1" stop-color="#D9381E"/></radialGradient>'
-        f'<filter id="{shadow}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>'
+        f'<stop offset=".6" stop-color="#F0703A"/><stop offset="1" stop-color="#C9442A"/></radialGradient>'
+        # A soft ring of shadow: a gradient rather than a blur, which would be redrawn on every frame of the spin.
+        f'<radialGradient id="{shadow}"><stop offset=".84" stop-color="#000" stop-opacity=".42"/>'
+        f'<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
     )
     if spinning:
         # The disc's own box, so the spin stays centred however the image is cropped or scaled.
@@ -449,7 +415,7 @@ def record(svg, cx, cy, r, words, spinning):
             "@keyframes spin{to{transform:rotate(360deg)}}"
         )
     parts = [
-        f'<circle cx="{num(cx + 6)}" cy="{num(cy + 16)}" r="{num(r)}" fill="#000" opacity=".55" filter="url(#{shadow})"/>',
+        f'<circle cx="{num(cx + 4)}" cy="{num(cy + 12)}" r="{num(r * 1.16)}" fill="url(#{shadow})"/>',
         '<g class="spin">' if spinning else "<g>",
         f'<path d="{circle_path(cx, cy, r)}{circle_path(cx, cy, hole_r)}" fill="url(#{disc})" fill-rule="evenodd"/>',
     ]
@@ -469,13 +435,13 @@ def record(svg, cx, cy, r, words, spinning):
     )
     ring = label_r - 12
     size = 6.2
-    tracking = (2 * math.pi * ring - FACES["mono-md"].width(words, size)) / len(words)
-    svg.use("mono-md", words)
+    tracking = (2 * math.pi * ring - FACES["mono"].width(words, size)) / len(words)
+    svg.use("mono", words)
     ring_id = svg.uid("ring")
     parts.append(
         f'<path id="{ring_id}" d="M{num(cx - ring)} {num(cy)}a{num(ring)} {num(ring)} 0 1 1 {num(2 * ring)} 0'
         f'a{num(ring)} {num(ring)} 0 1 1 {num(-2 * ring)} 0" fill="none"/>'
-        f'<text class="f-mono-md" font-size="{size}" letter-spacing="{num(tracking)}" fill="#2A0E04" fill-opacity=".72">'
+        f'<text class="f-mono" font-size="{size}" letter-spacing="{num(tracking)}" fill="#2A0E04" fill-opacity=".72">'
         f'<textPath href="#{ring_id}">{esc(words)}</textPath></text>'
     )
     svg.use("display", "RobyRew")
@@ -483,9 +449,9 @@ def record(svg, cx, cy, r, words, spinning):
         f'<text x="{num(cx)}" y="{num(cy - 10)}" text-anchor="middle" class="f-display" font-size="13" '
         f'letter-spacing="-.4" fill="#2A0E04" fill-opacity=".86">RobyRew</text>'
     )
-    svg.use("mono-md", "SIDE A")
+    svg.use("mono", "SIDE A")
     parts.append(
-        f'<text x="{num(cx)}" y="{num(cy + 18)}" text-anchor="middle" class="f-mono-md" font-size="6.5" '
+        f'<text x="{num(cx)}" y="{num(cy + 18)}" text-anchor="middle" class="f-mono" font-size="6.5" '
         f'letter-spacing="1.6" fill="#2A0E04" fill-opacity=".7">SIDE A</text>'
     )
     parts.append("</g>")
@@ -536,17 +502,15 @@ def tonearm(svg, px, py, points, rest=None):
 def window_mock(svg, x, y, w, h, hue):
     t = svg.t
     colors = HUES.get(hue, HUES["ember"])
-    shadow, slide = svg.uid("wshadow"), svg.uid("slide")
+    slide = svg.uid("slide")
     svg.defs.append(
-        f'<filter id="{shadow}" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>'
-        f'<linearGradient id="{slide}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[1]}"/>'
+        f'<linearGradient id="{slide}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[1]}" stop-opacity=".85"/>'
         f'<stop offset="1" stop-color="#140A0A"/></linearGradient>'
     )
     svg.add(
-        f'<rect x="{num(x + 6)}" y="{num(y + 16)}" width="{num(w - 12)}" height="{num(h)}" rx="14" fill="#000" '
-        f'opacity=".45" filter="url(#{shadow})"/>'
-        f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" rx="12" fill="{t["window"]}"/>'
-        f'<rect x="{num(x + 0.5)}" y="{num(y + 0.5)}" width="{num(w - 1)}" height="{num(h - 1)}" rx="12" fill="none" '
+        f'<rect x="{num(x + 3)}" y="{num(y + 6)}" width="{num(w - 6)}" height="{num(h)}" rx="12" fill="#000" opacity=".18"/>'
+        f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" rx="10" fill="{t["window"]}"/>'
+        f'<rect x="{num(x + 0.5)}" y="{num(y + 0.5)}" width="{num(w - 1)}" height="{num(h - 1)}" rx="10" fill="none" '
         f'{paint(t["edge"], "stroke")}/>'
     )
     for i, color in enumerate(("#FF5F57", "#FEBC2E", "#28C840")):
@@ -559,7 +523,7 @@ def window_mock(svg, x, y, w, h, hue):
             f'height="{height}" rx="{height / 2}" fill="#fff" fill-opacity="{opacity}"/>'
         )
     svg.add(f'<rect x="{num(sx + 10)}" y="{num(sy + 9)}" width="34" height="13" rx="6.5" fill="#FF3B30"/>')
-    svg.text(sx + 27, sy + 18.6, "LIVE", "mono-md", 7.5, "#FFFFFF", tracking=1, anchor="middle")
+    svg.text(sx + 27, sy + 18.6, "LIVE", "mono", 7.5, "#FFFFFF", tracking=1, anchor="middle")
     thumb_w = (sw - 3 * 8) / 4
     for i in range(4):
         tx = sx + i * (thumb_w + 8)
@@ -571,18 +535,19 @@ def window_mock(svg, x, y, w, h, hue):
         )
 
 
-def hexdump(svg, x, y, w, h, seed):
+def hexdump(svg, x, y, w, h, seed, size=10):
     digest = hashlib.sha256(seed.encode()).hexdigest() * 8
-    rows = int(h // 15)
-    cols = int(w // 22)
+    step = size * 1.5
+    rows = int(h // step)
+    cols = int(w // (size * 2.2))
     for i in range(rows):
         chunk = digest[i * cols * 2:(i + 1) * cols * 2]
         line = " ".join(chunk[j:j + 2] for j in range(0, len(chunk), 2)).upper()
-        svg.text(x, y + i * 15, line, "mono", 10, (svg.t["ink"], 0.06), tracking=0.4)
+        svg.text(x, y + i * step, line, "mono", size, (svg.t["ink"], 0.05), tracking=0.4)
 
 
 def heat_colors(theme):
     # Index 0 is the empty cell, drawn with the theme's "heat" colour instead.
     if theme == "dark":
-        return (None, "#7A2E14", "#C2410C", "#FF7A3D", "#FFC08A")
-    return (None, "#FFC6A3", "#FF9A61", "#F0631F", "#B8410C")
+        return (None, "#4A2A20", "#8C4128", "#D2693F", "#F5A57A")
+    return (None, "#F9DCCB", "#F1B08C", "#E07F52", "#BF5A2E")
