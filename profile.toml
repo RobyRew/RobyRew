@@ -32,21 +32,6 @@ label = "Based in"
 value = "Barcelona, Spain"
 icon = "pin"
 
-# Buttons under the record player. The first one is also where your name links to.
-# `short` is the label on phones, where the buttons are narrower.
-[[links]]
-label = "robyrew.com"
-url = "https://robyrew.com"
-icon = "globe"
-hue = "ember"
-
-[[links]]
-label = "@RobyRew on Telegram"
-short = "Telegram"
-url = "https://t.me/RobyRew"
-icon = "send"
-hue = "blue"
-
 # Side A. The first project gets the big card, the rest sit in a grid.
 # Language and stars come from GitHub; `note` overrides the repo description.
 [work]

@@ -29,7 +29,9 @@ every image a redirect through github.com first.
   rewrites any `<picture>` source that mentions dark or light mode to follow the viewer's GitHub theme, and in
   doing so drops a width condition, so the phone source asks for width only.
 - Every link has a hover tooltip.
-- The bar under the record player jumps to each section.
+- The record player is a single row: a spinning record cut across two images would turn out of step. What's
+  playing scrolls along the bottom of it as a ticker. A link is a fixed area of an image, so the moving ticker is
+  one link (the song) and the record is another (play it).
 - "More projects" opens a list of every other public repository.
 - The contribution calendar is also saved as a 3D model, [`img/contributions.stl`](../../img/contributions.stl),
   which GitHub shows in its own 3D viewer. The activity card links to it, so the profile itself doesn't load
@@ -97,9 +99,10 @@ Adds the device and playlist to the deck. The account that **owns** the app must
 ## 2. Live record player
 
 The README is only rebuilt once a day, so on its own the record always shows "last played" with the needle parked.
-To make it live, a second workflow publishes the parts of the record player that change with the music (the deck,
-the song, the artist, the album or playlist and the listening profile) to GitHub Pages every ten minutes. Nothing
-is committed and no branch is created.
+To make it live, a second workflow publishes the record player to GitHub Pages every five minutes (the shortest
+schedule GitHub allows), whenever the music has changed. Nothing is committed and no branch is created. GitHub
+caches README images for up to about ten minutes on top of that, so the card trails the music by a few minutes;
+a README can't run scripts, so it can't update while the page is open.
 
 Their links follow the music too: they point at small redirect pages on the same site (`go/play/`, `go/song/`,
 `go/artist/`, `go/context/`, `go/user/`), rewritten every time the song changes. A push that changes the code
@@ -113,7 +116,7 @@ gh workflow run refresh.yml
 ```
 
 The first run publishes the record player; the second switches the README over to it. Expect it to lag the music
-by up to about 15 minutes, since GitHub's scheduler and image cache both add delay.
+by roughly 5 to 15 minutes, since GitHub's scheduler and image cache both add delay.
 
 ## 3. Optional: richer stats
 

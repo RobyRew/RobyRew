@@ -374,71 +374,17 @@ def search(query, kind):
 
 # ── the record player ────────────────────────────────────────────────────────
 
-# The record player card, in three rows: the spinning record with who I am beside it (like an artist page), a slim
-# now-playing bar across the card (each part of it its own link), and the buttons.
+# One row: who I am, with a ticker of what's playing along the bottom, and the record taking the full height on the
+# right. It has to be a single row: a spinning record cut across two images would turn out of step.
 HERO = {
-    "d": {"rows": (172, 48, 46), "cx": 100, "cy": 88, "r": 64, "bar": 20},
-    "m": {"rows": (132, 48, 44), "cx": 50, "cy": 66, "r": 38, "bar": 12},
+    "d": {"h": 216, "cx": 680, "cy": 108, "r": 90, "pad": 24, "ticker": (168, 30)},
+    "m": {"h": 186, "cx": 334, "cy": 93, "r": 58, "pad": 13, "ticker": (146, 26)},
 }
-SPLIT = 0.27  # the record's column, on the left; wide enough for the parked tonearm on phones too
-NOW = (0.34, 0.22, 0.22, 0.22)  # song, artist, album or playlist, listener
-
-
-def identity(c, me):
-    """What I'm doing, my name, bio and facts, next to the record."""
-    svg, t = c.svg, c.t
-    left = c.x + c.pick(8, 4)
-    facts = me.get("facts", [])
-    chips = max((24 + 21 + FACES["semi"].width(f["value"], 11.5) for f in facts[1:]), default=0)
-    room = c.x + c.w - left - (c.pick(chips + 40, 12) if chips else c.pick(22, 12))
-    if facts:
-        size = c.pick(8.5, 7.5)
-        y = c.pick(40, 30)
-        text = facts[0]["value"] if c.m else f'{facts[0]["label"]} · {facts[0]["value"]}'
-        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="5.5" fill="#F2A65A" fill-opacity=".2"/>')
-        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="2.6" fill="#F2A65A"/>')
-        svg.text(left + 13, y, fit(text.upper(), "mono", size, room - 13, 1.4), "mono", size, t["dim"], tracking=1.4)
-    size = c.pick(38, 26)
-    while size > 20 and FACES["display"].width(me["name"], size, -size * 0.035) > room:
-        size -= 1
-    base = c.pick(78, 58)
-    svg.text(left - size * 0.03, base, me["name"], "display", size, t["ink"], tracking=-size * 0.035)
-    fs, lh = c.pick(14, 11.5), c.pick(19, 14.5)
-    y = base + c.pick(24, 18)
-    for line in FACES["text"].wrap(me["statement"], fs, room, 2):
-        svg.text(left, y, line, "text", fs, t["dim"])
-        y += lh
-    y += c.pick(1, 2)
-    for line in FACES["semi"].wrap(me["aside"], fs, room, 2):
-        svg.text(left, y, line, "semi", fs, t["aside"])
-        y += lh
-    rest = facts[1:]
-    if not rest:
-        return
-    if c.m:
-        line = fit(" · ".join(f["value"] for f in rest), "semi", 10, room)
-        svg.text(left, y + 6, line, "semi", 10, t["faint"])
-        return
-    # Day job and city on the right, stacked, so the row is balanced.
-    right = c.x + c.w - 20
-    y = (c.h - len(rest) * 24 - (len(rest) - 1) * 8) / 2
-    for fact in rest:
-        width = 24 + 21 + FACES["semi"].width(fact["value"], 11.5)
-        svg.chip(right - width, y, fact["value"], h=24, size=11.5, icon=fact.get("icon", "spark"))
-        y += 32
-
-
-def deck(c, me, now):
-    svg = c.svg
-    g = HERO[c.v]
-    playing = bool(now and now.get("playing"))
-    svg.add(f'<g transform="translate({num(g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
-    record(svg, 0, 0, 146, me["record"], playing)
-    if playing:
-        tonearm(svg, 150, -138, [(158, 22), (102, 72)])
-    else:
-        tonearm(svg, 150, -138, [(158, 104), (159, 118)], rest=(159, 122))
-    svg.add("</g>")
+SPLIT = 0.62  # the record's column starts here
+# The arm, in the record's own units (radius 146): hinged at the right, parked alongside or resting on the grooves.
+ARM_PIVOT = (168, -86)
+ARM_PARKED = [(170, 56), (171, 74)]
+ARM_PLAYING = [(170, 14), (112, 64)]
 
 
 def status_text(now):
@@ -452,176 +398,138 @@ def status_text(now):
     return f"LAST PLAYED · {stamp}" if stamp else "LAST PLAYED"
 
 
-def now_bar(c, first):
-    """The glass bar the now-playing parts sit in. Every part draws all of it; each image shows its own piece."""
-    svg, t = c.svg, c.t
-    inset = HERO[c.v]["bar"]
-    x0, x1 = inset, WIDTH[c.v] - inset
-    y, h = 5, c.h - 10
-    svg.add(f'<rect x="{num(x0)}" y="{y}" width="{num(x1 - x0)}" height="{num(h)}" rx="{num(h / 2)}" '
-            f'{paint(t["panel"])} {paint(t["edge"], "stroke")}/>')
-    if not first:
-        svg.add(f'<line x1="{num(c.x + 0.5)}" y1="{y + 11}" x2="{num(c.x + 0.5)}" y2="{num(y + h - 11)}" {paint(t["edge"], "stroke")}/>')
-    left = max(c.x, x0) + c.pick(12, 8)
-    right = min(c.x + c.w, x1) - c.pick(12, 7)
-    return left, right, y + h / 2
+def ticker_items(now):
+    """What scrolls past, as (icon, text) pairs."""
+    if not now:
+        return [("disc", "Nothing on the deck right now"), ("music", "Music is usually on, check back soon")]
+    items = [("music", now.get("title") or "Untitled")]
+    if now.get("artist"):
+        items.append(("mic", now["artist"]))
+    if now.get("context"):
+        items.append(("list" if now.get("context_kind") == "Playlist" else "disc", now["context"]))
+    platform = now.get("platform") or "Last.fm"
+    items.append(("dot", f'@{now["user"]} on {platform}' if now.get("user") else f"on {platform}"))
+    return items
 
 
-def now_song(c, now):
+def ticker(c, now, x0, x1, y, h):
+    """A glass strip: the status stays put, the song, artist, album and listener scroll past for ever."""
     svg, t = c.svg, c.t
-    left, right, mid = now_bar(c, True)
     playing = bool(now and now.get("playing"))
-    art = c.pick(28, 26)
-    ax = left - c.pick(5, 3)
-    if now:
-        artwork(svg, ax, mid - art / 2, art, now.get("cover"), now.get("title", ""), r=art / 2)
-        svg.add(f'<circle cx="{num(ax + art / 2)}" cy="{num(mid)}" r="2.2" fill="#000" fill-opacity=".55"/>')
-    else:
-        svg.glass(ax, mid - art / 2, art, art, art / 2)
-        svg.icon("disc", ax + art * 0.25, mid - art * 0.25, art * 0.5, t["faint"])
-    tx = ax + art + c.pick(10, 7)
-    room = right - tx
+    svg.add(f'<rect x="{num(x0)}" y="{num(y)}" width="{num(x1 - x0)}" height="{h}" rx="{h / 2}" '
+            f'{paint(t["panel"])} {paint(t["edge"], "stroke")}/>')
+    small = c.pick(7.5, 7)
+    label = status_text(now) if not c.m else status_text(now).split(" · ")[0]
+    badge = FACES["mono"].width(label, small, 1.2) + c.pick(28, 22)
+    bx = x0 + 3
+    svg.add(f'<rect x="{num(bx)}" y="{num(y + 3)}" width="{num(badge)}" height="{h - 6}" rx="{(h - 6) / 2}" {paint(t["glass"])}/>')
     dot = "#30D158" if playing else "#8E8E93"
-    title = now.get("title", "") if now else "Nothing on the deck"
     if playing:
         svg.css.append(".pulse{animation:pulse 1.6s ease-in-out infinite alternate}@keyframes pulse{to{opacity:.3}}")
     pulse = ' class="pulse"' if playing else ""
-    if c.m:
-        svg.add(f'<circle{pulse} cx="{num(tx + 2.5)}" cy="{num(mid - 1)}" r="2.5" fill="{dot}"/>')
-        size, title = shrink(title, "semi", 11, room - 9, 0.88)
-        svg.text(tx + 9, mid + size * 0.35, title, "semi", size, t["ink"])
-        return
-    sy = mid - 3.5
-    svg.add(f'<circle{pulse} cx="{num(tx + 2.5)}" cy="{num(sy - 2.6)}" r="2.5" fill="{dot}"/>')
-    end = tx + 9 + svg.text(tx + 9, sy, fit(status_text(now), "mono", 7.5, room - 30, 1.2), "mono", 7.5, t["faint"], tracking=1.2)
-    if playing:
-        equalizer(svg, end + 6, sy + 0.5, 7)
-    svg.text(tx, mid + 10, fit(title, "semi", 12.5, room), "semi", 12.5, t["ink"])
-
-
-def now_part(c, value, icon=None, dot=None):
-    """The artist, the album or playlist, or who is listening where."""
-    svg, t = c.svg, c.t
-    left, right, mid = now_bar(c, False)
-    size = c.pick(11, 9.5)
-    if dot:
-        svg.add(f'<circle cx="{num(left + size * 0.4)}" cy="{num(mid)}" r="{num(size * 0.3)}" fill="{dot}"/>')
-    else:
-        svg.icon(icon, left, mid - size / 2, size, t["faint"], stroke=2)
-    tx = left + size + c.pick(7, 5)
-    text_size, value = shrink(value or "—", "semi", c.pick(12, 10.5), right - tx, 0.88)
-    svg.text(tx, mid + text_size * 0.36, value, "semi", text_size, t["ink"])
-
-
-def link_cell(c, link, left_pad, right_pad):
-    """A website or chat button: glass with a touch of the link's colour."""
-    svg, t = c.svg, c.t
-    colors = HUES.get(link.get("hue") or "ember", HUES["ember"])
-    h = c.pick(28, 26)
-    x0, x1 = c.x + left_pad, c.x + c.w - right_pad
-    y = (c.h - h) / 2 - 2
-    tint = svg.uid("tint")
+    svg.add(f'<circle{pulse} cx="{num(bx + c.pick(12, 10))}" cy="{num(y + h / 2)}" r="3" fill="{dot}"/>')
+    svg.text(bx + c.pick(20, 16), y + h / 2 + small * 0.36, label, "mono", small, t["dim"], tracking=1.2)
+    # The scrolling part, faded in and out at its ends.
+    sx0, sx1 = bx + badge + 6, x1 - h / 2
+    size = c.pick(12, 10.5)
+    gap = c.pick(30, 22)
+    base = y + h / 2 + size * 0.36
+    parts, x = [], 0.0
+    for icon, text in ticker_items(now):
+        parts.append((x, icon, text))
+        x += (size * 0.6 if icon == "dot" else size) + 6 + FACES["semi"].width(text, size) + gap
+    loop = x
+    copies = max(2, math.ceil((sx1 - sx0) / loop) + 1)
+    mask, clip = svg.uid("fade"), svg.uid("lane")
+    fade = min(24, (sx1 - sx0) * 0.12)
     svg.defs.append(
-        f'<linearGradient id="{tint}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[0]}" stop-opacity=".2"/>'
-        f'<stop offset="1" stop-color="{colors[1]}" stop-opacity=".08"/></linearGradient>'
+        f'<linearGradient id="{mask}g" gradientUnits="userSpaceOnUse" x1="{num(sx0)}" y1="0" x2="{num(sx1)}" y2="0">'
+        f'<stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="{num(fade / (sx1 - sx0))}" stop-color="#fff"/>'
+        f'<stop offset="{num(1 - fade / (sx1 - sx0))}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>'
+        f'</linearGradient><mask id="{mask}"><rect x="{num(sx0)}" y="{num(y)}" width="{num(sx1 - sx0)}" height="{h}" fill="url(#{mask}g)"/></mask>'
+        f'<clipPath id="{clip}"><rect x="{num(sx0)}" y="{num(y)}" width="{num(sx1 - sx0)}" height="{h}"/></clipPath>'
     )
-    svg.add(
-        f'<rect x="{num(x0)}" y="{num(y)}" width="{num(x1 - x0)}" height="{h}" rx="{h / 2}" fill="url(#{tint})"/>'
-        f'<rect x="{num(x0 + 0.5)}" y="{num(y + 0.5)}" width="{num(x1 - x0 - 1)}" height="{h - 1}" rx="{(h - 1) / 2}" fill="none" '
-        f'stroke="{colors[0]}" stroke-opacity=".32"/>'
-    )
-    dot = h - 8
-    size = c.pick(12, 10)
-    room = x1 - x0 - dot - c.pick(20, 12)
-    label = link["label"]
-    if FACES["semi"].width(label, size) > room and link.get("short"):
-        label = link["short"]
-    size, label = shrink(label, "semi", size, room, 0.86)
-    width = dot + 6 + FACES["semi"].width(label, size)
-    x = x0 + (x1 - x0 - width) / 2
-    svg.add(f'<circle cx="{num(x + dot / 2)}" cy="{num(y + h / 2)}" r="{num(dot / 2)}" fill="{colors[0]}" fill-opacity=".9"/>')
-    svg.icon(link.get("icon", "globe"), x + dot * 0.22, y + h / 2 - dot * 0.28, dot * 0.56, "#FFFFFF", stroke=2.2)
-    svg.text(x + dot + 6, y + h / 2 + size * 0.36, label, "semi", size, t["ink"])
+    speed = c.pick(32, 24)
+    svg.css.append(f".tick{{animation:tick {num(loop / speed)}s linear infinite}}@keyframes tick{{to{{transform:translateX(-{num(loop)}px)}}}}")
+    svg.add(f'<g clip-path="url(#{clip})" mask="url(#{mask})"><g class="tick">')
+    for k in range(copies):
+        for offset, icon, text in parts:
+            px = sx0 + k * loop + offset
+            if icon == "dot":
+                platform = (now or {}).get("platform") or "Last.fm"
+                svg.add(f'<circle cx="{num(px + size * 0.3)}" cy="{num(y + h / 2)}" r="{num(size * 0.28)}" fill="{PLATFORMS.get(platform, "#9CA3AF")}"/>')
+                tx = px + size * 0.6 + 6
+            else:
+                svg.icon(icon, px, y + h / 2 - size / 2, size, t["faint"], stroke=2)
+                tx = px + size + 6
+            svg.text(tx, base, text, "semi", size, t["ink"] if icon == "music" else t["dim"])
+    svg.add("</g></g>")
 
 
-def nav_cell(c, icon, label, first, last):
-    """One button of the jump bar; together they make one glass strip."""
+def identity(c, me, now):
+    """What I'm doing, my name, bio and facts, with the now-playing ticker along the bottom."""
     svg, t = c.svg, c.t
-    h = c.pick(28, 26)
-    y = (c.h - h) / 2 - 2
-    x0 = c.x + (4 if first else 0)
-    x1 = c.x + c.w - (HERO[c.v]["bar"] if last else 0)
-    r = h / 2
-    left_r, right_r = (r if first else 0), (r if last else 0)
-    shape = (f"M{num(x0 + left_r)} {num(y)}H{num(x1 - right_r)}"
-             + (f"A{num(r)} {num(r)} 0 0 1 {num(x1 - right_r)} {num(y + h)}" if last else f"V{num(y + h)}")
-             + f"H{num(x0 + left_r)}"
-             + (f"A{num(r)} {num(r)} 0 0 1 {num(x0 + left_r)} {num(y)}" if first else f"V{num(y)}") + "Z")
-    svg.add(f'<path d="{shape}" {paint(t["glass"])}/>')
-    svg.add(f'<path d="M{num(x0 + left_r)} {num(y + 0.5)}H{num(x1 - right_r)}M{num(x0 + left_r)} {num(y + h - 0.5)}H{num(x1 - right_r)}" '
-            f'{paint(t["edge"], "stroke")}/>')
-    if first:
-        svg.add(f'<path d="M{num(x0 + r)} {num(y + 0.5)}A{num(r - 0.5)} {num(r - 0.5)} 0 0 0 {num(x0 + r)} {num(y + h - 0.5)}" '
-                f'fill="none" {paint(t["edge"], "stroke")}/>')
+    g = HERO[c.v]
+    left = c.x + g["pad"]
+    room = c.x + c.w - left - c.pick(16, 6)
+    facts = me.get("facts", [])
+    if facts:
+        size = c.pick(8.5, 7.5)
+        y = c.pick(40, 28)
+        text = facts[0]["value"] if c.m else f'{facts[0]["label"]} · {facts[0]["value"]}'
+        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="5.5" fill="#F2A65A" fill-opacity=".2"/>')
+        svg.add(f'<circle cx="{num(left + 3)}" cy="{num(y - size * 0.35)}" r="2.6" fill="#F2A65A"/>')
+        svg.text(left + 13, y, fit(text.upper(), "mono", size, room - 13, 1.4), "mono", size, t["dim"], tracking=1.4)
+    size = c.pick(40, 26)
+    while size > 20 and FACES["display"].width(me["name"], size, -size * 0.035) > room:
+        size -= 1
+    base = c.pick(84, 58)
+    svg.text(left - size * 0.03, base, me["name"], "display", size, t["ink"], tracking=-size * 0.035)
+    fs, lh = c.pick(14, 11.5), c.pick(19, 14.5)
+    y = base + c.pick(26, 18)
+    for line in FACES["text"].wrap(me["statement"], fs, room, 2):
+        svg.text(left, y, line, "text", fs, t["dim"])
+        y += lh
+    y += c.pick(1, 2)
+    for line in FACES["semi"].wrap(me["aside"], fs, room, 2):
+        svg.text(left, y, line, "semi", fs, t["aside"])
+        y += lh
+    rest = facts[1:]
+    if rest:
+        size = c.pick(8.5, 7.5)
+        svg.text(left, y + c.pick(4, 3), fit(" · ".join(f["value"] for f in rest).upper(), "mono", size, room, 1.2),
+                 "mono", size, t["faint"], tracking=1.2)
+    ty, th = g["ticker"]
+    ticker(c, now, left - c.pick(6, 4), c.x + c.w - c.pick(12, 4), ty, th)
+
+
+def deck(c, me, now):
+    svg = c.svg
+    g = HERO[c.v]
+    playing = bool(now and now.get("playing"))
+    clip = svg.uid("deck")  # the card's own shape, so the record's shadow stays inside it
+    svg.defs.append(f'<clipPath id="{clip}"><rect x="0" y="0" width="{WIDTH[c.v]}" height="{num(c.h)}" rx="{OUTER[c.v]}"/></clipPath>')
+    svg.add(f'<g clip-path="url(#{clip})"><g transform="translate({num(g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
+    record(svg, 0, 0, 146, me["record"], playing)
+    if playing:
+        tonearm(svg, *ARM_PIVOT, ARM_PLAYING)
     else:
-        svg.add(f'<line x1="{num(x0 + 0.5)}" y1="{num(y + 7)}" x2="{num(x0 + 0.5)}" y2="{num(y + h - 7)}" {paint(t["edge"], "stroke")}/>')
-    if last:
-        svg.add(f'<path d="M{num(x1 - r)} {num(y + 0.5)}A{num(r - 0.5)} {num(r - 0.5)} 0 0 1 {num(x1 - r)} {num(y + h - 0.5)}" '
-                f'fill="none" {paint(t["edge"], "stroke")}/>')
-    size = c.pick(11.5, 9.5)
-    icon_w = 0 if c.m else 17
-    size, label = shrink(label, "semi", size, x1 - x0 - icon_w - 6, 0.85)
-    width = icon_w + FACES["semi"].width(label, size)
-    x = x0 + (x1 - x0 - width) / 2
-    if icon_w:
-        svg.icon(icon, x, y + h / 2 - 6, 12, t["dim"], stroke=2)
-    svg.text(x + icon_w, y + h / 2 + size * 0.36, label, "semi", size, t["ink"])
+        tonearm(svg, *ARM_PIVOT, ARM_PARKED, rest=(ARM_PARKED[-1][0], ARM_PARKED[-1][1] + 4))
+    svg.add("</g></g>")
 
 
-def hero_rows(p, now, hrefs, sections):
+def hero_rows(p, now, hrefs):
     """The record player card. `hrefs` says where its live parts link to (Pages redirects, or the song itself)."""
     me = p["me"]
-    links = p.get("links", [])[:2]
-    card = Card("ember", blobs=[(0.06, 0.25, 0.45, 0, 0.9), (0.96, 0.85, 0.5, 1, 0.7), (0.55, -0.2, 0.4, 2, 0.5)])
-    info = now or {}
-    platform = info.get("platform") or "Last.fm"
-    home = links[0]["url"] if links else f'https://github.com/{me["github"]}'
+    card = Card("ember", blobs=[(0.96, 0.4, 0.5, 0, 0.9), (0.04, 0.95, 0.5, 1, 0.7), (0.45, -0.25, 0.4, 2, 0.5)])
+    platform = (now or {}).get("platform") or "Last.fm"
     bio = f'{me["name"]}. {me["statement"]} {me["aside"]}'
-    d, m = HERO["d"]["rows"], HERO["m"]["rows"]
-    kind = info.get("context_kind") or ("Album" if info.get("context") else "From")
-    rows = [
-        Row("hero", d[0], m[0], [
-            Cell(card, SPLIT, hrefs["play"], f"Play it on {platform}", "The record player: it spins while I'm listening",
-                 lambda c: deck(c, me, now), live=True, key="deck"),
-            Cell(card, 1 - SPLIT, home, f"Visit {links[0]['label']}" if links else "My GitHub", bio,
-                 lambda c: identity(c, me), key="me"),
-        ], lines=False, rule=False),
-        Row("hero-now", d[1], m[1], [
-            Cell(card, NOW[0], hrefs["song"], "The song on my record player", "What I'm listening to",
-                 lambda c: now_song(c, now), live=True, key="song"),
-            Cell(card, NOW[1], hrefs["artist"], "The artist", "Artist",
-                 lambda c: now_part(c, info.get("artist") or "—", icon="mic"), live=True, key="artist"),
-            Cell(card, NOW[2], hrefs["context"], f"The {kind.lower()}" if kind != "From" else "Where it's playing from", kind,
-                 lambda c: now_part(c, info.get("context") or info.get("device") or "Library",
-                                    icon="list" if kind == "Playlist" else "disc"), live=True, key="context"),
-            Cell(card, NOW[3], hrefs["user"], f"My {platform} profile", "Listening profile",
-                 lambda c: now_part(c, f'@{info["user"]}' if info.get("user") else platform,
-                                    dot=PLATFORMS.get(platform, "#9CA3AF")), live=True, key="user"),
-        ], lines=False, rule=False),
-    ]
-    buttons = []
-    for i, link in enumerate(links):
-        buttons.append(Cell(card, 0.5 / len(links), link["url"], f'Open {link["label"]}', link["label"],
-                            lambda c, link=link, i=i: link_cell(c, link, HERO[c.v]["bar"] if i == 0 else 4, 4),
-                            key=f"link{i + 1}"))
-    if not buttons:
-        buttons.append(Cell(card, 0.5, home, "My GitHub", "", lambda c: None, key="links"))
-    for i, (anchor, label, icon) in enumerate(sections):
-        buttons.append(Cell(card, 0.5 / len(sections), f"#{anchor}", f"Jump to {label}", label,
-                            lambda c, icon=icon, label=label, i=i: nav_cell(c, icon, label, i == 0, i == len(sections) - 1),
-                            key=anchor))
-    rows.append(Row("hero-buttons", d[2], m[2], buttons, lines=False, rule=False, space=True))
-    return rows
+    return [Row("hero", HERO["d"]["h"], HERO["m"]["h"], [
+        Cell(card, SPLIT, hrefs["song"], "What I'm listening to", f"{bio} Now playing and last played below.",
+             lambda c: identity(c, me, now), live=True, key="me"),
+        Cell(card, 1 - SPLIT, hrefs["play"], f"Play it on {platform}", "The record player: it spins while I'm listening",
+             lambda c: deck(c, me, now), live=True, key="deck"),
+    ], lines=False, rule=False, space=True)]
 
 
 # ── section headers ──────────────────────────────────────────────────────────
@@ -1286,20 +1194,9 @@ def page(p, data, hrefs, skyline_url=None):
     since = data.get("since", "")
     items = []
 
-    sections = []
-    if projects:
-        sections.append(("work", "Work", "code"))
-    if stats:
-        sections.append(("charts", "Charts", "chart"))
-    if tracks:
-        sections.append(("music", "Music", "music"))
-    if p.get("credits", {}).get("items"):
-        sections.append(("credits", "Credits", "layers"))
-
-    items += hero_rows(p, data["now"], hrefs, sections)
+    items += hero_rows(p, data["now"], hrefs)
 
     if projects:
-        items.append(("anchor", "work"))
         repos = data.get("repo_count")
         items.append(header_row("side-a", "Side A", p["work"]["title"], f"All {repos} repos" if repos else "All repos",
                                 f"{profile}?tab=repositories", "work"))
@@ -1320,13 +1217,11 @@ def page(p, data, hrefs, skyline_url=None):
         ], space=True))
 
     if stats:
-        items.append(("anchor", "charts"))
         items.append(header_row("charts", "Charts", "Activity & popularity", "Updated daily", f"{profile}?tab=overview", "charts"))
         items += chart_rows(stats, login, since, skyline_url)
 
     if tracks:
         listening = p.get("listening", {})
-        items.append(("anchor", "music"))
         scrobbles = data.get("scrobbles")
         lastfm_url = data.get("lastfm_url") or listening.get("profile") or None
         side = f"{compact(scrobbles)} scrobbles" if scrobbles else f'Top tracks · {tracks[0].get("source", "Spotify")}'
@@ -1335,7 +1230,6 @@ def page(p, data, hrefs, skyline_url=None):
 
     credits = p.get("credits", {})
     if credits.get("items"):
-        items.append(("anchor", "credits"))
         items.append(header_row("liner-notes", "Credits", credits.get("title", "Liner notes"), "Stack & tools", None, "credits"))
         items += credit_rows(credits["items"], credits.get("urls"), "#credits")
 
