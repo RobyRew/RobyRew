@@ -377,14 +377,17 @@ def search(query, kind):
 # One row: who I am, with a ticker of what's playing along the bottom, and the record taking the full height on the
 # right. It has to be a single row: a spinning record cut across two images would turn out of step.
 HERO = {
-    "d": {"h": 216, "cx": 680, "cy": 108, "r": 90, "pad": 24, "ticker": (168, 30)},
-    "m": {"h": 186, "cx": 334, "cy": 93, "r": 58, "pad": 13, "ticker": (146, 26)},
+    "d": {"h": 216, "cx": 676, "cy": 108, "r": 90, "pad": 24, "ticker": (168, 30)},
+    "m": {"h": 186, "cx": 330, "cy": 93, "r": 58, "pad": 13, "ticker": (146, 26)},
 }
 SPLIT = 0.62  # the record's column starts here
-# The arm, in the record's own units (radius 146): hinged at the right, parked alongside or resting on the grooves.
-ARM_PIVOT = (168, -86)
-ARM_PARKED = [(170, 56), (171, 74)]
-ARM_PLAYING = [(170, 14), (112, 64)]
+# The arm, in the record's own units (radius 146): hinged at the top right, swung slightly out onto its rest when
+# parked, or in by 24 degrees so the needle sits in the outer grooves.
+ARM_PIVOT = (172, -100)
+ARM_PARKED, ARM_PLAYING = -4, 24
+ARM_REST = (186, 53)  # where the parked tube crosses, worked out from its curve
+# Seconds per turn: always turning, a lazy idle, and a real 33 1/3 RPM while a song plays.
+SPIN_IDLE, SPIN_PLAYING = 6, 1.8
 
 
 def status_text(now):
@@ -510,11 +513,8 @@ def deck(c, me, now):
     clip = svg.uid("deck")  # the card's own shape, so the record's shadow stays inside it
     svg.defs.append(f'<clipPath id="{clip}"><rect x="0" y="0" width="{WIDTH[c.v]}" height="{num(c.h)}" rx="{OUTER[c.v]}"/></clipPath>')
     svg.add(f'<g clip-path="url(#{clip})"><g transform="translate({num(g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
-    record(svg, 0, 0, 146, me["record"], playing)
-    if playing:
-        tonearm(svg, *ARM_PIVOT, ARM_PLAYING)
-    else:
-        tonearm(svg, *ARM_PIVOT, ARM_PARKED, rest=(ARM_PARKED[-1][0], ARM_PARKED[-1][1] + 4))
+    record(svg, 0, 0, 146, me["record"], SPIN_PLAYING if playing else SPIN_IDLE)
+    tonearm(svg, *ARM_PIVOT, ARM_PLAYING if playing else ARM_PARKED, ARM_REST)
     svg.add("</g></g>")
 
 

@@ -422,7 +422,8 @@ def artwork(svg, x, y, size, url, seed, r=9):
 # ── shared shapes ─────────────────────────────────────────────────────────────
 
 
-def record(svg, cx, cy, r, words, spinning):
+def record(svg, cx, cy, r, words, period):
+    """A vinyl record turning once every `period` seconds."""
     label_r, hole_r = 0.38 * r, 4
     disc, label, shadow = svg.uid("disc"), svg.uid("label"), svg.uid("shadow")
     svg.defs.append(
@@ -434,15 +435,14 @@ def record(svg, cx, cy, r, words, spinning):
         f'<radialGradient id="{shadow}"><stop offset=".84" stop-color="#000" stop-opacity=".42"/>'
         f'<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
     )
-    if spinning:
-        # The disc's own box, so the spin stays centred however the image is cropped or scaled.
-        svg.css.append(
-            ".spin{transform-box:fill-box;transform-origin:center;animation:spin 2.4s linear infinite}"
-            "@keyframes spin{to{transform:rotate(360deg)}}"
-        )
+    # The disc's own box, so the spin stays centred however the image is cropped or scaled.
+    svg.css.append(
+        f".spin{{transform-box:fill-box;transform-origin:center;animation:spin {num(period)}s linear infinite}}"
+        "@keyframes spin{to{transform:rotate(360deg)}}"
+    )
     parts = [
         f'<circle cx="{num(cx + 4)}" cy="{num(cy + 12)}" r="{num(r * 1.16)}" fill="url(#{shadow})"/>',
-        '<g class="spin">' if spinning else "<g>",
+        '<g class="spin">',
         f'<path d="{circle_path(cx, cy, r)}{circle_path(cx, cy, hole_r)}" fill="url(#{disc})" fill-rule="evenodd"/>',
     ]
     groove, i = label_r + 7, 0
@@ -493,32 +493,51 @@ def record(svg, cx, cy, r, words, spinning):
     svg.add("".join(parts))
 
 
-def tonearm(svg, px, py, points, rest=None):
+# An S-shaped tonearm, like a Technics SL-1200's, drawn pointing down from its pivot at (0, 0): the tube bends one
+# way and back, the headshell is angled in towards the spindle and the counterweight sits behind the pivot. It is
+# one rigid shape; parked or playing, only its angle changes.
+ARM_TUBE = "M0 0V26C0 60 13 84 12 112S-6 168-4 196"
+
+
+def tonearm(svg, px, py, angle, rest):
+    """The arm at `angle` degrees about its pivot (positive swings it in over the record), and its rest at `rest`."""
     metal = svg.uid("metal")
     svg.defs.append(
         f'<linearGradient id="{metal}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F6"/>'
         f'<stop offset=".5" stop-color="#A9A9B2"/><stop offset="1" stop-color="#6B6B74"/></linearGradient>'
     )
-    if rest:
-        rx, ry = rest
-        svg.add(
-            f'<rect x="{num(rx - 7)}" y="{num(ry - 2)}" width="14" height="22" rx="4" fill="#2B2B30"/>'
-            f'<rect x="{num(rx - 7)}" y="{num(ry - 2)}" width="14" height="22" rx="4" fill="none" stroke="#fff" stroke-opacity=".15"/>'
-        )
-    path = "M" + " L".join(f"{num(x)} {num(y)}" for x, y in [(px, py)] + points)
-    hx, hy = points[-1]
-    ax, ay = points[-2] if len(points) > 1 else (px, py)
-    angle = math.degrees(math.atan2(hy - ay, hx - ax))
+    rx, ry = rest
+    # The rest stays put on the plinth: a round post with a clip the tube lies in when parked.
     svg.add(
-        f'<path d="{path}" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="9" stroke-linecap="round" '
-        f'stroke-linejoin="round" transform="translate(4 7)"/>'
-        f'<path d="{path}" fill="none" stroke="url(#{metal})" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>'
-        f'<path d="{path}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round" '
-        f'stroke-linejoin="round" transform="translate(-1.2 -1)"/>'
-        f'<g transform="translate({num(hx)} {num(hy)}) rotate({num(angle)})">'
-        f'<rect x="-6" y="-8" width="24" height="16" rx="3.5" fill="url(#{metal})"/>'
-        f'<rect x="12" y="-3" width="7" height="6" rx="1.5" fill="#2B2B30"/></g>'
-        f'<rect x="{num(px - 9)}" y="{num(py - 46)}" width="18" height="26" rx="5" fill="url(#{metal})"/>'
+        f'<circle cx="{num(rx + 2)}" cy="{num(ry + 4)}" r="11" fill="#000" fill-opacity=".25"/>'
+        f'<circle cx="{num(rx)}" cy="{num(ry)}" r="10" fill="#2B2B30"/>'
+        f'<circle cx="{num(rx)}" cy="{num(ry)}" r="10" fill="none" stroke="#fff" stroke-opacity=".12"/>'
+        f'<path d="M{num(rx - 7)} {num(ry - 3)}H{num(rx + 7)}M{num(rx - 7)} {num(ry + 3)}H{num(rx + 7)}" stroke="#55555C" '
+        f'stroke-width="2.4" stroke-linecap="round"/>'
+    )
+    tube = (
+        f'<path d="{ARM_TUBE}" fill="none" stroke="url(#{metal})" stroke-width="6" stroke-linecap="round"/>'
+        f'<path d="{ARM_TUBE}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round" '
+        f'transform="translate(-1.2 -1)"/>'
+    )
+    headshell = (
+        '<g transform="translate(-4 196) rotate(20)">'
+        f'<path d="M7 6L17 1.5" stroke="url(#{metal})" stroke-width="3" stroke-linecap="round"/>'  # finger lift
+        f'<rect x="-8" y="-2" width="16" height="32" rx="3.5" fill="url(#{metal})"/>'
+        '<rect x="-6" y="22" width="12" height="13" rx="2" fill="#2B2B30"/>'  # cartridge
+        '<rect x="-1" y="34" width="2" height="4" rx="1" fill="#C9C9CF"/>'  # stylus
+        "</g>"
+    )
+    weight = (
+        f'<rect x="-2.5" y="-36" width="5" height="36" fill="url(#{metal})"/>'
+        f'<rect x="-12" y="-64" width="24" height="28" rx="5" fill="url(#{metal})"/>'
+        '<path d="M-12 -57H12M-12 -50H12M-12 -43H12" stroke="#000" stroke-opacity=".18"/>'
+    )
+    shadow = f'<path d="{ARM_TUBE}" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="9" stroke-linecap="round"/>'
+    svg.add(
+        f'<g transform="translate({num(px + 4)} {num(py + 7)}) rotate({num(angle)})">{shadow}</g>'
+        f'<g transform="translate({num(px)} {num(py)}) rotate({num(angle)})">{weight}{tube}{headshell}</g>'
+        f'<circle cx="{num(px)}" cy="{num(py)}" r="24" fill="#2B2B30" fill-opacity=".55"/>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="19" fill="url(#{metal})"/>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="19" fill="none" stroke="#000" stroke-opacity=".25"/>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="7.5" fill="#2B2B30"/>'
