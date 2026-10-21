@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 51,
-    "views": 6569
+    "scrobbles": 129,
+    "views": 6576
   },
   "github": {
     "repos": {
@@ -54,29 +54,29 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 36
+      "public_repos": 37
     }
   },
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Youngmin You",
-    "artist_url": "https://www.last.fm/music/Youngmin+You",
-    "context": "Chill Cinematic Piano Worship",
+    "artist": "XUAN",
+    "artist_url": "https://www.last.fm/music/XUAN",
+    "context": "Floating",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Youngmin+You/Chill+Cinematic+Piano+Worship",
+    "context_url": "https://www.last.fm/music/XUAN/Floating",
     "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Living%20Hope%20Youngmin%20You",
+    "play_url": "https://open.spotify.com/search/Floating%20XUAN",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Youngmin+You/_/Living+Hope",
-    "title": "Living Hope",
+    "song_url": "https://www.last.fm/music/XUAN/_/Floating",
+    "title": "Floating",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-10-20T17:59+00:00"
+    "when": "2026-10-20T21:33+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
@@ -84,7 +84,7 @@
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-10-20T18:36:43Z",
+      "pushed": "2026-10-20T18:37:16Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
     },
@@ -236,16 +236,12 @@
   "spotify_users": {},
   "stats": {
     "active_days": 88,
-    "all_time": 1081,
+    "all_time": 1083,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-20",
-          0
-        ],
         [
           "2025-10-21",
           0
@@ -1808,13 +1804,17 @@
         ],
         [
           "2026-10-20",
-          14
+          16
+        ],
+        [
+          "2026-10-21",
+          0
         ]
       ]
     ],
-    "commits": 475,
+    "commits": 476,
     "contributed_to": 3,
-    "contributions": 672,
+    "contributions": 674,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1880,7 +1880,7 @@
       "cover": "",
       "ms": 121000,
       "name": "Spring Is Coming",
-      "plays": 6,
+      "plays": 8,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Austin+Farwell/_/Spring+Is+Coming",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
@@ -1891,7 +1891,7 @@
       "cover": "",
       "ms": 219000,
       "name": "Living Hope",
-      "plays": 6,
+      "plays": 8,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Youngmin+You/_/Living+Hope",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Youngmin+You/_/Living+Hope"
@@ -1902,7 +1902,7 @@
       "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/ebe23f3bad0676ed4b27fce1ed800bad.png",
       "ms": 131000,
       "name": "Idea 12",
-      "plays": 4,
+      "plays": 6,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Gibran+Alcocer/_/Idea+12",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Gibran+Alcocer/_/Idea+12"
@@ -1910,24 +1910,24 @@
     {
       "artist": "Jurrivh",
       "artist_url": "https://www.last.fm/music/Jurrivh",
-      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/1310ec4032b1a30be1f1e3d1d95c492e.png",
-      "ms": 156000,
-      "name": "Forever",
-      "plays": 4,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jurrivh/_/Forever",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Jurrivh/_/Forever"
-    },
-    {
-      "artist": "Jurrivh",
-      "artist_url": "https://www.last.fm/music/Jurrivh",
       "cover": "",
       "ms": 224000,
       "name": "One Last Time",
-      "plays": 4,
+      "plays": 6,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jurrivh/_/One+Last+Time",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Jurrivh/_/One+Last+Time"
+    },
+    {
+      "artist": "Morunas",
+      "artist_url": "https://www.last.fm/music/Morunas",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/287d36d683e4d1cba9ec6ddaa8c8d2d2.png",
+      "ms": 0,
+      "name": "Autumn Days",
+      "plays": 6,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Morunas/_/Autumn+Days",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Morunas/_/Autumn+Days"
     }
   ]
 }
