@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 129,
-    "views": 6576
+    "scrobbles": 132,
+    "views": 6582
   },
   "github": {
     "repos": {
@@ -60,41 +60,41 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "XUAN",
-    "artist_url": "https://www.last.fm/music/XUAN",
-    "context": "Floating",
+    "artist": "Andromeda",
+    "artist_url": "https://www.last.fm/music/Andromeda",
+    "context": "NUBIAX",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/XUAN/Floating",
+    "context_url": "https://www.last.fm/music/Andromeda/NUBIAX",
     "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Floating%20XUAN",
+    "play_url": "https://open.spotify.com/search/NUBIAX%20-%20Mega%20Slowed%20Andromeda",
     "playing": false,
-    "song_url": "https://www.last.fm/music/XUAN/_/Floating",
-    "title": "Floating",
+    "song_url": "https://www.last.fm/music/Andromeda/_/NUBIAX+-+Mega+Slowed",
+    "title": "NUBIAX - Mega Slowed",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-10-20T21:33+00:00"
+    "when": "2026-10-21T12:45+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-20T18:37:16Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-10-20T00:59:42Z",
+      "pushed": "2026-10-21T07:47:09Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-21T05:29:57Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "native app for doorline apps",
@@ -242,10 +242,6 @@
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-21",
-          0
-        ],
         [
           "2025-10-22",
           0
@@ -1809,6 +1805,10 @@
         [
           "2026-10-21",
           0
+        ],
+        [
+          "2026-10-22",
+          0
         ]
       ]
     ],
@@ -1871,7 +1871,7 @@
     "repos_contributed": 17,
     "reviews": 0,
     "stars": 104,
-    "streak": 6
+    "streak": 0
   },
   "top_tracks": [
     {
