@@ -6243,4 +6243,74 @@ vertex 520 40 55
 vertex 520 48 55
 endloop
 endfacet
+facet normal 0 0 1
+outer loop
+vertex 520 20 25
+vertex 528 20 25
+vertex 528 28 25
+endloop
+endfacet
+facet normal 0 0 1
+outer loop
+vertex 520 20 25
+vertex 528 28 25
+vertex 520 28 25
+endloop
+endfacet
+facet normal 0 -1 0
+outer loop
+vertex 520 20 0
+vertex 528 20 0
+vertex 528 20 25
+endloop
+endfacet
+facet normal 0 -1 0
+outer loop
+vertex 520 20 0
+vertex 528 20 25
+vertex 520 20 25
+endloop
+endfacet
+facet normal 1 0 0
+outer loop
+vertex 528 20 0
+vertex 528 28 0
+vertex 528 28 25
+endloop
+endfacet
+facet normal 1 0 0
+outer loop
+vertex 528 20 0
+vertex 528 28 25
+vertex 528 20 25
+endloop
+endfacet
+facet normal 0 1 0
+outer loop
+vertex 528 28 0
+vertex 520 28 0
+vertex 520 28 25
+endloop
+endfacet
+facet normal 0 1 0
+outer loop
+vertex 528 28 0
+vertex 520 28 25
+vertex 528 28 25
+endloop
+endfacet
+facet normal -1 0 0
+outer loop
+vertex 520 28 0
+vertex 520 20 0
+vertex 520 20 25
+endloop
+endfacet
+facet normal -1 0 0
+outer loop
+vertex 520 28 0
+vertex 520 20 25
+vertex 520 28 25
+endloop
+endfacet
 endsolid contributions

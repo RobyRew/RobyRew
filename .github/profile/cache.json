@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 132,
-    "views": 6582
+    "views": 6583
   },
   "github": {
     "repos": {
@@ -54,7 +54,7 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 37
+      "public_repos": 38
     }
   },
   "live": true,
@@ -81,20 +81,28 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "BlockTheSpot mod that changes the desktop client's download-related Remote Config defaults (experimental loader)",
+      "language": "Python",
+      "name": "bts-downloader",
+      "pushed": "2026-10-22T21:36:28Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/bts-downloader"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-22T05:30:14Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
       "pushed": "2026-10-21T07:47:09Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-21T05:29:57Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "native app for doorline apps",
@@ -235,17 +243,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 88,
-    "all_time": 1083,
+    "active_days": 89,
+    "all_time": 1086,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-22",
-          0
-        ],
         [
           "2025-10-23",
           0
@@ -1808,13 +1812,17 @@
         ],
         [
           "2026-10-22",
+          3
+        ],
+        [
+          "2026-10-23",
           0
         ]
       ]
     ],
-    "commits": 476,
+    "commits": 478,
     "contributed_to": 3,
-    "contributions": 674,
+    "contributions": 677,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1824,12 +1832,12 @@
     "languages": [
       [
         "Swift",
-        32.7,
+        32.6,
         "#F05138"
       ],
       [
         "Objective-C",
-        27.5,
+        27.4,
         "#438eff"
       ],
       [
@@ -1839,7 +1847,7 @@
       ],
       [
         "JavaScript",
-        6.1,
+        6.0,
         "#f1e05a"
       ],
       [
@@ -1859,19 +1867,19 @@
       ],
       [
         "Other",
-        9.1,
+        9.4,
         "#8B949E"
       ]
     ],
     "longest": 9,
     "merged_prs": 5,
     "orgs": 0,
-    "original": 27,
+    "original": 28,
     "prs": 6,
-    "repos_contributed": 17,
+    "repos_contributed": 18,
     "reviews": 0,
     "stars": 104,
-    "streak": 0
+    "streak": 1
   },
   "top_tracks": [
     {
