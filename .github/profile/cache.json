@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 132,
+    "scrobbles": 135,
     "views": 6583
   },
   "github": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 88,
+        "downloads": 151,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -60,26 +60,58 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Andromeda",
-    "artist_url": "https://www.last.fm/music/Andromeda",
-    "context": "NUBIAX",
+    "artist": "Teo Family",
+    "artist_url": "https://www.last.fm/music/Teo+Family",
+    "context": "Doar Harul Tău",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Andromeda/NUBIAX",
+    "context_url": "https://www.last.fm/music/Teo+Family/Doar+Harul+T%C4%83u",
     "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/NUBIAX%20-%20Mega%20Slowed%20Andromeda",
+    "play_url": "https://open.spotify.com/search/Bun%20%28Gustati%20Si%20Vedeti%29%20Teo%20Family",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Andromeda/_/NUBIAX+-+Mega+Slowed",
-    "title": "NUBIAX - Mega Slowed",
+    "song_url": "https://www.last.fm/music/Teo+Family/_/Bun+(Gustati+Si+Vedeti)",
+    "title": "Bun (Gustati Si Vedeti)",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-10-21T12:45+00:00"
+    "when": "2026-10-24T01:15+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
+    {
+      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+      "language": "TypeScript",
+      "name": "chatforge",
+      "pushed": "2026-10-24T03:43:50Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Shared build and UI plumbing for the RobyRew app fleet",
+      "language": "Dockerfile",
+      "name": "platform",
+      "pushed": "2026-10-24T03:43:48Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/platform"
+    },
+    {
+      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
+      "language": "TypeScript",
+      "name": "calendar-event-generator",
+      "pushed": "2026-10-24T02:09:36Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/calendar-event-generator"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-23T05:29:42Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
     {
       "description": "BlockTheSpot mod that changes the desktop client's download-related Remote Config defaults (experimental loader)",
       "language": "Python",
@@ -87,14 +119,6 @@
       "pushed": "2026-10-22T21:36:28Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/bts-downloader"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-22T05:30:14Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
@@ -121,28 +145,12 @@
       "url": "https://github.com/RobyRew/Download-AI-Chat-PDF"
     },
     {
-      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
-      "language": "TypeScript",
-      "name": "calendar-event-generator",
-      "pushed": "2026-10-17T13:49:46Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/calendar-event-generator"
-    },
-    {
       "description": "Personal portfolio website - cosmincalin.es",
       "language": "HTML",
       "name": "portfolio",
       "pushed": "2026-10-12T22:45:07Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
-      "language": "TypeScript",
-      "name": "chatforge",
-      "pushed": "2026-09-20T20:27:47Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chatforge"
     },
     {
       "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
@@ -183,14 +191,6 @@
       "pushed": "2026-09-05T02:17:00Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/ui"
-    },
-    {
-      "description": "Shared build and UI plumbing for the RobyRew app fleet",
-      "language": "Dockerfile",
-      "name": "platform",
-      "pushed": "2026-09-04T22:19:26Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/platform"
     },
     {
       "description": "Split one application's traffic off through your own server",
@@ -243,17 +243,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 89,
-    "all_time": 1086,
+    "active_days": 90,
+    "all_time": 1089,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-23",
-          0
-        ],
         [
           "2025-10-24",
           0
@@ -1817,12 +1813,16 @@
         [
           "2026-10-23",
           0
+        ],
+        [
+          "2026-10-24",
+          3
         ]
       ]
     ],
-    "commits": 478,
+    "commits": 481,
     "contributed_to": 3,
-    "contributions": 677,
+    "contributions": 680,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1832,27 +1832,27 @@
     "languages": [
       [
         "Swift",
-        32.6,
+        32.0,
         "#F05138"
       ],
       [
         "Objective-C",
-        27.4,
+        26.9,
         "#438eff"
       ],
       [
         "TypeScript",
-        17.2,
+        18.8,
         "#3178c6"
       ],
       [
         "JavaScript",
-        6.0,
+        5.9,
         "#f1e05a"
       ],
       [
         "C",
-        2.6,
+        2.5,
         "#555555"
       ],
       [
@@ -1867,7 +1867,7 @@
       ],
       [
         "Other",
-        9.4,
+        9.1,
         "#8B949E"
       ]
     ],
