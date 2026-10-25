@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 151,
+        "downloads": 168,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -81,6 +81,38 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
+      "language": "TypeScript",
+      "name": "powerpoint-extractor",
+      "pushed": "2026-10-24T23:03:20Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/powerpoint-extractor"
+    },
+    {
+      "description": "Personal portfolio website - cosmincalin.es",
+      "language": "HTML",
+      "name": "portfolio",
+      "pushed": "2026-10-24T23:02:48Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/portfolio"
+    },
+    {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "JavaScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-10-24T06:41:21Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-24T05:28:00Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
       "language": "TypeScript",
       "name": "chatforge",
@@ -105,28 +137,12 @@
       "url": "https://github.com/RobyRew/calendar-event-generator"
     },
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-23T05:29:42Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "BlockTheSpot mod that changes the desktop client's download-related Remote Config defaults (experimental loader)",
       "language": "Python",
       "name": "bts-downloader",
       "pushed": "2026-10-22T21:36:28Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/bts-downloader"
-    },
-    {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "JavaScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-10-21T07:47:09Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
       "description": "native app for doorline apps",
@@ -145,28 +161,12 @@
       "url": "https://github.com/RobyRew/Download-AI-Chat-PDF"
     },
     {
-      "description": "Personal portfolio website - cosmincalin.es",
-      "language": "HTML",
-      "name": "portfolio",
-      "pushed": "2026-10-12T22:45:07Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
       "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
       "language": "Swift",
       "name": "TopPresenter",
       "pushed": "2026-09-20T15:47:36Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/TopPresenter"
-    },
-    {
-      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
-      "language": "TypeScript",
-      "name": "powerpoint-extractor",
-      "pushed": "2026-09-05T02:29:30Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/powerpoint-extractor"
     },
     {
       "description": "Open any map link in your preferred app — privacy-first universal map redirector",
@@ -249,16 +249,6 @@
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
-      [
-        [
-          "2025-10-24",
-          0
-        ],
-        [
-          "2025-10-25",
-          0
-        ]
-      ],
       [
         [
           "2025-10-26",
@@ -1817,6 +1807,12 @@
         [
           "2026-10-24",
           3
+        ]
+      ],
+      [
+        [
+          "2026-10-25",
+          0
         ]
       ]
     ],
