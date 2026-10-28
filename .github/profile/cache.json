@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 222,
+        "downloads": 228,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -81,20 +81,20 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-26T05:33:26Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
       "language": "TypeScript",
       "name": "chatforge",
-      "pushed": "2026-10-25T12:28:28Z",
+      "pushed": "2026-10-27T09:26:15Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-27T05:31:06Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
@@ -243,17 +243,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 91,
-    "all_time": 1090,
+    "active_days": 92,
+    "all_time": 1091,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-27",
-          0
-        ],
         [
           "2025-10-28",
           0
@@ -1816,13 +1812,17 @@
         ],
         [
           "2026-10-27",
+          1
+        ],
+        [
+          "2026-10-28",
           0
         ]
       ]
     ],
-    "commits": 482,
+    "commits": 483,
     "contributed_to": 3,
-    "contributions": 681,
+    "contributions": 682,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1832,17 +1832,17 @@
     "languages": [
       [
         "Swift",
-        32.0,
+        31.9,
         "#F05138"
       ],
       [
         "Objective-C",
-        26.9,
+        26.8,
         "#438eff"
       ],
       [
         "TypeScript",
-        18.9,
+        19.1,
         "#3178c6"
       ],
       [
@@ -1862,12 +1862,12 @@
       ],
       [
         "HTML",
-        2.4,
+        2.3,
         "#e34c26"
       ],
       [
         "Other",
-        9.0,
+        9.1,
         "#8B949E"
       ]
     ],
@@ -1879,7 +1879,7 @@
     "repos_contributed": 18,
     "reviews": 0,
     "stars": 105,
-    "streak": 0
+    "streak": 1
   },
   "top_tracks": [
     {
