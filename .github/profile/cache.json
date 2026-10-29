@@ -2,13 +2,13 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 135,
-    "views": 6585
+    "views": 6588
   },
   "github": {
     "repos": {
       "Download-AI-Chat-PDF": {
         "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
-        "downloads": 10,
+        "downloads": 11,
         "forks": 0,
         "language": "JavaScript",
         "stars": 0,
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 228,
+        "downloads": 231,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -54,7 +54,7 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 38
+      "public_repos": 41
     }
   },
   "live": true,
@@ -81,20 +81,44 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
+      "language": "Swift",
+      "name": "linkedin-pro-ios",
+      "pushed": "2026-10-28T21:13:51Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/linkedin-pro-ios"
+    },
+    {
+      "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
+      "language": "Python",
+      "name": "tweak-kit",
+      "pushed": "2026-10-28T19:25:32Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/tweak-kit"
+    },
+    {
+      "description": "Universal in-app Objective-C runtime console, driven over USB",
+      "language": "Objective-C",
+      "name": "striker",
+      "pushed": "2026-10-28T13:35:05Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/striker"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-28T05:23:54Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
       "language": "TypeScript",
       "name": "chatforge",
       "pushed": "2026-10-27T09:26:15Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chatforge"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-27T05:31:06Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
@@ -243,17 +267,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 92,
-    "all_time": 1091,
+    "active_days": 93,
+    "all_time": 1100,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-28",
-          0
-        ],
         [
           "2025-10-29",
           0
@@ -1798,7 +1818,7 @@
         ],
         [
           "2026-10-24",
-          3
+          9
         ]
       ],
       [
@@ -1816,13 +1836,17 @@
         ],
         [
           "2026-10-28",
+          3
+        ],
+        [
+          "2026-10-29",
           0
         ]
       ]
     ],
     "commits": 483,
     "contributed_to": 3,
-    "contributions": 682,
+    "contributions": 691,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1832,22 +1856,22 @@
     "languages": [
       [
         "Swift",
-        31.9,
+        31.7,
         "#F05138"
       ],
       [
         "Objective-C",
-        26.8,
+        27.0,
         "#438eff"
       ],
       [
         "TypeScript",
-        19.1,
+        18.8,
         "#3178c6"
       ],
       [
         "JavaScript",
-        5.9,
+        5.8,
         "#f1e05a"
       ],
       [
@@ -1857,7 +1881,7 @@
       ],
       [
         "Logos",
-        2.4,
+        2.5,
         "#9CA3AF"
       ],
       [
@@ -1867,19 +1891,19 @@
       ],
       [
         "Other",
-        9.1,
+        9.4,
         "#8B949E"
       ]
     ],
     "longest": 9,
     "merged_prs": 5,
     "orgs": 0,
-    "original": 28,
+    "original": 31,
     "prs": 6,
     "repos_contributed": 18,
     "reviews": 0,
     "stars": 105,
-    "streak": 1
+    "streak": 2
   },
   "top_tracks": [
     {
