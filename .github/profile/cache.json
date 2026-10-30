@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 135,
-    "views": 6588
+    "views": 6589
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 231,
+        "downloads": 257,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -84,9 +84,25 @@
       "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
       "language": "Swift",
       "name": "linkedin-pro-ios",
-      "pushed": "2026-10-28T21:13:51Z",
+      "pushed": "2026-10-29T11:27:40Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/linkedin-pro-ios"
+    },
+    {
+      "description": "Universal in-app Objective-C runtime console, driven over USB",
+      "language": "Objective-C",
+      "name": "striker",
+      "pushed": "2026-10-29T10:19:57Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/striker"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-29T05:23:42Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
@@ -95,22 +111,6 @@
       "pushed": "2026-10-28T19:25:32Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/tweak-kit"
-    },
-    {
-      "description": "Universal in-app Objective-C runtime console, driven over USB",
-      "language": "Objective-C",
-      "name": "striker",
-      "pushed": "2026-10-28T13:35:05Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/striker"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-28T05:23:54Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
@@ -274,10 +274,6 @@
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-29",
-          0
-        ],
         [
           "2025-10-30",
           0
@@ -1841,6 +1837,10 @@
         [
           "2026-10-29",
           0
+        ],
+        [
+          "2026-10-30",
+          0
         ]
       ]
     ],
@@ -1856,12 +1856,12 @@
     "languages": [
       [
         "Swift",
-        31.7,
+        31.9,
         "#F05138"
       ],
       [
         "Objective-C",
-        27.0,
+        26.9,
         "#438eff"
       ],
       [
@@ -1891,7 +1891,7 @@
       ],
       [
         "Other",
-        9.4,
+        9.3,
         "#8B949E"
       ]
     ],
@@ -1903,7 +1903,7 @@
     "repos_contributed": 18,
     "reviews": 0,
     "stars": 105,
-    "streak": 2
+    "streak": 0
   },
   "top_tracks": [
     {
