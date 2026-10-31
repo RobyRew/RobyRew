@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 135,
-    "views": 6589
+    "views": 6592
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 257,
+        "downloads": 258,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -81,12 +81,28 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "JavaScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-10-30T18:23:09Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
       "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
       "language": "Swift",
       "name": "linkedin-pro-ios",
-      "pushed": "2026-10-29T11:27:40Z",
+      "pushed": "2026-10-30T13:35:20Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/linkedin-pro-ios"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-10-30T05:23:46Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -95,14 +111,6 @@
       "pushed": "2026-10-29T10:19:57Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/striker"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-29T05:23:42Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
@@ -135,14 +143,6 @@
       "pushed": "2026-10-24T23:02:48Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "JavaScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-10-24T06:41:21Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
       "description": "Shared build and UI plumbing for the RobyRew app fleet",
@@ -267,17 +267,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 93,
-    "all_time": 1100,
+    "active_days": 97,
+    "all_time": 1321,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-10-30",
-          0
-        ],
         [
           "2025-10-31",
           0
@@ -1794,27 +1790,27 @@
         ],
         [
           "2026-10-19",
-          2
+          29
         ],
         [
           "2026-10-20",
-          16
+          63
         ],
         [
           "2026-10-21",
-          0
+          64
         ],
         [
           "2026-10-22",
-          3
+          45
         ],
         [
           "2026-10-23",
-          0
+          3
         ],
         [
           "2026-10-24",
-          9
+          23
         ]
       ],
       [
@@ -1836,17 +1832,21 @@
         ],
         [
           "2026-10-29",
-          0
+          19
         ],
         [
           "2026-10-30",
+          5
+        ],
+        [
+          "2026-10-31",
           0
         ]
       ]
     ],
-    "commits": 483,
+    "commits": 499,
     "contributed_to": 3,
-    "contributions": 691,
+    "contributions": 912,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1856,17 +1856,17 @@
     "languages": [
       [
         "Swift",
-        31.9,
+        32.5,
         "#F05138"
       ],
       [
         "Objective-C",
-        26.9,
+        26.6,
         "#438eff"
       ],
       [
         "TypeScript",
-        18.8,
+        18.6,
         "#3178c6"
       ],
       [
@@ -1881,7 +1881,7 @@
       ],
       [
         "Logos",
-        2.5,
+        2.4,
         "#9CA3AF"
       ],
       [
@@ -1895,15 +1895,15 @@
         "#8B949E"
       ]
     ],
-    "longest": 9,
+    "longest": 11,
     "merged_prs": 5,
     "orgs": 0,
     "original": 31,
     "prs": 6,
-    "repos_contributed": 18,
+    "repos_contributed": 19,
     "reviews": 0,
     "stars": 105,
-    "streak": 0
+    "streak": 4
   },
   "top_tracks": [
     {
