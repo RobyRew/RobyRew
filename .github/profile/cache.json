@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 135,
-    "views": 6592
+    "views": 6593
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 258,
+        "downloads": 260,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -81,18 +81,10 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "JavaScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-10-30T18:23:09Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
       "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
       "language": "Swift",
       "name": "linkedin-pro-ios",
-      "pushed": "2026-10-30T13:35:20Z",
+      "pushed": "2026-11-01T00:24:44Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/linkedin-pro-ios"
     },
@@ -100,9 +92,17 @@
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-10-30T05:23:46Z",
+      "pushed": "2026-10-31T05:21:55Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "JavaScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-10-30T18:23:09Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -267,22 +267,12 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 97,
-    "all_time": 1321,
+    "active_days": 99,
+    "all_time": 1345,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
-      [
-        [
-          "2025-10-31",
-          0
-        ],
-        [
-          "2025-11-01",
-          0
-        ]
-      ],
       [
         [
           "2025-11-02",
@@ -1836,17 +1826,23 @@
         ],
         [
           "2026-10-30",
-          5
+          17
         ],
         [
           "2026-10-31",
-          0
+          11
+        ]
+      ],
+      [
+        [
+          "2026-11-01",
+          1
         ]
       ]
     ],
-    "commits": 499,
+    "commits": 523,
     "contributed_to": 3,
-    "contributions": 912,
+    "contributions": 936,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1856,22 +1852,22 @@
     "languages": [
       [
         "Swift",
-        32.5,
+        33.3,
         "#F05138"
       ],
       [
         "Objective-C",
-        26.6,
+        26.3,
         "#438eff"
       ],
       [
         "TypeScript",
-        18.6,
+        18.4,
         "#3178c6"
       ],
       [
         "JavaScript",
-        5.8,
+        5.7,
         "#f1e05a"
       ],
       [
@@ -1891,7 +1887,7 @@
       ],
       [
         "Other",
-        9.3,
+        9.1,
         "#8B949E"
       ]
     ],
@@ -1903,7 +1899,7 @@
     "repos_contributed": 19,
     "reviews": 0,
     "stars": 105,
-    "streak": 4
+    "streak": 6
   },
   "top_tracks": [
     {
