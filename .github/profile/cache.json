@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 135,
-    "views": 6593
+    "views": 6595
   },
   "github": {
     "repos": {
@@ -47,7 +47,7 @@
         "downloads": 0,
         "forks": 0,
         "language": "JavaScript",
-        "stars": 1,
+        "stars": 2,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
       }
@@ -81,6 +81,14 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-01T05:21:18Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
       "language": "Swift",
       "name": "linkedin-pro-ios",
@@ -89,19 +97,11 @@
       "url": "https://github.com/RobyRew/linkedin-pro-ios"
     },
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-10-31T05:21:55Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
       "pushed": "2026-10-30T18:23:09Z",
-      "stars": 1,
+      "stars": 2,
       "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
@@ -1837,6 +1837,10 @@
         [
           "2026-11-01",
           1
+        ],
+        [
+          "2026-11-02",
+          0
         ]
       ]
     ],
@@ -1898,7 +1902,7 @@
     "prs": 6,
     "repos_contributed": 19,
     "reviews": 0,
-    "stars": 105,
+    "stars": 106,
     "streak": 6
   },
   "top_tracks": [
