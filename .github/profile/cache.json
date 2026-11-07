@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 135,
+    "scrobbles": 146,
     "views": 6598
   },
   "github": {
@@ -47,7 +47,7 @@
         "downloads": 0,
         "forks": 0,
         "language": "JavaScript",
-        "stars": 2,
+        "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
       }
@@ -60,41 +60,41 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Teo Family",
-    "artist_url": "https://www.last.fm/music/Teo+Family",
-    "context": "Doar Harul Tău",
+    "artist": "Jurrivh",
+    "artist_url": "https://www.last.fm/music/Jurrivh",
+    "context": "1997",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Teo+Family/Doar+Harul+T%C4%83u",
-    "cover": "",
+    "context_url": "https://www.last.fm/music/Jurrivh/1997",
+    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/1278c7124922012513563578f055b655.jpg",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Bun%20%28Gustati%20Si%20Vedeti%29%20Teo%20Family",
+    "play_url": "https://open.spotify.com/search/Feelings%20Jurrivh",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Teo+Family/_/Bun+(Gustati+Si+Vedeti)",
-    "title": "Bun (Gustati Si Vedeti)",
+    "song_url": "https://www.last.fm/music/Jurrivh/_/Feelings",
+    "title": "Feelings",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-10-24T01:15+00:00"
+    "when": "2026-11-06T17:47+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-05T05:21:53Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-11-04T12:26:45Z",
-      "stars": 2,
+      "pushed": "2026-11-06T18:24:38Z",
+      "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-06T05:21:38Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
@@ -274,10 +274,6 @@
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-06",
-          0
-        ],
         [
           "2025-11-07",
           0
@@ -1841,6 +1837,10 @@
         [
           "2026-11-06",
           0
+        ],
+        [
+          "2026-11-07",
+          0
         ]
       ]
     ],
@@ -1902,7 +1902,7 @@
     "prs": 6,
     "repos_contributed": 19,
     "reviews": 0,
-    "stars": 106,
+    "stars": 107,
     "streak": 0
   },
   "top_tracks": [
@@ -1912,7 +1912,7 @@
       "cover": "",
       "ms": 121000,
       "name": "Spring Is Coming",
-      "plays": 8,
+      "plays": 9,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Austin+Farwell/_/Spring+Is+Coming",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
@@ -1923,10 +1923,21 @@
       "cover": "",
       "ms": 219000,
       "name": "Living Hope",
-      "plays": 8,
+      "plays": 9,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Youngmin+You/_/Living+Hope",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Youngmin+You/_/Living+Hope"
+    },
+    {
+      "artist": "Jurrivh",
+      "artist_url": "https://www.last.fm/music/Jurrivh",
+      "cover": "",
+      "ms": 224000,
+      "name": "One Last Time",
+      "plays": 7,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jurrivh/_/One+Last+Time",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Jurrivh/_/One+Last+Time"
     },
     {
       "artist": "Gibran Alcocer",
@@ -1938,17 +1949,6 @@
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Gibran+Alcocer/_/Idea+12",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Gibran+Alcocer/_/Idea+12"
-    },
-    {
-      "artist": "Jurrivh",
-      "artist_url": "https://www.last.fm/music/Jurrivh",
-      "cover": "",
-      "ms": 224000,
-      "name": "One Last Time",
-      "plays": 6,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jurrivh/_/One+Last+Time",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Jurrivh/_/One+Last+Time"
     },
     {
       "artist": "Morunas",
