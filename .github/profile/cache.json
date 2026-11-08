@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 146,
-    "views": 6598
+    "views": 6604
   },
   "github": {
     "repos": {
@@ -54,7 +54,7 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 41
+      "public_repos": 40
     }
   },
   "live": true,
@@ -81,6 +81,46 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
+      "language": "TypeScript",
+      "name": "chat-converter",
+      "pushed": "2026-11-08T04:30:36Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chat-converter"
+    },
+    {
+      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+      "language": "TypeScript",
+      "name": "chatforge",
+      "pushed": "2026-11-08T04:22:21Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Universal in-app Objective-C runtime console, driven over USB",
+      "language": "Objective-C",
+      "name": "striker",
+      "pushed": "2026-11-07T20:49:57Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/striker"
+    },
+    {
+      "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
+      "language": "Swift",
+      "name": "linkedin-pro-ios",
+      "pushed": "2026-11-07T10:32:24Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/linkedin-pro-ios"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-07T05:21:26Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
@@ -89,44 +129,12 @@
       "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-06T05:21:38Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
-      "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
-      "language": "Swift",
-      "name": "linkedin-pro-ios",
-      "pushed": "2026-11-01T00:24:44Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/linkedin-pro-ios"
-    },
-    {
-      "description": "Universal in-app Objective-C runtime console, driven over USB",
-      "language": "Objective-C",
-      "name": "striker",
-      "pushed": "2026-10-29T10:19:57Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/striker"
-    },
-    {
       "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
       "language": "Python",
       "name": "tweak-kit",
       "pushed": "2026-10-28T19:25:32Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/tweak-kit"
-    },
-    {
-      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
-      "language": "TypeScript",
-      "name": "chatforge",
-      "pushed": "2026-10-27T09:26:15Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chatforge"
     },
     {
       "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
@@ -267,22 +275,12 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 99,
-    "all_time": 1345,
+    "active_days": 100,
+    "all_time": 1396,
     "best_count": 64,
     "best_day": "2026-09-23",
     "busiest": "Thursday",
     "calendar": [
-      [
-        [
-          "2025-11-07",
-          0
-        ],
-        [
-          "2025-11-08",
-          0
-        ]
-      ],
       [
         [
           "2025-11-09",
@@ -388,7 +386,7 @@
         ],
         [
           "2025-12-03",
-          1
+          0
         ],
         [
           "2025-12-04",
@@ -1636,7 +1634,7 @@
       [
         [
           "2026-09-20",
-          20
+          17
         ],
         [
           "2026-09-21",
@@ -1764,7 +1762,7 @@
         ],
         [
           "2026-10-20",
-          63
+          62
         ],
         [
           "2026-10-21",
@@ -1802,7 +1800,7 @@
         ],
         [
           "2026-10-29",
-          19
+          20
         ],
         [
           "2026-10-30",
@@ -1816,7 +1814,7 @@
       [
         [
           "2026-11-01",
-          1
+          3
         ],
         [
           "2026-11-02",
@@ -1840,13 +1838,19 @@
         ],
         [
           "2026-11-07",
-          0
+          24
+        ]
+      ],
+      [
+        [
+          "2026-11-08",
+          29
         ]
       ]
     ],
-    "commits": 523,
+    "commits": 541,
     "contributed_to": 3,
-    "contributions": 936,
+    "contributions": 987,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1856,54 +1860,54 @@
     "languages": [
       [
         "Swift",
-        33.3,
+        32.1,
         "#F05138"
       ],
       [
         "Objective-C",
-        26.3,
+        25.3,
         "#438eff"
       ],
       [
         "TypeScript",
-        18.4,
+        21.2,
         "#3178c6"
       ],
       [
         "JavaScript",
-        5.7,
+        5.5,
         "#f1e05a"
       ],
       [
         "C",
-        2.5,
+        2.4,
         "#555555"
       ],
       [
         "Logos",
-        2.4,
+        2.3,
         "#9CA3AF"
       ],
       [
         "HTML",
-        2.3,
+        2.2,
         "#e34c26"
       ],
       [
         "Other",
-        9.1,
+        9.0,
         "#8B949E"
       ]
     ],
     "longest": 11,
     "merged_prs": 5,
     "orgs": 0,
-    "original": 31,
+    "original": 32,
     "prs": 6,
-    "repos_contributed": 19,
+    "repos_contributed": 21,
     "reviews": 0,
-    "stars": 107,
-    "streak": 0
+    "stars": 108,
+    "streak": 2
   },
   "top_tracks": [
     {
