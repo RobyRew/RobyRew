@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 146,
-    "views": 6604
+    "views": 6606
   },
   "github": {
     "repos": {
@@ -81,20 +81,36 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+      "language": "TypeScript",
+      "name": "chatforge",
+      "pushed": "2026-11-09T02:30:29Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Shared build and UI plumbing for the RobyRew app fleet",
+      "language": "Dockerfile",
+      "name": "platform",
+      "pushed": "2026-11-09T02:15:58Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/platform"
+    },
+    {
       "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
       "language": "TypeScript",
       "name": "chat-converter",
-      "pushed": "2026-11-08T04:30:36Z",
+      "pushed": "2026-11-09T01:38:58Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chat-converter"
     },
     {
-      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
-      "language": "TypeScript",
-      "name": "chatforge",
-      "pushed": "2026-11-08T04:22:21Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chatforge"
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-08T05:21:36Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -111,14 +127,6 @@
       "pushed": "2026-11-07T10:32:24Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/linkedin-pro-ios"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-07T05:21:26Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
@@ -151,14 +159,6 @@
       "pushed": "2026-10-24T23:02:48Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "Shared build and UI plumbing for the RobyRew app fleet",
-      "language": "Dockerfile",
-      "name": "platform",
-      "pushed": "2026-10-24T03:43:48Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/platform"
     },
     {
       "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
@@ -275,10 +275,10 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 100,
-    "all_time": 1396,
-    "best_count": 64,
-    "best_day": "2026-09-23",
+    "active_days": 101,
+    "all_time": 1480,
+    "best_count": 98,
+    "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
@@ -1844,13 +1844,17 @@
       [
         [
           "2026-11-08",
-          29
+          98
+        ],
+        [
+          "2026-11-09",
+          15
         ]
       ]
     ],
-    "commits": 541,
+    "commits": 551,
     "contributed_to": 3,
-    "contributions": 987,
+    "contributions": 1071,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1860,27 +1864,32 @@
     "languages": [
       [
         "Swift",
-        32.1,
+        31.3,
         "#F05138"
       ],
       [
         "Objective-C",
-        25.3,
+        24.7,
         "#438eff"
       ],
       [
         "TypeScript",
-        21.2,
+        21.8,
         "#3178c6"
       ],
       [
         "JavaScript",
-        5.5,
+        5.4,
         "#f1e05a"
       ],
       [
+        "CSS",
+        3.0,
+        "#663399"
+      ],
+      [
         "C",
-        2.4,
+        2.3,
         "#555555"
       ],
       [
@@ -1889,13 +1898,8 @@
         "#9CA3AF"
       ],
       [
-        "HTML",
-        2.2,
-        "#e34c26"
-      ],
-      [
         "Other",
-        9.0,
+        9.2,
         "#8B949E"
       ]
     ],
@@ -1907,7 +1911,7 @@
     "repos_contributed": 21,
     "reviews": 0,
     "stars": 108,
-    "streak": 2
+    "streak": 3
   },
   "top_tracks": [
     {
