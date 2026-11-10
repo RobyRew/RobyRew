@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 146,
-    "views": 6606
+    "scrobbles": 147,
+    "views": 6608
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 310,
+        "downloads": 326,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -60,41 +60,73 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Jurrivh",
-    "artist_url": "https://www.last.fm/music/Jurrivh",
-    "context": "1997",
+    "artist": "Youngmin You",
+    "artist_url": "https://www.last.fm/music/Youngmin+You",
+    "context": "Quiet Time Piano Worship",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Jurrivh/1997",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/1278c7124922012513563578f055b655.jpg",
+    "context_url": "https://www.last.fm/music/Youngmin+You/Quiet+Time+Piano+Worship",
+    "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Feelings%20Jurrivh",
+    "play_url": "https://open.spotify.com/search/Still%20Youngmin%20You",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Jurrivh/_/Feelings",
-    "title": "Feelings",
+    "song_url": "https://www.last.fm/music/Youngmin+You/_/Still",
+    "title": "Still",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-06T17:47+00:00"
+    "when": "2026-11-06T21:05+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
-      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
-      "language": "TypeScript",
-      "name": "chatforge",
-      "pushed": "2026-11-09T02:30:29Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chatforge"
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "JavaScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-11-10T00:39:16Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
       "description": "Shared build and UI plumbing for the RobyRew app fleet",
       "language": "Dockerfile",
       "name": "platform",
-      "pushed": "2026-11-09T02:15:58Z",
+      "pushed": "2026-11-09T07:16:51Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/platform"
+    },
+    {
+      "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
+      "language": "CSS",
+      "name": "web-config",
+      "pushed": "2026-11-09T06:20:12Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/web-config"
+    },
+    {
+      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
+      "language": "CSS",
+      "name": "ui",
+      "pushed": "2026-11-09T06:20:05Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/ui"
+    },
+    {
+      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+      "language": "TypeScript",
+      "name": "chatforge",
+      "pushed": "2026-11-09T06:01:35Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-09T05:22:39Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
@@ -103,14 +135,6 @@
       "pushed": "2026-11-09T01:38:58Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chat-converter"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-08T05:21:36Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -127,14 +151,6 @@
       "pushed": "2026-11-07T10:32:24Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/linkedin-pro-ios"
-    },
-    {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "JavaScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-11-06T18:24:38Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
       "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
@@ -209,22 +225,6 @@
       "url": "https://github.com/RobyRew/mapswitch"
     },
     {
-      "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
-      "language": "CSS",
-      "name": "web-config",
-      "pushed": "2026-09-05T02:26:40Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/web-config"
-    },
-    {
-      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
-      "language": "CSS",
-      "name": "ui",
-      "pushed": "2026-09-05T02:17:00Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/ui"
-    },
-    {
       "description": "Split one application's traffic off through your own server",
       "language": "Rust",
       "name": "split-stream",
@@ -276,16 +276,12 @@
   "spotify_users": {},
   "stats": {
     "active_days": 101,
-    "all_time": 1480,
+    "all_time": 1485,
     "best_count": 98,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-09",
-          0
-        ],
         [
           "2025-11-10",
           0
@@ -1740,7 +1736,7 @@
         ],
         [
           "2026-10-15",
-          9
+          10
         ],
         [
           "2026-10-16",
@@ -1848,13 +1844,17 @@
         ],
         [
           "2026-11-09",
-          15
+          19
+        ],
+        [
+          "2026-11-10",
+          0
         ]
       ]
     ],
-    "commits": 551,
+    "commits": 556,
     "contributed_to": 3,
-    "contributions": 1071,
+    "contributions": 1076,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1874,7 +1874,7 @@
       ],
       [
         "TypeScript",
-        21.8,
+        21.7,
         "#3178c6"
       ],
       [
@@ -1899,7 +1899,7 @@
       ],
       [
         "Other",
-        9.2,
+        9.3,
         "#8B949E"
       ]
     ],
