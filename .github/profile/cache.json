@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 147,
-    "views": 6609
+    "scrobbles": 148,
+    "views": 6610
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 328,
+        "downloads": 331,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -60,31 +60,71 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Youngmin You",
-    "artist_url": "https://www.last.fm/music/Youngmin+You",
-    "context": "Quiet Time Piano Worship",
+    "artist": "Speranta si Prietenii",
+    "artist_url": "https://www.last.fm/music/Speranta+si+Prietenii",
+    "context": "Speranta si Prietenii, Vol.16 (Ierusalime)",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Youngmin+You/Quiet+Time+Piano+Worship",
-    "cover": "",
+    "context_url": "https://www.last.fm/music/Speranta+si+Prietenii/Speranta+si+Prietenii%2C+Vol.16+%28Ierusalime%29",
+    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/b32aa6f24781cc3bc3dfe212a6d8faea.jpg",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Still%20Youngmin%20You",
+    "play_url": "https://open.spotify.com/search/Doamne%20Numele-Ti%20Inalt%20Speranta%20si%20Prietenii",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Youngmin+You/_/Still",
-    "title": "Still",
+    "song_url": "https://www.last.fm/music/Speranta+si+Prietenii/_/Doamne+Numele-Ti+Inalt",
+    "title": "Doamne Numele-Ti Inalt",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-06T21:05+00:00"
+    "when": "2026-11-09T12:17+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Personal portfolio website - cosmincalin.es",
+      "language": "HTML",
+      "name": "portfolio",
+      "pushed": "2026-11-11T22:52:54Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/portfolio"
+    },
+    {
+      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
+      "language": "TypeScript",
+      "name": "powerpoint-extractor",
+      "pushed": "2026-11-11T18:50:57Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/powerpoint-extractor"
+    },
+    {
+      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
+      "language": "TypeScript",
+      "name": "mapswitch",
+      "pushed": "2026-11-11T18:45:09Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/mapswitch"
+    },
+    {
+      "description": "Shared build and UI plumbing for the RobyRew app fleet",
+      "language": "Dockerfile",
+      "name": "platform",
+      "pushed": "2026-11-11T18:37:55Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/platform"
+    },
+    {
+      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
+      "language": "TypeScript",
+      "name": "calendar-event-generator",
+      "pushed": "2026-11-11T18:08:07Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/calendar-event-generator"
+    },
+    {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
       "language": "TypeScript",
       "name": "chatforge",
-      "pushed": "2026-11-11T02:01:37Z",
+      "pushed": "2026-11-11T17:19:42Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chatforge"
     },
@@ -92,39 +132,23 @@
       "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
       "language": "TypeScript",
       "name": "chat-converter",
-      "pushed": "2026-11-11T01:56:04Z",
+      "pushed": "2026-11-11T13:06:10Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chat-converter"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-10T05:22:11Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-11-10T00:39:16Z",
+      "pushed": "2026-11-11T12:27:27Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
-      "description": "Shared build and UI plumbing for the RobyRew app fleet",
-      "language": "Dockerfile",
-      "name": "platform",
-      "pushed": "2026-11-09T07:16:51Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/platform"
     },
     {
       "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
       "language": "CSS",
       "name": "web-config",
-      "pushed": "2026-11-09T06:20:12Z",
+      "pushed": "2026-11-11T09:23:10Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/web-config"
     },
@@ -132,9 +156,17 @@
       "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
       "language": "CSS",
       "name": "ui",
-      "pushed": "2026-11-09T06:20:05Z",
+      "pushed": "2026-11-11T09:23:03Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/ui"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-11T05:21:38Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -159,30 +191,6 @@
       "pushed": "2026-10-28T19:25:32Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/tweak-kit"
-    },
-    {
-      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
-      "language": "TypeScript",
-      "name": "powerpoint-extractor",
-      "pushed": "2026-10-24T23:03:20Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/powerpoint-extractor"
-    },
-    {
-      "description": "Personal portfolio website - cosmincalin.es",
-      "language": "HTML",
-      "name": "portfolio",
-      "pushed": "2026-10-24T23:02:48Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
-      "language": "TypeScript",
-      "name": "calendar-event-generator",
-      "pushed": "2026-10-24T02:09:36Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/calendar-event-generator"
     },
     {
       "description": "BlockTheSpot mod that changes the desktop client's download-related Remote Config defaults (experimental loader)",
@@ -215,14 +223,6 @@
       "pushed": "2026-09-20T15:47:36Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/TopPresenter"
-    },
-    {
-      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
-      "language": "TypeScript",
-      "name": "mapswitch",
-      "pushed": "2026-09-05T02:29:25Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/mapswitch"
     },
     {
       "description": "Split one application's traffic off through your own server",
@@ -276,16 +276,12 @@
   "spotify_users": {},
   "stats": {
     "active_days": 102,
-    "all_time": 1487,
+    "all_time": 1503,
     "best_count": 98,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-11",
-          0
-        ],
         [
           "2025-11-12",
           0
@@ -1848,13 +1844,17 @@
         ],
         [
           "2026-11-11",
-          2
+          18
+        ],
+        [
+          "2026-11-12",
+          0
         ]
       ]
     ],
-    "commits": 558,
+    "commits": 571,
     "contributed_to": 3,
-    "contributions": 1078,
+    "contributions": 1094,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1864,27 +1864,27 @@
     "languages": [
       [
         "Swift",
-        31.3,
+        30.7,
         "#F05138"
       ],
       [
         "Objective-C",
-        24.7,
+        24.2,
         "#438eff"
       ],
       [
         "TypeScript",
-        21.7,
+        21.3,
         "#3178c6"
       ],
       [
         "JavaScript",
-        5.4,
+        6.0,
         "#f1e05a"
       ],
       [
         "CSS",
-        3.0,
+        3.9,
         "#663399"
       ],
       [
@@ -1894,20 +1894,20 @@
       ],
       [
         "Logos",
-        2.3,
+        2.2,
         "#9CA3AF"
       ],
       [
         "Other",
-        9.3,
+        9.4,
         "#8B949E"
       ]
     ],
     "longest": 11,
-    "merged_prs": 5,
+    "merged_prs": 7,
     "orgs": 0,
     "original": 32,
-    "prs": 6,
+    "prs": 8,
     "repos_contributed": 21,
     "reviews": 0,
     "stars": 108,
