@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 148,
-    "views": 6610
+    "views": 6613
   },
   "github": {
     "repos": {
@@ -81,6 +81,22 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "JavaScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-11-12T08:35:58Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-12T05:22:09Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "Personal portfolio website - cosmincalin.es",
       "language": "HTML",
       "name": "portfolio",
@@ -137,14 +153,6 @@
       "url": "https://github.com/RobyRew/chat-converter"
     },
     {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "JavaScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-11-11T12:27:27Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
       "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
       "language": "CSS",
       "name": "web-config",
@@ -159,14 +167,6 @@
       "pushed": "2026-11-11T09:23:03Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/ui"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-11T05:21:38Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -282,10 +282,6 @@
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-12",
-          0
-        ],
         [
           "2025-11-13",
           0
@@ -1849,6 +1845,10 @@
         [
           "2026-11-12",
           0
+        ],
+        [
+          "2026-11-13",
+          0
         ]
       ]
     ],
@@ -1911,7 +1911,7 @@
     "repos_contributed": 21,
     "reviews": 0,
     "stars": 108,
-    "streak": 1
+    "streak": 0
   },
   "top_tracks": [
     {
