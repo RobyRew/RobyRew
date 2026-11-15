@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 148,
-    "views": 6614
+    "views": 6619
   },
   "github": {
     "repos": {
@@ -81,6 +81,14 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-14T05:21:52Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
@@ -103,14 +111,6 @@
       "pushed": "2026-11-13T13:40:12Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/chat-converter"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-13T05:21:32Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Personal portfolio website - cosmincalin.es",
@@ -281,16 +281,6 @@
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
-      [
-        [
-          "2025-11-14",
-          0
-        ],
-        [
-          "2025-11-15",
-          0
-        ]
-      ],
       [
         [
           "2025-11-16",
@@ -1850,6 +1840,12 @@
           "2026-11-14",
           0
         ]
+      ],
+      [
+        [
+          "2026-11-15",
+          0
+        ]
       ]
     ],
     "commits": 574,
@@ -1911,7 +1907,7 @@
     "repos_contributed": 21,
     "reviews": 0,
     "stars": 108,
-    "streak": 1
+    "streak": 0
   },
   "top_tracks": [
     {
