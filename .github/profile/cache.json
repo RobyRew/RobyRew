@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 148,
-    "views": 6619
+    "scrobbles": 168,
+    "views": 6620
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 332,
+        "downloads": 333,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -70,13 +70,13 @@
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Doamne%20Numele-Ti%20Inalt%20Speranta%20si%20Prietenii",
+    "play_url": "https://open.spotify.com/search/Pe%20Crucia%20Din%20Dealul%20Iubirii%20Speranta%20si%20Prietenii",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Speranta+si+Prietenii/_/Doamne+Numele-Ti+Inalt",
-    "title": "Doamne Numele-Ti Inalt",
+    "song_url": "https://www.last.fm/music/Speranta+si+Prietenii/_/Pe+Crucia+Din+Dealul+Iubirii",
+    "title": "Pe Crucia Din Dealul Iubirii",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-09T12:17+00:00"
+    "when": "2026-11-15T23:14+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
@@ -84,7 +84,7 @@
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-11-14T05:21:52Z",
+      "pushed": "2026-11-15T05:21:41Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
     },
@@ -1844,6 +1844,10 @@
       [
         [
           "2026-11-15",
+          0
+        ],
+        [
+          "2026-11-16",
           0
         ]
       ]
