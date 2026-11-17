@@ -5755,72 +5755,72 @@ endloop
 endfacet
 facet normal 0 0 1
 outer loop
-vertex 470 20 36
-vertex 478 20 36
-vertex 478 28 36
+vertex 470 20 37
+vertex 478 20 37
+vertex 478 28 37
 endloop
 endfacet
 facet normal 0 0 1
 outer loop
-vertex 470 20 36
-vertex 478 28 36
-vertex 470 28 36
+vertex 470 20 37
+vertex 478 28 37
+vertex 470 28 37
 endloop
 endfacet
 facet normal 0 -1 0
 outer loop
 vertex 470 20 0
 vertex 478 20 0
-vertex 478 20 36
+vertex 478 20 37
 endloop
 endfacet
 facet normal 0 -1 0
 outer loop
 vertex 470 20 0
-vertex 478 20 36
-vertex 470 20 36
+vertex 478 20 37
+vertex 470 20 37
 endloop
 endfacet
 facet normal 1 0 0
 outer loop
 vertex 478 20 0
 vertex 478 28 0
-vertex 478 28 36
+vertex 478 28 37
 endloop
 endfacet
 facet normal 1 0 0
 outer loop
 vertex 478 20 0
-vertex 478 28 36
-vertex 478 20 36
+vertex 478 28 37
+vertex 478 20 37
 endloop
 endfacet
 facet normal 0 1 0
 outer loop
 vertex 478 28 0
 vertex 470 28 0
-vertex 470 28 36
+vertex 470 28 37
 endloop
 endfacet
 facet normal 0 1 0
 outer loop
 vertex 478 28 0
-vertex 470 28 36
-vertex 478 28 36
+vertex 470 28 37
+vertex 478 28 37
 endloop
 endfacet
 facet normal -1 0 0
 outer loop
 vertex 470 28 0
 vertex 470 20 0
-vertex 470 20 36
+vertex 470 20 37
 endloop
 endfacet
 facet normal -1 0 0
 outer loop
 vertex 470 28 0
-vertex 470 20 36
-vertex 470 28 36
+vertex 470 20 37
+vertex 470 28 37
 endloop
 endfacet
 facet normal 0 0 1
@@ -7291,6 +7291,76 @@ outer loop
 vertex 510 18 0
 vertex 510 10 21
 vertex 510 18 21
+endloop
+endfacet
+facet normal 0 0 1
+outer loop
+vertex 520 50 21
+vertex 528 50 21
+vertex 528 58 21
+endloop
+endfacet
+facet normal 0 0 1
+outer loop
+vertex 520 50 21
+vertex 528 58 21
+vertex 520 58 21
+endloop
+endfacet
+facet normal 0 -1 0
+outer loop
+vertex 520 50 0
+vertex 528 50 0
+vertex 528 50 21
+endloop
+endfacet
+facet normal 0 -1 0
+outer loop
+vertex 520 50 0
+vertex 528 50 21
+vertex 520 50 21
+endloop
+endfacet
+facet normal 1 0 0
+outer loop
+vertex 528 50 0
+vertex 528 58 0
+vertex 528 58 21
+endloop
+endfacet
+facet normal 1 0 0
+outer loop
+vertex 528 50 0
+vertex 528 58 21
+vertex 528 50 21
+endloop
+endfacet
+facet normal 0 1 0
+outer loop
+vertex 528 58 0
+vertex 520 58 0
+vertex 520 58 21
+endloop
+endfacet
+facet normal 0 1 0
+outer loop
+vertex 528 58 0
+vertex 520 58 21
+vertex 528 58 21
+endloop
+endfacet
+facet normal -1 0 0
+outer loop
+vertex 520 58 0
+vertex 520 50 0
+vertex 520 50 21
+endloop
+endfacet
+facet normal -1 0 0
+outer loop
+vertex 520 58 0
+vertex 520 50 21
+vertex 520 58 21
 endloop
 endfacet
 endsolid contributions

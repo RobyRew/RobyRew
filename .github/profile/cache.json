@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 168,
-    "views": 6620
+    "scrobbles": 179,
+    "views": 6622
   },
   "github": {
     "repos": {
@@ -54,47 +54,55 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 40
+      "public_repos": 41
     }
   },
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Speranta si Prietenii",
-    "artist_url": "https://www.last.fm/music/Speranta+si+Prietenii",
-    "context": "Speranta si Prietenii, Vol.16 (Ierusalime)",
+    "artist": "Justin Deac",
+    "artist_url": "https://www.last.fm/music/Justin+Deac",
+    "context": "Ne Stingem Doamne",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Speranta+si+Prietenii/Speranta+si+Prietenii%2C+Vol.16+%28Ierusalime%29",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/b32aa6f24781cc3bc3dfe212a6d8faea.jpg",
+    "context_url": "https://www.last.fm/music/Justin+Deac/Ne+Stingem+Doamne",
+    "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Pe%20Crucia%20Din%20Dealul%20Iubirii%20Speranta%20si%20Prietenii",
+    "play_url": "https://open.spotify.com/search/Ne%20Stingem%20Doamne%20Justin%20Deac",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Speranta+si+Prietenii/_/Pe+Crucia+Din+Dealul+Iubirii",
-    "title": "Pe Crucia Din Dealul Iubirii",
+    "song_url": "https://www.last.fm/music/Justin+Deac/_/Ne+Stingem+Doamne",
+    "title": "Ne Stingem Doamne",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-15T23:14+00:00"
+    "when": "2026-11-16T15:55+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-15T05:21:41Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-11-14T00:39:01Z",
+      "pushed": "2026-11-16T17:36:57Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
+      "language": "TypeScript",
+      "name": "astro-logto",
+      "pushed": "2026-11-16T17:34:13Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/astro-logto"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-16T05:23:21Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
@@ -275,17 +283,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 103,
-    "all_time": 1506,
+    "active_days": 104,
+    "all_time": 1510,
     "best_count": 98,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-16",
-          0
-        ],
         [
           "2025-11-17",
           0
@@ -1710,7 +1714,7 @@
         ],
         [
           "2026-10-15",
-          10
+          11
         ],
         [
           "2026-10-16",
@@ -1848,13 +1852,17 @@
         ],
         [
           "2026-11-16",
+          3
+        ],
+        [
+          "2026-11-17",
           0
         ]
       ]
     ],
-    "commits": 574,
+    "commits": 576,
     "contributed_to": 3,
-    "contributions": 1097,
+    "contributions": 1101,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1864,22 +1872,22 @@
     "languages": [
       [
         "Swift",
-        30.5,
+        30.3,
         "#F05138"
       ],
       [
         "Objective-C",
-        24.1,
+        23.9,
         "#438eff"
       ],
       [
         "TypeScript",
-        21.6,
+        21.7,
         "#3178c6"
       ],
       [
         "JavaScript",
-        6.0,
+        6.4,
         "#f1e05a"
       ],
       [
@@ -1889,7 +1897,7 @@
       ],
       [
         "C",
-        2.3,
+        2.2,
         "#555555"
       ],
       [
@@ -1906,12 +1914,12 @@
     "longest": 11,
     "merged_prs": 7,
     "orgs": 0,
-    "original": 32,
+    "original": 33,
     "prs": 8,
-    "repos_contributed": 21,
+    "repos_contributed": 22,
     "reviews": 0,
     "stars": 108,
-    "streak": 0
+    "streak": 1
   },
   "top_tracks": [
     {
