@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 179,
-    "views": 6622
+    "scrobbles": 183,
+    "views": 6623
   },
   "github": {
     "repos": {
@@ -60,23 +60,23 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Justin Deac",
-    "artist_url": "https://www.last.fm/music/Justin+Deac",
-    "context": "Ne Stingem Doamne",
+    "artist": "Harvest Arad",
+    "artist_url": "https://www.last.fm/music/Harvest+Arad",
+    "context": "Revărsare (Live)",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Justin+Deac/Ne+Stingem+Doamne",
-    "cover": "",
+    "context_url": "https://www.last.fm/music/Harvest+Arad/Rev%C4%83rsare+%28Live%29",
+    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/778a555f8a7077b640860d13c383413e.jpg",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Ne%20Stingem%20Doamne%20Justin%20Deac",
+    "play_url": "https://open.spotify.com/search/Tr%C4%83iesc%20Pentru%20Tine%20%28Live%29%20Harvest%20Arad",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Justin+Deac/_/Ne+Stingem+Doamne",
-    "title": "Ne Stingem Doamne",
+    "song_url": "https://www.last.fm/music/Harvest+Arad/_/Tr%C4%83iesc+Pentru+Tine+(Live)",
+    "title": "Trăiesc Pentru Tine (Live)",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-16T15:55+00:00"
+    "when": "2026-11-17T12:02+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
@@ -84,9 +84,17 @@
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-11-16T17:36:57Z",
+      "pushed": "2026-11-17T22:50:13Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-17T05:21:39Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
@@ -95,14 +103,6 @@
       "pushed": "2026-11-16T17:34:13Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/astro-logto"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-16T05:23:21Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
@@ -283,17 +283,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 104,
-    "all_time": 1510,
+    "active_days": 105,
+    "all_time": 1511,
     "best_count": 98,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-17",
-          0
-        ],
         [
           "2025-11-18",
           0
@@ -1856,13 +1852,17 @@
         ],
         [
           "2026-11-17",
+          1
+        ],
+        [
+          "2026-11-18",
           0
         ]
       ]
     ],
-    "commits": 576,
+    "commits": 577,
     "contributed_to": 3,
-    "contributions": 1101,
+    "contributions": 1102,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1872,17 +1872,17 @@
     "languages": [
       [
         "Swift",
-        30.3,
+        30.1,
         "#F05138"
       ],
       [
         "Objective-C",
-        23.9,
+        23.7,
         "#438eff"
       ],
       [
         "TypeScript",
-        21.7,
+        22.0,
         "#3178c6"
       ],
       [
@@ -1907,7 +1907,7 @@
       ],
       [
         "Other",
-        9.4,
+        9.5,
         "#8B949E"
       ]
     ],
@@ -1919,7 +1919,7 @@
     "repos_contributed": 22,
     "reviews": 0,
     "stars": 108,
-    "streak": 1
+    "streak": 2
   },
   "top_tracks": [
     {
