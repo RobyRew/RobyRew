@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 183,
+    "scrobbles": 197,
     "views": 6623
   },
   "github": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 333,
+        "downloads": 335,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -60,23 +60,23 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Harvest Arad",
-    "artist_url": "https://www.last.fm/music/Harvest+Arad",
-    "context": "Revărsare (Live)",
+    "artist": "Ds Productions",
+    "artist_url": "https://www.last.fm/music/Ds+Productions",
+    "context": "Romantic Piano Solo",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Harvest+Arad/Rev%C4%83rsare+%28Live%29",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/778a555f8a7077b640860d13c383413e.jpg",
+    "context_url": "https://www.last.fm/music/Ds+Productions/Romantic+Piano+Solo",
+    "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Tr%C4%83iesc%20Pentru%20Tine%20%28Live%29%20Harvest%20Arad",
+    "play_url": "https://open.spotify.com/search/Romantic%20Piano%20Solo%20Ds%20Productions",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Harvest+Arad/_/Tr%C4%83iesc+Pentru+Tine+(Live)",
-    "title": "Trăiesc Pentru Tine (Live)",
+    "song_url": "https://www.last.fm/music/Ds+Productions/_/Romantic+Piano+Solo",
+    "title": "Romantic Piano Solo",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-17T12:02+00:00"
+    "when": "2026-11-18T14:50+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
@@ -84,7 +84,7 @@
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-11-17T22:50:13Z",
+      "pushed": "2026-11-18T13:37:18Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
     },
@@ -92,7 +92,7 @@
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-11-17T05:21:39Z",
+      "pushed": "2026-11-18T05:22:09Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
     },
@@ -290,10 +290,6 @@
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-18",
-          0
-        ],
         [
           "2025-11-19",
           0
@@ -1857,6 +1853,10 @@
         [
           "2026-11-18",
           0
+        ],
+        [
+          "2026-11-19",
+          0
         ]
       ]
     ],
@@ -1919,63 +1919,63 @@
     "repos_contributed": 22,
     "reviews": 0,
     "stars": 108,
-    "streak": 2
+    "streak": 0
   },
   "top_tracks": [
-    {
-      "artist": "Austin Farwell",
-      "artist_url": "https://www.last.fm/music/Austin+Farwell",
-      "cover": "",
-      "ms": 121000,
-      "name": "Spring Is Coming",
-      "plays": 9,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Austin+Farwell/_/Spring+Is+Coming",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
-    },
     {
       "artist": "Youngmin You",
       "artist_url": "https://www.last.fm/music/Youngmin+You",
       "cover": "",
       "ms": 219000,
       "name": "Living Hope",
-      "plays": 9,
+      "plays": 6,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Youngmin+You/_/Living+Hope",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Youngmin+You/_/Living+Hope"
     },
     {
-      "artist": "Jurrivh",
-      "artist_url": "https://www.last.fm/music/Jurrivh",
+      "artist": "Speranta",
+      "artist_url": "https://www.last.fm/music/Speranta",
       "cover": "",
-      "ms": 224000,
-      "name": "One Last Time",
-      "plays": 7,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jurrivh/_/One+Last+Time",
+      "ms": 300000,
+      "name": "Doamne atinge-ne din nou",
+      "plays": 5,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Speranta/_/Doamne+atinge-ne+din+nou",
       "source": "Last.fm",
-      "url": "https://www.last.fm/music/Jurrivh/_/One+Last+Time"
+      "url": "https://www.last.fm/music/Speranta/_/Doamne+atinge-ne+din+nou"
     },
     {
-      "artist": "Gibran Alcocer",
-      "artist_url": "https://www.last.fm/music/Gibran+Alcocer",
-      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/ebe23f3bad0676ed4b27fce1ed800bad.png",
-      "ms": 131000,
-      "name": "Idea 12",
-      "plays": 6,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Gibran+Alcocer/_/Idea+12",
+      "artist": "Andrea Vanzo",
+      "artist_url": "https://www.last.fm/music/Andrea+Vanzo",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/e9de90e3a5dc4860db4b952773809e97.png",
+      "ms": 183000,
+      "name": "Amélie - Comptine d’un autre été, l’après-midi - (reimagined)",
+      "plays": 4,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9%2C+l%E2%80%99apr%C3%A8s-midi+-+%28reimagined%29",
       "source": "Last.fm",
-      "url": "https://www.last.fm/music/Gibran+Alcocer/_/Idea+12"
+      "url": "https://www.last.fm/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9,+l%E2%80%99apr%C3%A8s-midi+-+(reimagined)"
     },
     {
-      "artist": "Morunas",
-      "artist_url": "https://www.last.fm/music/Morunas",
-      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/287d36d683e4d1cba9ec6ddaa8c8d2d2.png",
+      "artist": "Austin Farwell",
+      "artist_url": "https://www.last.fm/music/Austin+Farwell",
+      "cover": "",
+      "ms": 121000,
+      "name": "Spring Is Coming",
+      "plays": 4,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Austin+Farwell/_/Spring+Is+Coming",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
+    },
+    {
+      "artist": "Jason Fervento",
+      "artist_url": "https://www.last.fm/music/Jason+Fervento",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/6e6c4b1d404a82074b75670d87b6ab76.png",
       "ms": 0,
-      "name": "Autumn Days",
-      "plays": 6,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Morunas/_/Autumn+Days",
+      "name": "Ascension",
+      "plays": 4,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jason+Fervento/_/Ascension",
       "source": "Last.fm",
-      "url": "https://www.last.fm/music/Morunas/_/Autumn+Days"
+      "url": "https://www.last.fm/music/Jason+Fervento/_/Ascension"
     }
   ]
 }
