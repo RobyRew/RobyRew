@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 197,
-    "views": 6623
+    "scrobbles": 213,
+    "views": 6625
   },
   "github": {
     "repos": {
@@ -54,32 +54,96 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 41
+      "public_repos": 42
     }
   },
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Ds Productions",
-    "artist_url": "https://www.last.fm/music/Ds+Productions",
-    "context": "Romantic Piano Solo",
+    "artist": "The Afters",
+    "artist_url": "https://www.last.fm/music/The+Afters",
+    "context": "Fear No More",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Ds+Productions/Romantic+Piano+Solo",
-    "cover": "",
+    "context_url": "https://www.last.fm/music/The+Afters/Fear+No+More",
+    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/16a74a2a437e2370579010dbf954cd09.jpg",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Romantic%20Piano%20Solo%20Ds%20Productions",
+    "play_url": "https://open.spotify.com/search/I%20Will%20Fear%20No%20More%20The%20Afters",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Ds+Productions/_/Romantic+Piano+Solo",
-    "title": "Romantic Piano Solo",
+    "song_url": "https://www.last.fm/music/The+Afters/_/I+Will+Fear+No+More",
+    "title": "I Will Fear No More",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-18T14:50+00:00"
+    "when": "2026-11-19T11:59+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
+    {
+      "description": "RobyRew ID: one @handle and one picture across the RobyRew apps, written to Logto",
+      "language": "TypeScript",
+      "name": "robyrew-id",
+      "pushed": "2026-11-19T21:36:21Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/robyrew-id"
+    },
+    {
+      "description": "Shared build and UI plumbing for the RobyRew app fleet",
+      "language": "Dockerfile",
+      "name": "platform",
+      "pushed": "2026-11-19T21:20:00Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/platform"
+    },
+    {
+      "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
+      "language": "CSS",
+      "name": "web-config",
+      "pushed": "2026-11-19T21:19:48Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/web-config"
+    },
+    {
+      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
+      "language": "Astro",
+      "name": "ui",
+      "pushed": "2026-11-19T21:19:42Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/ui"
+    },
+    {
+      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
+      "language": "TypeScript",
+      "name": "chatforge",
+      "pushed": "2026-11-19T16:00:46Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chatforge"
+    },
+    {
+      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
+      "language": "TypeScript",
+      "name": "mapswitch",
+      "pushed": "2026-11-19T15:54:57Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/mapswitch"
+    },
+    {
+      "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
+      "language": "TypeScript",
+      "name": "astro-logto",
+      "pushed": "2026-11-19T15:50:24Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/astro-logto"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-19T05:22:11Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
     {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "JavaScript",
@@ -87,30 +151,6 @@
       "pushed": "2026-11-18T13:37:18Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-18T05:22:09Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
-      "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
-      "language": "TypeScript",
-      "name": "astro-logto",
-      "pushed": "2026-11-16T17:34:13Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/astro-logto"
-    },
-    {
-      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
-      "language": "TypeScript",
-      "name": "chatforge",
-      "pushed": "2026-11-13T14:06:23Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chatforge"
     },
     {
       "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
@@ -137,44 +177,12 @@
       "url": "https://github.com/RobyRew/powerpoint-extractor"
     },
     {
-      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
-      "language": "TypeScript",
-      "name": "mapswitch",
-      "pushed": "2026-11-11T18:45:09Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/mapswitch"
-    },
-    {
-      "description": "Shared build and UI plumbing for the RobyRew app fleet",
-      "language": "Dockerfile",
-      "name": "platform",
-      "pushed": "2026-11-11T18:37:55Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/platform"
-    },
-    {
       "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
       "language": "TypeScript",
       "name": "calendar-event-generator",
       "pushed": "2026-11-11T18:08:07Z",
       "stars": 1,
       "url": "https://github.com/RobyRew/calendar-event-generator"
-    },
-    {
-      "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
-      "language": "CSS",
-      "name": "web-config",
-      "pushed": "2026-11-11T09:23:10Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/web-config"
-    },
-    {
-      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
-      "language": "CSS",
-      "name": "ui",
-      "pushed": "2026-11-11T09:23:03Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/ui"
     },
     {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
@@ -283,17 +291,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 105,
-    "all_time": 1511,
+    "active_days": 107,
+    "all_time": 1533,
     "best_count": 98,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-19",
-          0
-        ],
         [
           "2025-11-20",
           0
@@ -1848,21 +1852,25 @@
         ],
         [
           "2026-11-17",
-          1
+          8
         ],
         [
           "2026-11-18",
-          0
+          1
         ],
         [
           "2026-11-19",
+          14
+        ],
+        [
+          "2026-11-20",
           0
         ]
       ]
     ],
-    "commits": 577,
+    "commits": 596,
     "contributed_to": 3,
-    "contributions": 1102,
+    "contributions": 1124,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1872,67 +1880,56 @@
     "languages": [
       [
         "Swift",
-        30.1,
+        28.9,
         "#F05138"
       ],
       [
         "Objective-C",
-        23.7,
+        22.8,
         "#438eff"
       ],
       [
         "TypeScript",
-        22.0,
+        22.6,
         "#3178c6"
       ],
       [
         "JavaScript",
-        6.4,
+        6.8,
         "#f1e05a"
       ],
       [
         "CSS",
-        3.9,
+        4.4,
         "#663399"
       ],
       [
+        "Astro",
+        3.0,
+        "#ff5a03"
+      ],
+      [
         "C",
-        2.2,
+        2.1,
         "#555555"
       ],
       [
-        "Logos",
-        2.2,
-        "#9CA3AF"
-      ],
-      [
         "Other",
-        9.5,
+        9.4,
         "#8B949E"
       ]
     ],
     "longest": 11,
     "merged_prs": 7,
     "orgs": 0,
-    "original": 33,
+    "original": 34,
     "prs": 8,
-    "repos_contributed": 22,
+    "repos_contributed": 23,
     "reviews": 0,
     "stars": 108,
-    "streak": 0
+    "streak": 4
   },
   "top_tracks": [
-    {
-      "artist": "Youngmin You",
-      "artist_url": "https://www.last.fm/music/Youngmin+You",
-      "cover": "",
-      "ms": 219000,
-      "name": "Living Hope",
-      "plays": 6,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Youngmin+You/_/Living+Hope",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Youngmin+You/_/Living+Hope"
-    },
     {
       "artist": "Speranta",
       "artist_url": "https://www.last.fm/music/Speranta",
@@ -1950,7 +1947,7 @@
       "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/e9de90e3a5dc4860db4b952773809e97.png",
       "ms": 183000,
       "name": "Amélie - Comptine d’un autre été, l’après-midi - (reimagined)",
-      "plays": 4,
+      "plays": 2,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9%2C+l%E2%80%99apr%C3%A8s-midi+-+%28reimagined%29",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9,+l%E2%80%99apr%C3%A8s-midi+-+(reimagined)"
@@ -1961,21 +1958,32 @@
       "cover": "",
       "ms": 121000,
       "name": "Spring Is Coming",
-      "plays": 4,
+      "plays": 2,
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Austin+Farwell/_/Spring+Is+Coming",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
     },
     {
-      "artist": "Jason Fervento",
-      "artist_url": "https://www.last.fm/music/Jason+Fervento",
-      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/6e6c4b1d404a82074b75670d87b6ab76.png",
-      "ms": 0,
-      "name": "Ascension",
-      "plays": 4,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Jason+Fervento/_/Ascension",
+      "artist": "Betania Worship Dublin",
+      "artist_url": "https://www.last.fm/music/Betania+Worship+Dublin",
+      "cover": "",
+      "ms": 391000,
+      "name": "Mulțumesc",
+      "plays": 2,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Betania+Worship+Dublin/_/Mul%C8%9Bumesc",
       "source": "Last.fm",
-      "url": "https://www.last.fm/music/Jason+Fervento/_/Ascension"
+      "url": "https://www.last.fm/music/Betania+Worship+Dublin/_/Mul%C8%9Bumesc"
+    },
+    {
+      "artist": "Biji Din Bărbulești",
+      "artist_url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti",
+      "cover": "",
+      "ms": 0,
+      "name": "YEHOVA IRE",
+      "plays": 2,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE"
     }
   ]
 }
