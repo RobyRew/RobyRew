@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 213,
-    "views": 6625
+    "scrobbles": 233,
+    "views": 6627
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 335,
+        "downloads": 337,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -46,7 +46,7 @@
         "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
         "downloads": 0,
         "forks": 0,
-        "language": "JavaScript",
+        "language": "TypeScript",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
@@ -54,32 +54,120 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 42
+      "public_repos": 43
     }
   },
   "live": true,
   "now": {
     "account": 10,
-    "artist": "The Afters",
-    "artist_url": "https://www.last.fm/music/The+Afters",
-    "context": "Fear No More",
+    "artist": "Teo Family",
+    "artist_url": "https://www.last.fm/music/Teo+Family",
+    "context": "Elohim",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/The+Afters/Fear+No+More",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/16a74a2a437e2370579010dbf954cd09.jpg",
+    "context_url": "https://www.last.fm/music/Teo+Family/Elohim",
+    "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/I%20Will%20Fear%20No%20More%20The%20Afters",
+    "play_url": "https://open.spotify.com/search/Cand%20El%20Vorbeste%20Teo%20Family",
     "playing": false,
-    "song_url": "https://www.last.fm/music/The+Afters/_/I+Will+Fear+No+More",
-    "title": "I Will Fear No More",
+    "song_url": "https://www.last.fm/music/Teo+Family/_/Cand+El+Vorbeste",
+    "title": "Cand El Vorbeste",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-19T11:59+00:00"
+    "when": "2026-11-20T22:31+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
+    {
+      "description": "Telegram bot that loads a command module from each RobyRew product repo",
+      "language": "HTML",
+      "name": "robyrew-bot",
+      "pushed": "2026-11-21T00:23:04Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/robyrew-bot"
+    },
+    {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "TypeScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-11-20T11:09:32Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
+      "language": "Swift",
+      "name": "pacetimer",
+      "pushed": "2026-11-20T07:32:46Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/pacetimer"
+    },
+    {
+      "description": "Personal portfolio website - cosmincalin.es",
+      "language": "HTML",
+      "name": "portfolio",
+      "pushed": "2026-11-20T07:30:35Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/portfolio"
+    },
+    {
+      "description": "native app for doorline apps",
+      "language": "Swift",
+      "name": "Doorline",
+      "pushed": "2026-11-20T07:30:33Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Doorline"
+    },
+    {
+      "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
+      "language": "TypeScript",
+      "name": "chat-converter",
+      "pushed": "2026-11-20T07:30:30Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/chat-converter"
+    },
+    {
+      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
+      "language": "TypeScript",
+      "name": "powerpoint-extractor",
+      "pushed": "2026-11-20T07:30:28Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/powerpoint-extractor"
+    },
+    {
+      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
+      "language": "TypeScript",
+      "name": "calendar-event-generator",
+      "pushed": "2026-11-20T07:30:26Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/calendar-event-generator"
+    },
+    {
+      "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
+      "language": "Swift",
+      "name": "linkedin-pro-ios",
+      "pushed": "2026-11-20T07:30:22Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/linkedin-pro-ios"
+    },
+    {
+      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
+      "language": "TypeScript",
+      "name": "mapswitch",
+      "pushed": "2026-11-20T07:30:11Z",
+      "stars": 1,
+      "url": "https://github.com/RobyRew/mapswitch"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-20T05:22:03Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
     {
       "description": "RobyRew ID: one @handle and one picture across the RobyRew apps, written to Logto",
       "language": "TypeScript",
@@ -121,14 +209,6 @@
       "url": "https://github.com/RobyRew/chatforge"
     },
     {
-      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
-      "language": "TypeScript",
-      "name": "mapswitch",
-      "pushed": "2026-11-19T15:54:57Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/mapswitch"
-    },
-    {
       "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
       "language": "TypeScript",
       "name": "astro-logto",
@@ -137,68 +217,12 @@
       "url": "https://github.com/RobyRew/astro-logto"
     },
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-19T05:22:11Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "JavaScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-11-18T13:37:18Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
-      "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
-      "language": "TypeScript",
-      "name": "chat-converter",
-      "pushed": "2026-11-13T13:40:12Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chat-converter"
-    },
-    {
-      "description": "Personal portfolio website - cosmincalin.es",
-      "language": "HTML",
-      "name": "portfolio",
-      "pushed": "2026-11-11T22:52:54Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
-      "language": "TypeScript",
-      "name": "powerpoint-extractor",
-      "pushed": "2026-11-11T18:50:57Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/powerpoint-extractor"
-    },
-    {
-      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
-      "language": "TypeScript",
-      "name": "calendar-event-generator",
-      "pushed": "2026-11-11T18:08:07Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/calendar-event-generator"
-    },
-    {
       "description": "Universal in-app Objective-C runtime console, driven over USB",
       "language": "Objective-C",
       "name": "striker",
       "pushed": "2026-11-07T20:49:57Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/striker"
-    },
-    {
-      "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
-      "language": "Swift",
-      "name": "linkedin-pro-ios",
-      "pushed": "2026-11-07T10:32:24Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/linkedin-pro-ios"
     },
     {
       "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
@@ -215,14 +239,6 @@
       "pushed": "2026-10-22T21:36:28Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/bts-downloader"
-    },
-    {
-      "description": "native app for doorline apps",
-      "language": "Swift",
-      "name": "Doorline",
-      "pushed": "2026-10-18T06:03:05Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Doorline"
     },
     {
       "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
@@ -247,14 +263,6 @@
       "pushed": "2026-08-30T12:33:48Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/split-stream"
-    },
-    {
-      "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
-      "language": "Swift",
-      "name": "pacetimer",
-      "pushed": "2026-07-31T22:38:42Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/pacetimer"
     },
     {
       "description": "Descifra firmware Nokia DCT4 (MCU/PPM) y extrae sus tonos/recursos, 100% en el navegador. Port web de dct4decrypt/ToneSniffer/MidiDecode.",
@@ -291,17 +299,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 107,
-    "all_time": 1533,
+    "active_days": 111,
+    "all_time": 1560,
     "best_count": 98,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-20",
-          0
-        ],
         [
           "2025-11-21",
           0
@@ -1822,19 +1826,19 @@
         ],
         [
           "2026-11-10",
-          0
+          1
         ],
         [
           "2026-11-11",
-          18
+          19
         ],
         [
           "2026-11-12",
-          0
+          5
         ],
         [
           "2026-11-13",
-          3
+          4
         ],
         [
           "2026-11-14",
@@ -1848,7 +1852,7 @@
         ],
         [
           "2026-11-16",
-          3
+          4
         ],
         [
           "2026-11-17",
@@ -1860,17 +1864,21 @@
         ],
         [
           "2026-11-19",
-          14
+          16
         ],
         [
           "2026-11-20",
-          0
+          15
+        ],
+        [
+          "2026-11-21",
+          1
         ]
       ]
     ],
-    "commits": 596,
+    "commits": 622,
     "contributed_to": 3,
-    "contributions": 1124,
+    "contributions": 1151,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1880,54 +1888,54 @@
     "languages": [
       [
         "Swift",
-        28.9,
+        29.5,
         "#F05138"
       ],
       [
-        "Objective-C",
-        22.8,
-        "#438eff"
-      ],
-      [
         "TypeScript",
-        22.6,
+        23.3,
         "#3178c6"
       ],
       [
+        "Objective-C",
+        21.8,
+        "#438eff"
+      ],
+      [
         "JavaScript",
-        6.8,
+        6.5,
         "#f1e05a"
       ],
       [
         "CSS",
-        4.4,
+        4.2,
         "#663399"
       ],
       [
         "Astro",
-        3.0,
+        2.8,
         "#ff5a03"
       ],
       [
-        "C",
-        2.1,
-        "#555555"
+        "HTML",
+        2.6,
+        "#e34c26"
       ],
       [
         "Other",
-        9.4,
+        9.3,
         "#8B949E"
       ]
     ],
     "longest": 11,
     "merged_prs": 7,
     "orgs": 0,
-    "original": 34,
+    "original": 35,
     "prs": 8,
-    "repos_contributed": 23,
+    "repos_contributed": 24,
     "reviews": 0,
     "stars": 108,
-    "streak": 4
+    "streak": 6
   },
   "top_tracks": [
     {
@@ -1940,6 +1948,17 @@
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Speranta/_/Doamne+atinge-ne+din+nou",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Speranta/_/Doamne+atinge-ne+din+nou"
+    },
+    {
+      "artist": "Teo Family",
+      "artist_url": "https://www.last.fm/music/Teo+Family",
+      "cover": "",
+      "ms": 221000,
+      "name": "Cand El Vorbeste",
+      "plays": 3,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Teo+Family/_/Cand+El+Vorbeste",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Teo+Family/_/Cand+El+Vorbeste"
     },
     {
       "artist": "Andrea Vanzo",
@@ -1964,26 +1983,15 @@
       "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
     },
     {
-      "artist": "Betania Worship Dublin",
-      "artist_url": "https://www.last.fm/music/Betania+Worship+Dublin",
+      "artist": "Beniamin Palincas",
+      "artist_url": "https://www.last.fm/music/Beniamin+Palincas",
       "cover": "",
-      "ms": 391000,
-      "name": "Mulțumesc",
+      "ms": 282000,
+      "name": "Isus A Înviat",
       "plays": 2,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Betania+Worship+Dublin/_/Mul%C8%9Bumesc",
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Beniamin+Palincas/_/Isus+A+%C3%8Enviat",
       "source": "Last.fm",
-      "url": "https://www.last.fm/music/Betania+Worship+Dublin/_/Mul%C8%9Bumesc"
-    },
-    {
-      "artist": "Biji Din Bărbulești",
-      "artist_url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti",
-      "cover": "",
-      "ms": 0,
-      "name": "YEHOVA IRE",
-      "plays": 2,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE"
+      "url": "https://www.last.fm/music/Beniamin+Palincas/_/Isus+A+%C3%8Enviat"
     }
   ]
 }
