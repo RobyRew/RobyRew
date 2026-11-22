@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 233,
-    "views": 6627
+    "scrobbles": 268,
+    "views": 6629
   },
   "github": {
     "repos": {
@@ -17,7 +17,7 @@
       },
       "TopPresenter": {
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 337,
+        "downloads": 339,
         "forks": 0,
         "language": "Swift",
         "stars": 1,
@@ -60,26 +60,66 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Teo Family",
-    "artist_url": "https://www.last.fm/music/Teo+Family",
-    "context": "Elohim",
+    "artist": "Bethel Music",
+    "artist_url": "https://www.last.fm/music/Bethel+Music",
+    "context": "We Will Not Be Shaken",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Teo+Family/Elohim",
-    "cover": "",
+    "context_url": "https://www.last.fm/music/Bethel+Music/We+Will+Not+Be+Shaken",
+    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/6a71ad2753ee466ac668bd8ce518390f.jpg",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Cand%20El%20Vorbeste%20Teo%20Family",
+    "play_url": "https://open.spotify.com/search/No%20Longer%20Slaves%20Bethel%20Music",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Teo+Family/_/Cand+El+Vorbeste",
-    "title": "Cand El Vorbeste",
+    "song_url": "https://www.last.fm/music/Bethel+Music/_/No+Longer+Slaves",
+    "title": "No Longer Slaves",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-20T22:31+00:00"
+    "when": "2026-11-21T16:21+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
+    {
+      "description": "Personal portfolio website - cosmincalin.es",
+      "language": "HTML",
+      "name": "portfolio",
+      "pushed": "2026-11-21T11:04:21Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/portfolio"
+    },
+    {
+      "description": "native app for doorline apps",
+      "language": "Swift",
+      "name": "Doorline",
+      "pushed": "2026-11-21T11:03:49Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Doorline"
+    },
+    {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "TypeScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-11-21T11:03:20Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
+      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
+      "language": "Astro",
+      "name": "ui",
+      "pushed": "2026-11-21T10:21:59Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/ui"
+    },
+    {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-21T05:21:57Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
     {
       "description": "Telegram bot that loads a command module from each RobyRew product repo",
       "language": "HTML",
@@ -89,36 +129,12 @@
       "url": "https://github.com/RobyRew/robyrew-bot"
     },
     {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "TypeScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-11-20T11:09:32Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
       "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
       "language": "Swift",
       "name": "pacetimer",
       "pushed": "2026-11-20T07:32:46Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/pacetimer"
-    },
-    {
-      "description": "Personal portfolio website - cosmincalin.es",
-      "language": "HTML",
-      "name": "portfolio",
-      "pushed": "2026-11-20T07:30:35Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "native app for doorline apps",
-      "language": "Swift",
-      "name": "Doorline",
-      "pushed": "2026-11-20T07:30:33Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Doorline"
     },
     {
       "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
@@ -161,14 +177,6 @@
       "url": "https://github.com/RobyRew/mapswitch"
     },
     {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-20T05:22:03Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
       "description": "RobyRew ID: one @handle and one picture across the RobyRew apps, written to Logto",
       "language": "TypeScript",
       "name": "robyrew-id",
@@ -191,14 +199,6 @@
       "pushed": "2026-11-19T21:19:48Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/web-config"
-    },
-    {
-      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
-      "language": "Astro",
-      "name": "ui",
-      "pushed": "2026-11-19T21:19:42Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/ui"
     },
     {
       "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
@@ -300,21 +300,11 @@
   "spotify_users": {},
   "stats": {
     "active_days": 111,
-    "all_time": 1560,
-    "best_count": 98,
+    "all_time": 1577,
+    "best_count": 99,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
-      [
-        [
-          "2025-11-21",
-          0
-        ],
-        [
-          "2025-11-22",
-          0
-        ]
-      ],
       [
         [
           "2025-11-23",
@@ -1812,17 +1802,17 @@
         ],
         [
           "2026-11-07",
-          24
+          23
         ]
       ],
       [
         [
           "2026-11-08",
-          98
+          99
         ],
         [
           "2026-11-09",
-          19
+          28
         ],
         [
           "2026-11-10",
@@ -1864,7 +1854,7 @@
         ],
         [
           "2026-11-19",
-          16
+          17
         ],
         [
           "2026-11-20",
@@ -1872,13 +1862,19 @@
         ],
         [
           "2026-11-21",
-          1
+          8
+        ]
+      ],
+      [
+        [
+          "2026-11-22",
+          0
         ]
       ]
     ],
-    "commits": 622,
+    "commits": 630,
     "contributed_to": 3,
-    "contributions": 1151,
+    "contributions": 1168,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1888,42 +1884,42 @@
     "languages": [
       [
         "Swift",
-        29.5,
+        28.4,
         "#F05138"
       ],
       [
         "TypeScript",
-        23.3,
+        26.0,
         "#3178c6"
       ],
       [
         "Objective-C",
-        21.8,
+        20.9,
         "#438eff"
       ],
       [
         "JavaScript",
-        6.5,
+        6.3,
         "#f1e05a"
       ],
       [
         "CSS",
-        4.2,
+        4.0,
         "#663399"
       ],
       [
         "Astro",
-        2.8,
+        3.1,
         "#ff5a03"
       ],
       [
         "HTML",
-        2.6,
+        2.5,
         "#e34c26"
       ],
       [
         "Other",
-        9.3,
+        8.8,
         "#8B949E"
       ]
     ],
@@ -1950,6 +1946,28 @@
       "url": "https://www.last.fm/music/Speranta/_/Doamne+atinge-ne+din+nou"
     },
     {
+      "artist": "Biji Din Bărbulești",
+      "artist_url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti",
+      "cover": "",
+      "ms": 0,
+      "name": "YEHOVA IRE",
+      "plays": 3,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE"
+    },
+    {
+      "artist": "ELOHIM Worship",
+      "artist_url": "https://www.last.fm/music/ELOHIM+Worship",
+      "cover": "",
+      "ms": 310000,
+      "name": "Salvat",
+      "plays": 3,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/ELOHIM+Worship/_/Salvat",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/ELOHIM+Worship/_/Salvat"
+    },
+    {
       "artist": "Teo Family",
       "artist_url": "https://www.last.fm/music/Teo+Family",
       "cover": "",
@@ -1970,28 +1988,6 @@
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9%2C+l%E2%80%99apr%C3%A8s-midi+-+%28reimagined%29",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9,+l%E2%80%99apr%C3%A8s-midi+-+(reimagined)"
-    },
-    {
-      "artist": "Austin Farwell",
-      "artist_url": "https://www.last.fm/music/Austin+Farwell",
-      "cover": "",
-      "ms": 121000,
-      "name": "Spring Is Coming",
-      "plays": 2,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Austin+Farwell/_/Spring+Is+Coming",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Austin+Farwell/_/Spring+Is+Coming"
-    },
-    {
-      "artist": "Beniamin Palincas",
-      "artist_url": "https://www.last.fm/music/Beniamin+Palincas",
-      "cover": "",
-      "ms": 282000,
-      "name": "Isus A Înviat",
-      "plays": 2,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Beniamin+Palincas/_/Isus+A+%C3%8Enviat",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Beniamin+Palincas/_/Isus+A+%C3%8Enviat"
     }
   ]
 }
