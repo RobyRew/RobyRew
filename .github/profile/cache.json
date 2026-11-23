@@ -2,7 +2,7 @@
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
     "scrobbles": 268,
-    "views": 6629
+    "views": 6645
   },
   "github": {
     "repos": {
@@ -81,6 +81,14 @@
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Its me",
+      "language": "",
+      "name": "RobyRew",
+      "pushed": "2026-11-22T05:22:00Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/RobyRew"
+    },
+    {
       "description": "Personal portfolio website - cosmincalin.es",
       "language": "HTML",
       "name": "portfolio",
@@ -111,14 +119,6 @@
       "pushed": "2026-11-21T10:21:59Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/ui"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-21T05:21:57Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
     },
     {
       "description": "Telegram bot that loads a command module from each RobyRew product repo",
@@ -1869,6 +1869,10 @@
         [
           "2026-11-22",
           0
+        ],
+        [
+          "2026-11-23",
+          0
         ]
       ]
     ],
@@ -1931,7 +1935,7 @@
     "repos_contributed": 24,
     "reviews": 0,
     "stars": 108,
-    "streak": 6
+    "streak": 0
   },
   "top_tracks": [
     {
