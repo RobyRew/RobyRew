@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 268,
-    "views": 6645
+    "scrobbles": 277,
+    "views": 6648
   },
   "github": {
     "repos": {
@@ -60,31 +60,39 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Bethel Music",
-    "artist_url": "https://www.last.fm/music/Bethel+Music",
-    "context": "We Will Not Be Shaken",
+    "artist": "477",
+    "artist_url": "https://www.last.fm/music/477",
+    "context": "EP Acustic, Vol. 1",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Bethel+Music/We+Will+Not+Be+Shaken",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/6a71ad2753ee466ac668bd8ce518390f.jpg",
+    "context_url": "https://www.last.fm/music/477/EP+Acustic%2C+Vol.+1",
+    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/1cd280ad7c755e1ebdae961333da80a5.jpg",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/No%20Longer%20Slaves%20Bethel%20Music",
+    "play_url": "https://open.spotify.com/search/Asculta%20Suflete%20Al%20Meu%20477",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Bethel+Music/_/No+Longer+Slaves",
-    "title": "No Longer Slaves",
+    "song_url": "https://www.last.fm/music/477/_/Asculta+Suflete+Al+Meu",
+    "title": "Asculta Suflete Al Meu",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-21T16:21+00:00"
+    "when": "2026-11-23T10:07+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
+      "language": "TypeScript",
+      "name": "spotify-versions-history",
+      "pushed": "2026-11-24T00:38:20Z",
+      "stars": 3,
+      "url": "https://github.com/RobyRew/spotify-versions-history"
+    },
+    {
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-11-22T05:22:00Z",
+      "pushed": "2026-11-23T05:24:03Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
     },
@@ -103,14 +111,6 @@
       "pushed": "2026-11-21T11:03:49Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/Doorline"
-    },
-    {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "TypeScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-11-21T11:03:20Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
     },
     {
       "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
@@ -306,10 +306,6 @@
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-23",
-          0
-        ],
         [
           "2025-11-24",
           0
@@ -1873,6 +1869,10 @@
         [
           "2026-11-23",
           0
+        ],
+        [
+          "2026-11-24",
+          0
         ]
       ]
     ],
@@ -1972,6 +1972,17 @@
       "url": "https://www.last.fm/music/ELOHIM+Worship/_/Salvat"
     },
     {
+      "artist": "Speranta",
+      "artist_url": "https://www.last.fm/music/Speranta",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/388f36b655bc458ec5252827dcb58770.png",
+      "ms": 257000,
+      "name": "Jos la picioarele-Ti",
+      "plays": 3,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Speranta/_/Jos+la+picioarele-Ti",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/Speranta/_/Jos+la+picioarele-Ti"
+    },
+    {
       "artist": "Teo Family",
       "artist_url": "https://www.last.fm/music/Teo+Family",
       "cover": "",
@@ -1981,17 +1992,6 @@
       "plays_url": "https://www.last.fm/user/RobyRew/library/music/Teo+Family/_/Cand+El+Vorbeste",
       "source": "Last.fm",
       "url": "https://www.last.fm/music/Teo+Family/_/Cand+El+Vorbeste"
-    },
-    {
-      "artist": "Andrea Vanzo",
-      "artist_url": "https://www.last.fm/music/Andrea+Vanzo",
-      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/e9de90e3a5dc4860db4b952773809e97.png",
-      "ms": 183000,
-      "name": "Amélie - Comptine d’un autre été, l’après-midi - (reimagined)",
-      "plays": 2,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9%2C+l%E2%80%99apr%C3%A8s-midi+-+%28reimagined%29",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Andrea+Vanzo/_/Am%C3%A9lie+-+Comptine+d%E2%80%99un+autre+%C3%A9t%C3%A9,+l%E2%80%99apr%C3%A8s-midi+-+(reimagined)"
     }
   ]
 }
