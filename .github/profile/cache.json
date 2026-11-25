@@ -1,8 +1,8 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 277,
-    "views": 6648
+    "scrobbles": 284,
+    "views": 6653
   },
   "github": {
     "repos": {
@@ -60,31 +60,39 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "477",
-    "artist_url": "https://www.last.fm/music/477",
-    "context": "EP Acustic, Vol. 1",
+    "artist": "Josue Escogido",
+    "artist_url": "https://www.last.fm/music/Josue+Escogido",
+    "context": "Te Seguire",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/477/EP+Acustic%2C+Vol.+1",
-    "cover": "https://lastfm-img.freetls.fastly.net/i/u/174s/1cd280ad7c755e1ebdae961333da80a5.jpg",
+    "context_url": "https://www.last.fm/music/Josue+Escogido/Te+Seguire",
+    "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Asculta%20Suflete%20Al%20Meu%20477",
+    "play_url": "https://open.spotify.com/search/Te%20Seguire%20Josue%20Escogido",
     "playing": false,
-    "song_url": "https://www.last.fm/music/477/_/Asculta+Suflete+Al+Meu",
-    "title": "Asculta Suflete Al Meu",
+    "song_url": "https://www.last.fm/music/Josue+Escogido/_/Te+Seguire",
+    "title": "Te Seguire",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-23T10:07+00:00"
+    "when": "2026-11-24T14:24+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "recent": [
     {
+      "description": "native app for doorline apps",
+      "language": "Swift",
+      "name": "Doorline",
+      "pushed": "2026-11-24T22:13:16Z",
+      "stars": 0,
+      "url": "https://github.com/RobyRew/Doorline"
+    },
+    {
       "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
       "language": "TypeScript",
       "name": "spotify-versions-history",
-      "pushed": "2026-11-24T00:38:20Z",
+      "pushed": "2026-11-24T12:29:08Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/spotify-versions-history"
     },
@@ -92,7 +100,7 @@
       "description": "Its me",
       "language": "",
       "name": "RobyRew",
-      "pushed": "2026-11-23T05:24:03Z",
+      "pushed": "2026-11-24T05:22:43Z",
       "stars": 3,
       "url": "https://github.com/RobyRew/RobyRew"
     },
@@ -103,14 +111,6 @@
       "pushed": "2026-11-21T11:04:21Z",
       "stars": 0,
       "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "native app for doorline apps",
-      "language": "Swift",
-      "name": "Doorline",
-      "pushed": "2026-11-21T11:03:49Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Doorline"
     },
     {
       "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
@@ -299,17 +299,13 @@
   ],
   "spotify_users": {},
   "stats": {
-    "active_days": 111,
-    "all_time": 1577,
+    "active_days": 112,
+    "all_time": 1578,
     "best_count": 99,
     "best_day": "2026-11-08",
     "busiest": "Thursday",
     "calendar": [
       [
-        [
-          "2025-11-24",
-          0
-        ],
         [
           "2025-11-25",
           0
@@ -1872,13 +1868,17 @@
         ],
         [
           "2026-11-24",
+          1
+        ],
+        [
+          "2026-11-25",
           0
         ]
       ]
     ],
-    "commits": 630,
+    "commits": 631,
     "contributed_to": 3,
-    "contributions": 1168,
+    "contributions": 1169,
     "followers": 55,
     "forks": 18,
     "gists": 1,
@@ -1918,12 +1918,12 @@
       ],
       [
         "HTML",
-        2.5,
+        2.4,
         "#e34c26"
       ],
       [
         "Other",
-        8.8,
+        8.9,
         "#8B949E"
       ]
     ],
@@ -1935,7 +1935,7 @@
     "repos_contributed": 24,
     "reviews": 0,
     "stars": 108,
-    "streak": 0
+    "streak": 1
   },
   "top_tracks": [
     {
