@@ -5,7 +5,6 @@ import hashlib
 import html
 import math
 import sys
-import urllib.parse
 import urllib.request
 from functools import lru_cache
 from io import BytesIO
@@ -18,6 +17,7 @@ from fontTools.ttLib import TTFont
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 CACHE = HERE / "cache.json"
+ICON_DIR = HERE / "icons"  # each project's own app icon or favicon, named in profile.toml
 W = 840  # every full-width image
 PAD = 14  # cards sit this far in from the image edge
 CW = W - 2 * PAD
@@ -25,66 +25,70 @@ HALF = 420  # half-width images, shown at 49% side by side
 HP = 6
 GAP = 14  # transparent space under every card
 
-SANS = "-apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif"
-MONO = "ui-monospace, 'SF Mono', Menlo, monospace"
+SANS = "Inter, -apple-system, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif"
+MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
 FONTS = {
-    # key: (file, fallback stack, weight)
-    "display": ("BricolageGrotesque-ExtraBold.ttf", SANS, 800),
-    "semi": ("BricolageGrotesque-SemiBold.ttf", SANS, 600),
-    "text": ("BricolageGrotesque-Regular.ttf", SANS, 400),
-    "mono": ("GeistMono-Medium.ttf", MONO, 500),
+    # key: (file, fallback stack, weight). The same type as cosmincalin.es: Inter, and JetBrains Mono for labels.
+    "display": ("InterDisplay-Bold.ttf", SANS, 700),
+    "semi": ("Inter-SemiBold.ttf", SANS, 600),
+    "text": ("Inter-Regular.ttf", SANS, 400),
+    "mono": ("JetBrainsMono-Medium.ttf", MONO, 500),
 }
 
+# A card's tint: three colours laid across it as soft light. Each project takes the hue of its own icon.
 HUES = {
-    "ember": ("#FF6A2B", "#D62F4B", "#FFB347"),
+    "blue": ("#3B82F6", "#6366F1", "#60A5FA"),
+    "violet": ("#8B5CF6", "#6366F1", "#C084FC"),
+    "sky": ("#38BDF8", "#6366F1", "#7DD3FC"),
     "teal": ("#14B8A6", "#0EA5E9", "#5EEAD4"),
-    "blue": ("#3B82F6", "#0EA5E9", "#1D4ED8"),
-    "rose": ("#F43F5E", "#FB923C", "#BE123C"),
-    "green": ("#22C55E", "#14B8A6", "#A3E635"),
+    "green": ("#22C55E", "#14B8A6", "#86EFAC"),
+    "ember": ("#FF6A2B", "#F43F5E", "#FDBA74"),
+    "rose": ("#F43F5E", "#A855F7", "#FB7185"),
     "graphite": ("#64748B", "#334155", "#94A3B8"),
 }
-HUE_ORDER = ("ember", "teal", "blue", "rose", "green")
+HUE_ORDER = ("blue", "violet", "teal", "rose", "green", "sky")
 
-# Cards are frosted glass over the page: a see-through fill, a faint tint, a sheen at the top and a light rim.
+# The palette of the RobyRew sites (@robyrew/ui): neutral greys and one blue accent. Cards stay see-through so they
+# sit on any of GitHub's themes: a faint fill, the card's tint, a sheen at the top and a light rim.
 THEMES = {
     "dark": {
         "page": "#0D1117",
         "card": ("#FFFFFF", 0.035),
-        "ink": "#F0F3F6",
-        "dim": ("#FFFFFF", 0.68),
-        "faint": ("#FFFFFF", 0.46),
+        "ink": "#EDEDED",
+        "dim": ("#FFFFFF", 0.66),
+        "faint": ("#FFFFFF", 0.5),  # small labels: 5.2:1 on a card; WCAG asks 4.5:1 for small text
         "glass": ("#FFFFFF", 0.06),
-        "edge": ("#FFFFFF", 0.09),
-        "rim": ("#FFFFFF", 0.24, 0.05),  # colour, opacity at the top, opacity at the bottom
-        "sheen": ("#FFFFFF", 0.06),
-        "blob": 0.3,
+        "edge": ("#FFFFFF", 0.1),
+        "rim": ("#FFFFFF", 0.2, 0.05),  # colour, opacity at the top, opacity at the bottom
+        "sheen": ("#FFFFFF", 0.05),
+        "blob": 0.22,
         "shadow": 0,
         "head": "#F0F6FC",
         "muted": "#8B949E",
-        "accent": "#F2A27E",
-        "aside": "#F5B795",
+        "accent": "#7AA2FF",
+        "aside": "#9DB9FF",
+        "live": "#30D158",
         "window": "#161B22",
-        "heat": ("#FFFFFF", 0.06),
         "panel": ("#FFFFFF", 0.045),
     },
     "light": {
         "page": "#FFFFFF",
-        "card": ("#F2F4F7", 0.78),
-        "ink": "#1F2328",
-        "dim": ("#000000", 0.62),
-        "faint": ("#000000", 0.45),
-        "glass": ("#FFFFFF", 0.72),
-        "edge": ("#000000", 0.07),
-        "rim": ("#000000", 0.09, 0.11),
+        "card": ("#F2F2F4", 0.8),
+        "ink": "#1D1D1F",
+        "dim": ("#000000", 0.64),
+        "faint": ("#000000", 0.56),  # small labels: 4.8:1 on a card (0.46 gave 3.4:1)
+        "glass": ("#FFFFFF", 0.75),
+        "edge": ("#000000", 0.08),
+        "rim": ("#000000", 0.08, 0.11),
         "sheen": ("#FFFFFF", 0.7),
-        "blob": 0.2,
-        "shadow": 0.06,
+        "blob": 0.15,
+        "shadow": 0.05,
         "head": "#1F2328",
         "muted": "#656D76",
-        "accent": "#C4511F",
-        "aside": "#B4461C",
+        "accent": "#2563EB",
+        "aside": "#1D4ED8",
+        "live": "#1A9E3F",
         "window": "#FFFFFF",
-        "heat": ("#000000", 0.05),
         "panel": ("#FFFFFF", 0.6),
     },
 }
@@ -145,6 +149,10 @@ ICONS = {
     "issue": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.6"/>',
     "clock": '<circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2"/>',
     "heart": '<path d="M12 20.5s-8.5-5-8.5-11A4.8 4.8 0 0 1 12 6.4a4.8 4.8 0 0 1 8.5 3.1c0 6-8.5 11-8.5 11Z"/>',
+    "door": '<path d="M5.5 21.5V4A1.5 1.5 0 0 1 7 2.5h10A1.5 1.5 0 0 1 18.5 4v17.5M3 21.5h18"/><circle cx="15" cy="12.5" r="1.2"/>',
+    "terminal": '<rect x="2.5" y="4" width="19" height="16" rx="2.5"/><path d="m7 9.5 3 2.5-3 2.5M12.5 15H17"/>',
+    "archive": '<rect x="2.5" y="3.5" width="19" height="5" rx="1.5"/><path d="M4.5 8.5v10a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-10M10 12.5h4"/>',
+    "wand": '<path d="m3.5 20.5 11-11M13 5.5l1.5 1.5M17.5 3v3M19 4.5h-3M20.5 10.5v3M22 12h-3M8.5 3v3M10 4.5H7"/>',
 }
 STAR = "M12 2.8l2.8 5.8 6.4.9-4.6 4.5 1.1 6.3L12 17.3l-5.7 3 1.1-6.3-4.6-4.5 6.4-.9Z"
 DEVICE_ICONS = {"computer": "laptop", "smartphone": "phone", "tablet": "phone"}
@@ -167,10 +175,11 @@ def paint(color, attr="fill"):
 
 
 def compact(n):
-    if n >= 10000:
-        return f"{n / 1000:.0f}k"
+    """A count for a label: 14936 is "14.9k", never rounded up to "15k"."""
+    if n >= 100000:
+        return f"{n // 1000}k"
     if n >= 1000:
-        return f"{n / 1000:.1f}k".replace(".0k", "k")
+        return f"{math.floor(n / 100) / 10:.1f}k".replace(".0k", "k")
     return str(n)
 
 
@@ -273,7 +282,8 @@ class Face:
                     return lines
             else:
                 line = trial
-        return lines + [line] if line else lines
+        # A word wider than the line on its own was placed whole; cut any line that still doesn't fit.
+        return [self.fit(each, size, max_width, 0, kern) for each in (lines + [line] if line else lines)]
 
 
 FACES = {key: Face(key) for key in FONTS}
@@ -315,6 +325,16 @@ def icon_markup(name, x, y, size, stroke_paint, stroke=1.8):
         f'{stroke_paint} stroke-width="{num(stroke * 24 / size)}" stroke-linecap="round" '
         f'stroke-linejoin="round">{ICONS.get(name, ICONS["spark"])}</g>'
     )
+
+
+@lru_cache(maxsize=None)
+def icon_data(name):
+    """A file from icons/ as a data URI, or None when there is no such file."""
+    path = ICON_DIR / name if name else None
+    if path is None or not path.is_file():
+        return None
+    kind = "image/svg+xml" if path.suffix.lower() == ".svg" else "image/png"
+    return f"data:{kind};base64,{base64.b64encode(path.read_bytes()).decode()}"
 
 
 class SVG:
@@ -367,6 +387,20 @@ class SVG:
     def icon(self, name, x, y, size, color, stroke=1.8):
         self.add(icon_markup(name, x, y, size, paint(color, "stroke"), stroke))
 
+    def picture(self, name, x, y, size):
+        """Draws icons/<name> in a size × size box. Returns False when there is no such file.
+
+        The image is defined once under an id made from what it is and where, without the theme's id prefix: the
+        phone file holds both themes, and the identical definitions collapse into one (see render_pair)."""
+        data = icon_data(name)
+        if not data:
+            return False
+        key = "pic" + hashlib.sha256(f"{name}|{x:.2f}|{y:.2f}|{size:.2f}".encode()).hexdigest()[:10]
+        self.defs.append(f'<image id="{key}" href="{data}" x="{num(x)}" y="{num(y)}" width="{num(size)}" '
+                         f'height="{num(size)}" preserveAspectRatio="xMidYMid meet"/>')
+        self.add(f'<use href="#{key}"/>')
+        return True
+
     def glass(self, x, y, w, h, r, fill=None):
         self.add(
             f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" rx="{num(r)}" '
@@ -394,7 +428,12 @@ class SVG:
         return width
 
     def render(self, view=None):
-        """The whole canvas, or only the (x, y, w, h) part of it given as `view`."""
+        """The whole canvas, or only the (x, y, w, h) part of it given as `view`.
+
+        preserveAspectRatio="none": a browser lays an image out in fractions of a pixel, so a 420 × 241 image can get
+        a 240.98 px tall box. With the default ("meet") WebKit then letterboxes the drawing and pulls it in by up to
+        1.5 device pixels at each side, which shows as a step wherever two images have to line up (the joined card at
+        the top). "none" fills the box exactly; the difference in scale is far too small to see."""
         x, y, w, h = view or (0, 0, self.width, self.height)
         fonts = "".join(font_face(k, "".join(sorted(v))) for k, v in sorted(self.chars.items()))
         css = (
@@ -405,7 +444,8 @@ class SVG:
         )
         return (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{num(w)}" height="{num(h)}" '
-            f'viewBox="{num(x)} {num(y)} {num(w)} {num(h)}" role="img" aria-label="{esc(self.label)}">'
+            f'viewBox="{num(x)} {num(y)} {num(w)} {num(h)}" preserveAspectRatio="none" role="img" '
+            f'aria-label="{esc(self.label)}">'
             f"<title>{esc(self.label)}</title><style>{css}</style><defs>{''.join(self.defs)}</defs>"
             + "".join(self.parts)
             + "</svg>\n"
@@ -431,7 +471,8 @@ def render_pair(light, dark, view):
     )
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{num(w)}" height="{num(h)}" '
-        f'viewBox="{num(x)} {num(y)} {num(w)} {num(h)}" role="img" aria-label="{esc(light.label)}">'
+        f'viewBox="{num(x)} {num(y)} {num(w)} {num(h)}" preserveAspectRatio="none" role="img" '
+        f'aria-label="{esc(light.label)}">'
         f"<title>{esc(light.label)}</title><style>{css}</style><defs>{''.join(dict.fromkeys(light.defs + dark.defs))}</defs>"
         f'<g class="l">{"".join(light.parts)}</g><g class="k">{"".join(dark.parts)}</g>'
         "</svg>\n"
@@ -475,26 +516,6 @@ def image_data(url):
         return None
 
 
-def artwork(svg, x, y, size, url, seed, r=9):
-    clip = svg.uid("art")
-    svg.defs.append(f'<clipPath id="{clip}"><rect x="{num(x)}" y="{num(y)}" width="{size}" height="{size}" rx="{r}"/></clipPath>')
-    data = image_data(url)
-    if data:
-        svg.add(
-            f'<image href="{data}" x="{num(x)}" y="{num(y)}" width="{size}" height="{size}" '
-            f'clip-path="url(#{clip})" preserveAspectRatio="xMidYMid slice"/>'
-        )
-        return
-    colors = HUES[HUE_ORDER[sum(map(ord, seed or "x")) % len(HUE_ORDER)]]
-    grad = svg.uid("artg")
-    svg.defs.append(
-        f'<linearGradient id="{grad}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[0]}"/>'
-        f'<stop offset="1" stop-color="{colors[1]}"/></linearGradient>'
-    )
-    svg.add(f'<rect x="{num(x)}" y="{num(y)}" width="{size}" height="{size}" rx="{r}" fill="url(#{grad})"/>')
-    svg.icon("music", x + size / 2 - size * 0.22, y + size / 2 - size * 0.22, size * 0.44, "#FFFFFF")
-
-
 # ── shared shapes ─────────────────────────────────────────────────────────────
 
 
@@ -506,8 +527,8 @@ def record(svg, cx, cy, r, words, period, cover=None):
     svg.defs.append(
         f'<radialGradient id="{disc}"><stop offset="0" stop-color="#2A2A2E"/><stop offset=".5" stop-color="#121214"/>'
         f'<stop offset="1" stop-color="#050506"/></radialGradient>'
-        f'<radialGradient id="{label}" cx=".35" cy=".3"><stop offset="0" stop-color="#FFB37A"/>'
-        f'<stop offset=".6" stop-color="#F0703A"/><stop offset="1" stop-color="#C9442A"/></radialGradient>'
+        f'<radialGradient id="{label}" cx=".35" cy=".3"><stop offset="0" stop-color="#C7D6FF"/>'
+        f'<stop offset=".6" stop-color="#7AA2FF"/><stop offset="1" stop-color="#3F63D8"/></radialGradient>'
         # A soft ring of shadow: a gradient rather than a blur, which would be redrawn on every frame of the spin.
         f'<radialGradient id="{shadow}"><stop offset=".84" stop-color="#000" stop-opacity=".42"/>'
         f'<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
@@ -560,14 +581,14 @@ def record(svg, cx, cy, r, words, period, cover=None):
     parts.append(
         f'<path id="{ring_id}" d="M{num(cx - ring)} {num(cy)}a{num(ring)} {num(ring)} 0 1 1 {num(2 * ring)} 0'
         f'a{num(ring)} {num(ring)} 0 1 1 {num(-2 * ring)} 0" fill="none"/>'
-        f'<text class="f-mono" font-size="{size}" letter-spacing="{num(tracking)}" fill="#2A0E04" fill-opacity=".72">'
+        f'<text class="f-mono" font-size="{size}" letter-spacing="{num(tracking)}" fill="#0B1636" fill-opacity=".72">'
         f'<textPath href="#{ring_id}">{esc(words)}</textPath></text>'
     )
-    parts.append(svg.text_markup(cx, cy - 10, "RobyRew", "display", 13, ("#2A0E04", 0.86), tracking=-0.4, anchor="middle")[0])
-    svg.use("mono", "SIDE A")
+    parts.append(svg.text_markup(cx, cy - 10, "RobyRew", "display", 13, ("#0B1636", 0.86), tracking=-0.4, anchor="middle")[0])
+    svg.use("mono", "33 RPM")
     parts.append(
         f'<text x="{num(cx)}" y="{num(cy + 18)}" text-anchor="middle" class="f-mono" font-size="6.5" '
-        f'letter-spacing="1.6" fill="#2A0E04" fill-opacity=".7">SIDE A</text>'
+        f'letter-spacing="1.6" fill="#0B1636" fill-opacity=".7">33 RPM</text>'
     )
     parts.append("</g>")
     finish(svg, parts, cx, cy, r, label_r)
@@ -638,54 +659,51 @@ def tonearm(svg, px, py, angle, rest):
 
 
 def window_mock(svg, x, y, w, h, hue):
+    """A presenter window: a sidebar of verses, the live slide with a verse on it, and the next slides below."""
     t = svg.t
-    colors = HUES.get(hue, HUES["ember"])
+    colors = HUES.get(hue, HUES["violet"])
     slide = svg.uid("slide")
     svg.defs.append(
-        f'<linearGradient id="{slide}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[1]}" stop-opacity=".85"/>'
-        f'<stop offset="1" stop-color="#140A0A"/></linearGradient>'
+        f'<linearGradient id="{slide}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[0]}" stop-opacity=".9"/>'
+        f'<stop offset="1" stop-color="#0E0B1F"/></linearGradient>'
     )
     svg.add(
-        f'<rect x="{num(x + 3)}" y="{num(y + 6)}" width="{num(w - 6)}" height="{num(h)}" rx="12" fill="#000" opacity=".18"/>'
+        f'<rect x="{num(x + 3)}" y="{num(y + 6)}" width="{num(w - 6)}" height="{num(h)}" rx="12" fill="#000" opacity=".16"/>'
         f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" rx="10" fill="{t["window"]}"/>'
         f'<rect x="{num(x + 0.5)}" y="{num(y + 0.5)}" width="{num(w - 1)}" height="{num(h - 1)}" rx="10" fill="none" '
         f'{paint(t["edge"], "stroke")}/>'
     )
     for i, color in enumerate(("#FF5F57", "#FEBC2E", "#28C840")):
-        svg.add(f'<circle cx="{num(x + 16 + i * 15)}" cy="{num(y + 14)}" r="4.6" fill="{color}"/>')
-    sx, sy, sw, sh = x + 10, y + 28, w - 20, h - 74
-    svg.add(f'<rect x="{num(sx)}" y="{num(sy)}" width="{num(sw)}" height="{num(sh)}" rx="7" fill="url(#{slide})"/>')
-    for width, height, dy, opacity in ((0.56, 9, 0.38, 0.92), (0.74, 5, 0.56, 0.6), (0.48, 5, 0.67, 0.6)):
+        svg.add(f'<circle cx="{num(x + 14 + i * 13)}" cy="{num(y + 13)}" r="4" fill="{color}"/>')
+    # Sidebar: the passage, one verse picked.
+    side_w = w * 0.27
+    sx, sy = x + 8, y + 26
+    for i in range(5):
+        row_y = sy + i * 14
+        if i == 1:
+            svg.add(f'<rect x="{num(sx - 2)}" y="{num(row_y - 3)}" width="{num(side_w - 4)}" height="12" rx="3.5" '
+                    f'fill="{colors[0]}" fill-opacity=".85"/>')
+        svg.add(f'<rect x="{num(sx + 2)}" y="{num(row_y + 1.5)}" width="{num((side_w - 14) * (0.9 - 0.12 * (i % 3)))}" height="3" '
+                f'rx="1.5" {paint((t["ink"], 0.9 if i == 1 else 0.28))}/>')
+    # The live slide.
+    lx, ly = x + side_w + 8, y + 24
+    lw, lh = w - side_w - 16, h - 64
+    svg.add(f'<rect x="{num(lx)}" y="{num(ly)}" width="{num(lw)}" height="{num(lh)}" rx="7" fill="url(#{slide})"/>')
+    for width, height, dy, opacity in ((0.72, 4.5, 0.36, 0.95), (0.8, 4.5, 0.5, 0.95), (0.58, 4.5, 0.64, 0.95)):
         svg.add(
-            f'<rect x="{num(sx + sw * (1 - width) / 2)}" y="{num(sy + sh * dy)}" width="{num(sw * width)}" '
+            f'<rect x="{num(lx + lw * (1 - width) / 2)}" y="{num(ly + lh * dy)}" width="{num(lw * width)}" '
             f'height="{height}" rx="{height / 2}" fill="#fff" fill-opacity="{opacity}"/>'
         )
-    svg.add(f'<rect x="{num(sx + 10)}" y="{num(sy + 9)}" width="34" height="13" rx="6.5" fill="#FF3B30"/>')
-    svg.text(sx + 27, sy + 18.6, "LIVE", "mono", 7.5, "#FFFFFF", tracking=1, anchor="middle")
-    thumb_w = (sw - 3 * 8) / 4
+    svg.text(lx + lw / 2, ly + lh * 0.86, "JOHN 1:1", "mono", 6.5, ("#FFFFFF", 0.75), tracking=1.4, anchor="middle")
+    svg.add(f'<rect x="{num(lx + 8)}" y="{num(ly + 8)}" width="30" height="12" rx="6" fill="#FF3B30"/>')
+    svg.text(lx + 23, ly + 16.6, "LIVE", "mono", 7, "#FFFFFF", tracking=1, anchor="middle")
+    # Next slides.
+    thumb_w = (lw - 3 * 6) / 4
     for i in range(4):
-        tx = sx + i * (thumb_w + 8)
+        tx = lx + i * (thumb_w + 6)
         svg.add(
-            f'<rect x="{num(tx)}" y="{num(y + h - 38)}" width="{num(thumb_w)}" height="28" rx="5" '
-            f'fill="{colors[i % 3]}" fill-opacity="{num(0.55 if i else 0.9)}"'
-            + (f' stroke="{t["ink"]}" stroke-width="1.5"' if i == 0 else "")
+            f'<rect x="{num(tx)}" y="{num(y + h - 32)}" width="{num(thumb_w)}" height="22" rx="4" '
+            f'fill="{colors[i % 3]}" fill-opacity="{num(0.75 if i == 0 else 0.35)}"'
+            + (f' stroke="{t["ink"]}" stroke-width="1.2"' if i == 0 else "")
             + "/>"
         )
-
-
-def hexdump(svg, x, y, w, h, seed, size=10):
-    digest = hashlib.sha256(seed.encode()).hexdigest() * 8
-    step = size * 1.5
-    rows = int(h // step)
-    cols = int(w // (size * 2.2))
-    for i in range(rows):
-        chunk = digest[i * cols * 2:(i + 1) * cols * 2]
-        line = " ".join(chunk[j:j + 2] for j in range(0, len(chunk), 2)).upper()
-        svg.text(x, y + i * step, line, "mono", size, (svg.t["ink"], 0.05), tracking=0.4)
-
-
-def heat_colors(theme):
-    # Index 0 is the empty cell, drawn with the theme's "heat" colour instead.
-    if theme == "dark":
-        return (None, "#4A2A20", "#8C4128", "#D2693F", "#F5A57A")
-    return (None, "#F9DCCB", "#F1B08C", "#E07F52", "#BF5A2E")

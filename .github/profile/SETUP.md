@@ -2,57 +2,65 @@
 
 `README.md` and everything in `img/` are generated. Don't edit them by hand.
 
-- **Content** lives in [`profile.toml`](../../profile.toml) at the repo root. Change the text, push to `main`, and the
-  *Refresh profile* workflow rebuilds the page. It also runs every morning to pick up new stars, repos,
-  contribution stats and listening data.
+- **Content** lives in [`profile.toml`](../../profile.toml) at the repo root: who I am, the projects and their copy,
+  the archive, music and contact links. Change it, push to `main`, and the *Refresh profile* workflow rebuilds the
+  page. It also runs every morning to pick up new stars, downloads, releases and listening data.
 - **Rendering:** [`layout.py`](layout.py) draws the page, [`canvas.py`](canvas.py) has the shared drawing
   pieces (fonts, colours, icons, the record) and [`data.py`](data.py) reads GitHub, Spotify and Last.fm.
-  [`build.py`](build.py) puts it together. Every SVG embeds a small subset of Bricolage Grotesque and Geist Mono
-  (licence in [`fonts/OFL.txt`](fonts/OFL.txt)).
-- **Last known data** (repos, stats, tracks) is saved in [`cache.json`](cache.json), so a failed API call
+  [`build.py`](build.py) puts it together. Every SVG embeds a small subset of Inter and JetBrains Mono, the type of
+  cosmincalin.es (licence and how the files were cut in [`fonts/OFL.txt`](fonts/OFL.txt)).
+- **Project icons** are in [`icons/`](icons): each project's own app icon or favicon, named in `profile.toml`
+  (`icon = "mapswitch.png"`). PNGs are 112 px with the transparent margin of macOS icons cropped off, so every
+  icon reads at the same size. A project without one gets a line icon on a glass square (`icon = "terminal"`).
+- **Last known data** (repos, numbers, tracks) is saved in [`cache.json`](cache.json), so a failed API call
   never blanks the page.
 
 ### How the page is put together
 
 GitHub strips CSS and clickable areas inside images from READMEs, so an image can carry only one link. That is why the
-page is a grid of glass tiles, one image per link: a project, its stars, downloads and latest release, each chart
-number, each track and artist. Tiles of one group share a tint laid across all of them.
+page is a grid of cards, one image per link. The cards use the palette of the RobyRew sites (`@robyrew/ui`): neutral
+greys, one blue accent, a see-through fill that sits on any GitHub theme, and a faint tint in the colour of each
+project's icon.
 
-No tile touches the edge of its image: wherever two images meet there is clear space, half a gap from each side.
+No card touches the edge of its image: wherever two images meet there is clear space, half a gap from each side.
 When an image lands between two device pixels (at 110 % or 125 % zoom, or on most phones), browsers blend its edge
 with the page, so two images painted flush on one colour always show a hairline where they meet. In clear space
 there is nothing to blend, so no zoom level or screen can show a cut. `align="top"` on every image stops GitHub
 leaving a gap under each row, and `layout.py` refuses rows under 40 units, which GitHub would pad to a line of
-text (24 px).
+text (24 px). Images are linked straight to `raw.githubusercontent.com`; a relative link would cost every image a
+redirect through github.com first.
 
-The tiles are frosted glass with a faint tint, sized like GitHub's own interface, and drawn without filters so
-they stay quick to paint. Images are linked straight to `raw.githubusercontent.com`; a relative link would cost
-every image a redirect through github.com first.
-
-- Every tile comes as `img/dark` and `img/light` for computers and `img/m` for phones (half the width, same
+- Every card comes as `img/dark` and `img/light` for computers and `img/m` for phones (half the width, same
   type size, so nothing gets tiny). The phone file holds both themes and switches by itself: GitHub's page script
   rewrites any `<picture>` source that mentions dark or light mode to follow the viewer's GitHub theme, and in
   doing so drops a width condition, so the phone source asks for width only.
-- Every link has a hover tooltip.
-- The top row is two tiles. Yours has your name, with a slow aurora behind it, a sweep of colour through the name,
-  a glitch and some sparkle now and then, and a blinking cursor (all CSS, no filters, and still for anyone who
-  asks their system for reduced motion); it links to the project you're building. The turntable shows the album
-  cover as the record's label and what's playing beside the record (under it on phones), and plays the song.
-  The record stays in one image: cut across two, its halves would turn out of step.
-- "Fresh from the studio" lists your other public repositories, latest push first, two to a row, and ends with a
-  tile to all of them. `[bsides]` in `profile.toml` sets how many, which to leave out and your own descriptions.
-- Numbers that are zero or missing are left out, and the rest fill their rows evenly.
+- Every link has a hover tooltip and every image a full-sentence `alt`.
+- Top to bottom:
+  - **Two tiles.** Mine has my name over a slow aurora, with a sweep of the accent through it now and then, what I
+    do, and a blinking cursor; the line over the name is my latest push among the projects on the page (or `now` in
+    `profile.toml`). It links to my website. The turntable shows the album cover as the record's label and what's
+    playing beside it (under it on phones), and plays the song. The record stays in one image: cut across two, its
+    halves would turn out of step.
+  - **The numbers:** release downloads and stars across my own repositories (forks left out), public repositories,
+    and contributions in the last year.
+  - **Selected work** (`[work]`): the first project on a big card, with a picture of the app (`mock`), the rest two
+    to a row. Language, release, downloads and the live address come from GitHub.
+  - **More projects** (`[more]`): smaller cards in the order of `profile.toml`, ending with a tile to every repository.
+  - **Archive** (`[archive]`): older work, added up: `match` sums every repository whose name contains it.
+  - **On rotation:** the top tracks of the last four weeks, then the contact links and the footer.
+- Numbers that are zero or missing are left out, and copy that doesn't fit is cut with an ellipsis rather than
+  overflowing; the font metrics are read at build time, so `build.py` knows exactly where each line ends.
 - The fonts carry no kerning table: the kerning is worked out at build time and written into each line of text,
   which makes every image lighter.
-- The contribution calendar is also saved as a 3D model, [`img/contributions.stl`](../../img/contributions.stl),
-  which GitHub shows in its own 3D viewer. The activity tile links to it, so the profile itself doesn't load
-  the viewer.
+- Everything that moves is CSS inside the SVG, with no filters, and stays still for anyone who asks their system
+  for reduced motion.
 
 Build locally:
 
 ```sh
 pip install fonttools==4.67.0 brotli==1.2.0
 python3 .github/profile/build.py --offline  # cached data only
+GH_STATS_TOKEN=$(gh auth token) python3 .github/profile/build.py  # fresh GitHub data
 ```
 
 Every command below runs on your Mac from the repo folder, with the GitHub CLI (`gh`) logged in.
@@ -155,10 +163,10 @@ publishes (`kit.json` on Pages), and if anything goes wrong it hands over the Pa
 The Worker reuses `LASTFM_API_KEY` and the Spotify secrets (`worker.yml` copies them over on each deploy). To go
 back, empty `worker` again.
 
-## 4. Optional: richer stats
+## 4. Optional: private contributions
 
-The activity and popularity cards use the workflow's own token, which sees public activity. To count private
-contributions too, create a fine-grained token with read-only access and save it:
+The numbers use the workflow's own token, which sees public activity. To count private contributions in the
+"contributions, past year" figure too, create a fine-grained token with read-only access and save it:
 
 ```sh
 gh secret set PROFILE_TOKEN

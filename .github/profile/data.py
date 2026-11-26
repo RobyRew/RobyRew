@@ -1,4 +1,4 @@
-"""Everything the profile reads from the outside world: GitHub, Spotify, Last.fm and the view counter."""
+"""Everything the profile reads from the outside world: GitHub, Spotify and Last.fm."""
 
 import base64
 import json
@@ -7,7 +7,7 @@ import re
 import sys
 import urllib.parse
 import urllib.request
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 from canvas import LANGUAGES
 
@@ -28,7 +28,9 @@ def github_headers():
 
 
 def github_data(p, cache):
-    data = cache.setdefault("github", {"user": {}, "repos": {}})
+    """My account, and every public repository I own (forks aside) with its release downloads and newest tag."""
+    data = cache.setdefault("github", {})
+    data.setdefault("user", {})
     headers = github_headers()
     login = p["me"]["github"]
     try:
@@ -36,34 +38,47 @@ def github_data(p, cache):
         data["user"] = {"public_repos": user["public_repos"], "created_at": user["created_at"]}
     except Exception as error:
         print(f"github: keeping cached user ({error})", file=sys.stderr)
-    for project in p["work"]["projects"]:
-        name = project["repo"]
+    nodes = None
+    if "Authorization" in headers:
         try:
-            repo = fetch(f"https://api.github.com/repos/{login}/{name}", headers)
+            nodes = repos_graphql(login, headers)
         except Exception as error:
-            print(f"github: keeping cached {name} ({error})", file=sys.stderr)
-            continue
-        if repo.get("private"):
-            data["repos"].pop(name, None)
-            continue
-        previous = data["repos"].get(name, {})
-        data["repos"][name] = {
-            "description": repo.get("description") or "",
-            "language": repo.get("language") or "",
-            "stars": repo.get("stargazers_count", 0),
-            "forks": repo.get("forks_count", 0),
-            "url": repo.get("html_url") or f"https://github.com/{login}/{name}",
-            "downloads": previous.get("downloads", 0),
-            "version": previous.get("version", ""),
-        }
+            print(f"github: repositories via GraphQL unavailable ({error})", file=sys.stderr)
+    if nodes is None:
         try:
-            releases = fetch(f"https://api.github.com/repos/{login}/{name}/releases?per_page=100", headers) or []
-            published = [r for r in releases if not r.get("draft")]
-            stable = [r for r in published if not r.get("prerelease")]
-            data["repos"][name]["downloads"] = sum(a.get("download_count", 0) for r in published for a in r.get("assets", []))
-            data["repos"][name]["version"] = (stable or published)[0]["tag_name"] if published else ""
+            nodes = repos_rest(login, headers)
         except Exception as error:
-            print(f"github: keeping cached releases for {name} ({error})", file=sys.stderr)
+            print(f"github: keeping cached repositories ({error})", file=sys.stderr)
+    if nodes is not None:
+        old = data.get("repos", {})
+        repos = {}
+        for node in nodes:
+            name = node["name"]
+            previous = old.get(name, {})
+            language = node.get("primaryLanguage") or {}
+            repo = {
+                "description": node.get("description") or "",
+                "language": language.get("name") or "",
+                "language_color": language.get("color") or "",
+                "stars": node.get("stargazerCount", 0),
+                "forks": node.get("forkCount", 0),
+                "url": node.get("url") or f"https://github.com/{login}/{name}",
+                "homepage": node.get("homepageUrl") or "",
+                "pushed": node.get("pushedAt") or "",
+                "archived": bool(node.get("isArchived")),
+                "downloads": previous.get("downloads", 0),
+                "version": previous.get("version", ""),
+            }
+            # GraphQL says how many releases there are; the REST fallback doesn't (None), so it asks every repo.
+            if node.get("releases") == 0:
+                repo["downloads"], repo["version"] = 0, ""
+            else:
+                try:
+                    repo["downloads"], repo["version"] = releases(login, name, headers)
+                except Exception as error:
+                    print(f"github: keeping cached releases for {name} ({error})", file=sys.stderr)
+            repos[name] = repo
+        data["repos"] = repos
     # The Pages address needs the workflow's own token; PROFILE_TOKEN has no access to repo settings.
     repository = os.environ.get("GITHUB_REPOSITORY", f"{login}/{login}")
     own = {"Accept": "application/vnd.github+json"}
@@ -85,25 +100,12 @@ query($login: String!, $after: String) {
   user(login: $login) {
     repositories(ownerAffiliations: OWNER, isFork: false, privacy: PUBLIC, first: 100, after: $after,
                  orderBy: {field: PUSHED_AT, direction: DESC}) {
-      totalCount
       pageInfo { hasNextPage endCursor }
       nodes {
-        name description url stargazerCount forkCount pushedAt isArchived
-        primaryLanguage { name }
-        languages(first: 10, orderBy: {field: SIZE, direction: DESC}) { edges { size node { name color } } }
+        name description url homepageUrl stargazerCount forkCount pushedAt isArchived
+        primaryLanguage { name color }
+        releases { totalCount }
       }
-    }
-  }
-}
-"""
-
-CALENDAR_QUERY = """
-query($login: String!, $from: DateTime!, $to: DateTime!) {
-  user(login: $login) {
-    contributionsCollection(from: $from, to: $to) {
-      totalCommitContributions totalPullRequestContributions totalIssueContributions
-      totalPullRequestReviewContributions totalRepositoriesWithContributedCommits
-      contributionCalendar { totalContributions weeks { contributionDays { date contributionCount } } }
     }
   }
 }
@@ -114,13 +116,6 @@ query($login: String!, $from: DateTime!, $to: DateTime!) {
   user(login: $login) { contributionsCollection(from: $from, to: $to) { contributionCalendar { totalContributions } } }
 }
 """
-
-# One small query each, so a field the token can't see doesn't sink the rest.
-EXTRA_FIELDS = {
-    "merged_prs": "pullRequests(states: MERGED) { totalCount }",
-    "issues_all": "issues { totalCount }",
-    "contributed_to": "repositoriesContributedTo(contributionTypes: [COMMIT, PULL_REQUEST, ISSUE], includeUserRepositories: false) { totalCount }",
-}
 
 LANGUAGE_COLORS = {
     **LANGUAGES, "Kotlin": "#A97BFF", "Java": "#B07219", "C": "#555555", "C++": "#F34B7D", "C#": "#178600",
@@ -140,31 +135,23 @@ def graphql(query, variables, headers):
     return result["data"]
 
 
-def views_data(p, cache):
-    """Reads the profile view counter (komarev.com). Reading it counts as one view."""
-    login = p["me"]["github"]
-    try:
-        request = urllib.request.Request(f"https://komarev.com/ghpvc/?username={urllib.parse.quote(login)}",
-                                         headers={"User-Agent": "robyrew-profile"})
-        with urllib.request.urlopen(request, timeout=15) as response:
-            svg = response.read().decode("utf-8", "replace")
-        numbers = [m.replace(",", "") for m in re.findall(r">([\d,]+)<", svg)]
-        if numbers:
-            cache.setdefault("extra", {})["views"] = int(numbers[-1])
-    except Exception as error:
-        print(f"views: keeping cached count ({error})", file=sys.stderr)
-
-
 def github_get(path, headers):
     return fetch(f"https://api.github.com{path}", headers)
 
 
-def search_count(kind, query, headers):
-    return github_get(f"/search/{kind}?q={urllib.parse.quote(query)}&per_page=1", headers)["total_count"]
+def repos_graphql(login, headers):
+    nodes, after = [], None
+    while True:
+        page = graphql(REPOS_QUERY, {"login": login, "after": after}, headers)["user"]["repositories"]
+        for node in page["nodes"]:
+            nodes.append({**node, "releases": (node.get("releases") or {}).get("totalCount")})
+        if not page["pageInfo"]["hasNextPage"]:
+            return nodes
+        after = page["pageInfo"]["endCursor"]
 
 
 def repos_rest(login, headers):
-    """The same shape as REPOS_QUERY's nodes, from the REST API."""
+    """The same shape as repos_graphql, from the REST API (which doesn't count releases)."""
     found, page = [], 1
     while True:
         batch = github_get(f"/users/{login}/repos?type=owner&sort=pushed&per_page=100&page={page}", headers) or []
@@ -172,229 +159,75 @@ def repos_rest(login, headers):
         if len(batch) < 100:
             break
         page += 1
-    repos = []
-    for r in found:
-        if r.get("fork") or r.get("private"):
-            continue
-        try:
-            sizes = github_get(f"/repos/{login}/{r['name']}/languages", headers) or {}
-        except Exception:
-            sizes = {}
-        repos.append({
+    return [
+        {
             "name": r["name"],
             "description": r.get("description"),
             "url": r["html_url"],
+            "homepageUrl": r.get("homepage"),
             "stargazerCount": r.get("stargazers_count", 0),
             "forkCount": r.get("forks_count", 0),
             "pushedAt": r.get("pushed_at"),
             "isArchived": r.get("archived", False),
-            "primaryLanguage": {"name": r["language"]} if r.get("language") else None,
-            "languages": {"edges": [{"size": size, "node": {"name": name, "color": None}} for name, size in sizes.items()]},
-        })
-    return repos
+            "primaryLanguage": {"name": r["language"], "color": LANGUAGE_COLORS.get(r["language"])} if r.get("language") else None,
+            "releases": None,
+        }
+        for r in found
+        if not r.get("fork") and not r.get("private")
+    ]
 
 
-def calendar_page(login, start=None, end=None):
-    """Reads the public contribution calendar on github.com when the API won't give it."""
-    url = f"https://github.com/users/{login}/contributions"
-    if start:
-        url += f"?from={start}&to={end}"
-    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (profile builder)", "Accept": "text/html"})
+def releases(login, name, headers):
+    """Downloads across a repository's published releases, and its newest stable tag."""
+    found, page = [], 1
+    while True:
+        batch = github_get(f"/repos/{login}/{name}/releases?per_page=100&page={page}", headers) or []
+        found += batch
+        if len(batch) < 100:
+            break
+        page += 1
+    published = [r for r in found if not r.get("draft")]
+    stable = [r for r in published if not r.get("prerelease")]
+    downloads = sum(a.get("download_count", 0) for r in published for a in r.get("assets", []))
+    return downloads, ((stable or published)[0]["tag_name"] if published else "")
+
+
+def calendar_page(login):
+    """The "contributions in the last year" count on my public profile, when the API won't give it."""
+    request = urllib.request.Request(f"https://github.com/users/{login}/contributions",
+                                     headers={"User-Agent": "Mozilla/5.0 (profile builder)", "Accept": "text/html"})
     with urllib.request.urlopen(request, timeout=20) as response:
         page = response.read().decode("utf-8", "replace")
-    counts = {}
-    for tip in re.finditer(r'<tool-tip[^>]*\bfor="([^"]+)"[^>]*>\s*([^<]*?)\s*</tool-tip>', page):
-        match = re.match(r"(No|\d[\d,]*)\s+contribution", tip.group(2))
-        if match:
-            counts[tip.group(1)] = 0 if match.group(1) == "No" else int(match.group(1).replace(",", ""))
-    days = {}
-    for cell in re.finditer(r"<td\b[^>]*>", page):
-        tag = cell.group(0)
-        day = re.search(r'data-date="(\d{4}-\d{2}-\d{2})"', tag)
-        if not day:
-            continue
-        ident = re.search(r'\bid="([^"]+)"', tag)
-        level = re.search(r'data-level="(\d)"', tag)
-        count = counts.get(ident.group(1)) if ident else None
-        days[day.group(1)] = count if count is not None else (int(level.group(1)) if level else 0)
-    total = re.search(r"([\d,]+)\s+contributions?\s+in\s+(?:the\s+last\s+year|\d{4})", page)
-    if not days and not total:
-        raise RuntimeError("no calendar on the page")
-    return (int(total.group(1).replace(",", "")) if total else sum(days.values())), days
-
-
-def as_weeks(days):
-    weeks, week = [], []
-    for day in sorted(days):
-        if week and date.fromisoformat(day).isoweekday() % 7 == 0:
-            weeks.append(week)
-            week = []
-        week.append((day, days[day]))
-    return weeks + [week] if week else weeks
+    total = re.search(r"([\d,]+)\s+contributions?\s+in\s+the\s+last\s+year", page)
+    if not total:
+        raise RuntimeError("no count on the page")
+    return int(total.group(1).replace(",", ""))
 
 
 def stats_data(p, cache):
-    """Activity and popularity numbers. Each piece is optional and falls back to the REST API or the public page."""
+    """The numbers on the page that aren't per repository: stars on my own repos, contributions in the last year."""
     headers = github_headers()
-    authed = "Authorization" in headers
     login = p["me"]["github"]
     now = datetime.now(timezone.utc)
-    year_ago = now - timedelta(days=365)
-    stats = dict(cache.get("stats", {}))
-
-    def attempt(label, fn):
+    stats = {key: value for key, value in cache.get("stats", {}).items() if key in ("stars", "contributions")}
+    repos = cache.get("github", {}).get("repos")
+    if repos:
+        stats["stars"] = sum(repo.get("stars", 0) for repo in repos.values())
+    total = None
+    if "Authorization" in headers:
         try:
-            return fn()
+            window = {"login": login, "from": (now - timedelta(days=365)).isoformat(), "to": now.isoformat()}
+            total = graphql(YEAR_QUERY, window, headers)["user"]["contributionsCollection"]["contributionCalendar"]["totalContributions"]
         except Exception as error:
-            print(f"github: {label} unavailable ({error})", file=sys.stderr)
-            return None
-
-    def graphql_repos():
-        repos, after = [], None
-        while True:
-            page = graphql(REPOS_QUERY, {"login": login, "after": after}, headers)["user"]["repositories"]
-            repos += page["nodes"]
-            if not page["pageInfo"]["hasNextPage"]:
-                return repos
-            after = page["pageInfo"]["endCursor"]
-
-    repos = attempt("repositories via GraphQL", graphql_repos) if authed else None
-    if repos is None:
-        repos = attempt("repositories via REST", lambda: repos_rest(login, headers))
-    if repos is not None:
-        sizes, colors = {}, {}
-        for repo in repos:
-            for edge in repo["languages"]["edges"]:
-                name = edge["node"]["name"]
-                sizes[name] = sizes.get(name, 0) + edge["size"]
-                colors[name] = edge["node"].get("color") or LANGUAGE_COLORS.get(name) or "#9CA3AF"
-        total = sum(sizes.values()) or 1
-        ranked = sorted(sizes.items(), key=lambda kv: -kv[1])
-        languages = [[name, round(100 * size / total, 1), colors[name]] for name, size in ranked[:7]]
-        rest = 100 - sum(share for _, share, _ in languages)
-        if len(ranked) > 7 and rest > 0.05:
-            languages.append(["Other", round(rest, 1), "#8B949E"])
-        stats.update({
-            "languages": languages,
-            "stars": sum(r["stargazerCount"] for r in repos),
-            "forks": sum(r["forkCount"] for r in repos),
-            "original": len(repos),
-        })
-        cache["recent"] = [
-            {
-                "name": r["name"],
-                "description": r["description"] or "",
-                "url": r["url"],
-                "stars": r["stargazerCount"],
-                "language": (r["primaryLanguage"] or {}).get("name", ""),
-                "pushed": r["pushedAt"],
-            }
-            for r in sorted(repos, key=lambda r: r["pushedAt"] or "", reverse=True)
-            if not r["isArchived"]
-        ][:100]
-
-    variables = {"login": login, "from": year_ago.isoformat(), "to": now.isoformat()}
-    collection = attempt("contributions via GraphQL", lambda: graphql(CALENDAR_QUERY, variables, headers)["user"]["contributionsCollection"]) if authed else None
-    if collection:
-        stats["contributions"] = collection["contributionCalendar"]["totalContributions"]
-        stats["calendar"] = [
-            [(d["date"], d["contributionCount"]) for d in week["contributionDays"]]
-            for week in collection["contributionCalendar"]["weeks"]
-        ]
-        stats.update({
-            "commits": collection["totalCommitContributions"],
-            "prs": collection["totalPullRequestContributions"],
-            "issues": collection["totalIssueContributions"],
-            "reviews": collection["totalPullRequestReviewContributions"],
-            "repos_contributed": collection["totalRepositoriesWithContributedCommits"],
-        })
-    else:
-        scraped = attempt("contribution calendar page", lambda: calendar_page(login))
-        if scraped:
-            stats["contributions"], days = scraped
-            stats["calendar"] = as_weeks(days)
-        start = year_ago.date().isoformat()
-        for key, kind, query in (
-            ("commits", "commits", f"author:{login} committer-date:>={start}"),
-            ("prs", "issues", f"author:{login} type:pr created:>={start}"),
-            ("issues", "issues", f"author:{login} type:issue created:>={start}"),
-            ("reviews", "issues", f"reviewed-by:{login} type:pr created:>={start}"),
-        ):
-            value = attempt(f"{key} count", lambda kind=kind, query=query: search_count(kind, query, headers))
-            if value is not None:
-                stats[key] = value
-
-    if stats.get("calendar"):
-        days = [count for week in stats["calendar"] for _, count in week]
-        longest = run = 0
-        for count in days:
-            run = run + 1 if count else 0
-            longest = max(longest, run)
-        streak = 0
-        for i, count in enumerate(reversed(days)):
-            if count:
-                streak += 1
-            elif i:  # today may still be empty
-                break
-        weekdays = [0] * 7
-        best = ("", 0)
-        for week in stats["calendar"]:
-            for day, count in week:
-                weekdays[date.fromisoformat(day).weekday()] += count
-                if count > best[1]:
-                    best = (day, count)
-        stats.update({
-            "active_days": sum(1 for count in days if count),
-            "streak": streak,
-            "longest": longest,
-            "busiest": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][weekdays.index(max(weekdays))],
-            "best_day": best[0],
-            "best_count": best[1],
-        })
-
-    for key, fragment in EXTRA_FIELDS.items():
-        query = f"query($login: String!) {{ user(login: $login) {{ x: {fragment} }} }}"
-        value = attempt(key, lambda query=query: graphql(query, {"login": login}, headers)["user"]["x"]["totalCount"]) if authed else None
-        if value is not None:
-            stats[key] = value
-    for key, query in (("merged_prs", f"author:{login} type:pr is:merged"), ("issues_all", f"author:{login} type:issue")):
-        if key not in stats:
-            value = attempt(key, lambda query=query: search_count("issues", query, headers))
-            if value is not None:
-                stats[key] = value
-
-    user = attempt("user", lambda: github_get(f"/users/{login}", headers)) or {}
-    if user:
-        stats.update({"followers": user.get("followers", 0), "gists": user.get("public_gists", 0), "joined": user.get("created_at", "")})
-    orgs = attempt("organizations", lambda: github_get(f"/users/{login}/orgs", headers))
-    if orgs is not None:
-        stats["orgs"] = len(orgs)
-
-    joined = stats.get("joined")
-    if joined:
-        use_graphql = authed
-
-        def yearly():
-            nonlocal use_graphql
-            total = 0
-            for year in range(int(joined[:4]), now.year + 1):
-                start, end = f"{year}-01-01", f"{year}-12-31"
-                if use_graphql:
-                    try:
-                        window = {"login": login, "from": f"{start}T00:00:00Z",
-                                  "to": f"{end}T23:59:59Z" if year < now.year else now.isoformat()}
-                        total += graphql(YEAR_QUERY, window, headers)["user"]["contributionsCollection"]["contributionCalendar"]["totalContributions"]
-                        continue
-                    except Exception:
-                        use_graphql = False
-                total += calendar_page(login, start, end)[0]
-            return total
-
-        value = attempt("all-time contributions", yearly)
-        if value is not None:
-            stats["all_time"] = value
-    if stats:
-        cache["stats"] = stats
+            print(f"github: contributions via GraphQL unavailable ({error})", file=sys.stderr)
+    if total is None:
+        try:
+            total = calendar_page(login)
+        except Exception as error:
+            print(f"github: keeping cached contributions ({error})", file=sys.stderr)
+    if total is not None:
+        stats["contributions"] = total
+    cache["stats"] = stats
 
 
 def spotify_accounts():

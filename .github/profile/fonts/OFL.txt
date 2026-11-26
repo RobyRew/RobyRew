@@ -1,5 +1,8 @@
-Bricolage Grotesque: Copyright 2022 The Bricolage Grotesque Project Authors (https://github.com/ateliertriay/bricolage)
-Geist Mono: Copyright 2024 The Geist Project Authors (https://github.com/vercel/geist-font)
+Inter: Copyright 2016 The Inter Project Authors (https://github.com/rsms/inter)
+JetBrains Mono: Copyright 2020 The JetBrains Mono Project Authors (https://github.com/JetBrains/JetBrainsMono)
+
+The files here are static instances cut from the variable fonts (Inter 4.1: opsz 32 / wght 700, opsz 16 / wght 600,
+opsz 14 / wght 400; JetBrains Mono: wght 500) and subset to Latin, with their kerning kept.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

@@ -18,10 +18,10 @@ from pathlib import Path
 
 import canvas
 import layout
-from canvas import CACHE, FACES, HUE_ORDER, ICONS, LANGUAGES, PLATFORMS, ROOT, THEMES, esc, render_pair
+from canvas import CACHE, FACES, HUE_ORDER, ICONS, PLATFORMS, ROOT, THEMES, compact, esc, render_pair
 from data import (LANGUAGE_COLORS, PLAY_SEARCH, fetch, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
-                  now_key, play_url, spotify_accounts, spotify_token, spotify_top, stats_data, views_data)
-from layout import Row, draw, hero_rows, page, render, render_phone, skyline
+                  now_key, play_url, spotify_accounts, spotify_token, spotify_top, stats_data)
+from layout import Row, draw, hero_rows, page, render, render_phone
 
 HERE = Path(__file__).resolve().parent
 LIVE_KEYS = ("play", "song", "artist", "context", "user")
@@ -68,48 +68,107 @@ def version():
 # ── data for the page ────────────────────────────────────────────────────────
 
 
+def domain(url):
+    """A web address the way a person would type it: no scheme, no trailing slash."""
+    return re.sub(r"^https?://(www\.)?", "", url or "").rstrip("/")
+
+
+def project(entry, repo, hue):
+    """A repository from profile.toml, with what GitHub knows about it."""
+    language = repo.get("language") or ""
+    icon = entry.get("icon") or "code"
+    image = icon if icon.lower().endswith((".png", ".svg")) else None
+    meta = [language] if language else []
+    if repo.get("version"):
+        meta.append(repo["version"])
+    if repo.get("downloads"):
+        meta.append(f'{compact(repo["downloads"])} downloads')
+    live = entry["live"] if "live" in entry else repo.get("homepage")  # live = "" hides the repo's homepage
+    if live:
+        meta.append(domain(live))
+    return {
+        "name": entry["repo"],
+        "title": entry.get("title") or entry["repo"],
+        "kind": entry.get("kind", ""),
+        "tag": entry.get("tag", ""),
+        "note": entry.get("note") or repo.get("description") or "",
+        "image": image,
+        "glyph": None if image else icon,
+        "hue": entry.get("hue") or hue,
+        "texture": entry.get("texture"),
+        "mock": entry.get("mock"),
+        "url": repo["url"],
+        "meta": meta,
+        "language_color": repo.get("language_color") or LANGUAGE_COLORS.get(language) or "#9CA3AF",
+        "pushed": repo.get("pushed", ""),
+    }
+
+
+def projects_of(section, repos):
+    found = []
+    for i, entry in enumerate(section.get("projects", [])):
+        repo = repos.get(entry["repo"])
+        if repo is None:
+            print(f"profile: {entry['repo']} isn't a public repository of mine, left out", file=sys.stderr)
+            continue
+        found.append(project(entry, repo, HUE_ORDER[i % len(HUE_ORDER)]))
+    return found
+
+
+def archive_items(p, repos, login):
+    """Older work: one repository, or every repository whose name matches, added up."""
+    items = []
+    for entry in p.get("archive", {}).get("items", []):
+        if entry.get("match"):
+            pattern = re.compile(entry["match"], re.IGNORECASE)
+            group = [repo for name, repo in repos.items() if pattern.search(name)]
+            url = entry.get("url") or f"https://github.com/{login}?tab=repositories&q={urllib.parse.quote(entry['match'])}"
+        else:
+            group = [repos[entry["repo"]]] if entry.get("repo") in repos else []
+            url = entry.get("url") or (group[0]["url"] if group else "")
+        if not group:
+            continue
+        stars = sum(repo.get("stars", 0) for repo in group)
+        downloads = sum(repo.get("downloads", 0) for repo in group)
+        forks = sum(repo.get("forks", 0) for repo in group)
+        meta = [f'{len(group)} {entry.get("unit", "repos")}'] if len(group) > 1 else []
+        meta += [f"{compact(n)} {label}" for n, label in ((stars, "stars"), (downloads, "downloads"), (forks, "forks")) if n]
+        items.append({
+            "title": entry["title"], "subtitle": entry.get("subtitle", ""), "note": entry.get("note", ""),
+            "glyph": entry.get("icon") or "archive", "hue": entry.get("hue"), "url": url, "tip": entry.get("tip"),
+            "meta": meta,
+        })
+    return items
+
+
 def collect(p, cache):
     gh = cache.get("github", {})
     login = p["me"]["github"]
-    projects = []
-    for i, entry in enumerate(p["work"]["projects"]):
-        repo = gh.get("repos", {}).get(entry["repo"])
-        if repo is None:
-            continue
-        language = repo.get("language", "")
-        projects.append({
-            "name": entry["repo"],
-            "note": entry.get("note") or repo["description"],
-            "language": language,
-            "language_color": LANGUAGE_COLORS.get(language) or LANGUAGES.get(language) or "#9CA3AF",
-            "stars": repo.get("stars", 0),
-            "forks": repo.get("forks", 0),
-            "downloads": repo.get("downloads", 0),
-            "version": repo.get("version", ""),
-            "url": repo["url"],
-            "hue": entry.get("hue") or HUE_ORDER[i % len(HUE_ORDER)],
-            "icon": entry.get("icon") or "code",
-        })
-    bsides = p.get("bsides", {})
-    skipped = {pr["name"].lower() for pr in projects} | {login.lower()} | {name.lower() for name in bsides.get("exclude", [])}
-    notes = {name.lower(): note for name, note in bsides.get("notes", {}).items()}
-    others = [
-        {**r, "description": notes.get(r["name"].lower(), r.get("description")),
-         "language_color": LANGUAGE_COLORS.get(r.get("language") or "", "#9CA3AF")}
-        for r in cache.get("recent", []) if r["name"].lower() not in skipped
-    ]
-    stats = cache.get("stats")
-    if stats:
-        stats = {**stats, **cache.get("extra", {})}
-    tracks = cache.get("top_tracks") or []
+    repos = gh.get("repos", {})
+    user = gh.get("user", {})
+    stats = cache.get("stats") or {}
+    projects = projects_of(p.get("work", {}), repos)
+    more = projects_of(p.get("more", {}), repos)
+    listed = [pr for pr in projects + more if pr["pushed"]]
+    latest = max(listed, key=lambda pr: pr["pushed"]) if listed else None
+    tracks = (cache.get("top_tracks") or [])[: int(p.get("listening", {}).get("tracks", 5))]
     return {
         "projects": projects,
-        "recent": others[:int(bsides.get("count", 10))],
-        "stats": stats,
+        "more": more,
+        "archive": archive_items(p, repos, login),
+        "totals": {
+            # Downloads and stars add up my own repositories (the query leaves forks out); the repository count is
+            # GitHub's public_repos, forks included, the number on the Repositories tab of the profile.
+            "downloads": sum(repo.get("downloads", 0) for repo in repos.values()),
+            "stars": stats.get("stars") or sum(repo.get("stars", 0) for repo in repos.values()),
+            "repos": user.get("public_repos"),
+            "contributions": stats.get("contributions"),
+        },
+        "pulse": {"name": latest["title"], "when": latest["pushed"]} if latest else None,
         "tracks": tracks,
         "now": cache.get("now"),
-        "since": str(gh.get("user", {}).get("created_at", ""))[:4],
-        "repo_count": gh.get("user", {}).get("public_repos"),
+        "since": str(user.get("created_at", ""))[:4],
+        "repo_count": user.get("public_repos"),
         "scrobbles": cache.get("extra", {}).get("scrobbles") if tracks and tracks[0].get("source") == "Last.fm" else None,
         "lastfm_url": cache.get("extra", {}).get("lastfm_url"),
     }
@@ -251,6 +310,7 @@ def kit(p, cache, now):
     looks (idle or playing, with a cover or without) with a slot for what's on it, the fonts they share, the numbers
     to measure text with, and whose music to look up."""
     templates, fonts = {}, {}
+    totals = collect(p, cache)["totals"]  # the numbers under the deck shape its card, as in the README
 
     def shared_fonts(svg):
         # Each font is stored once and named by its hash; the templates only name it.
@@ -265,7 +325,7 @@ def kit(p, cache, now):
         for playing in (False, True):
             for cover in (False, True):
                 look = f'{"playing" if playing else "idle"}-{"cover" if cover else "label"}'
-                row = hero_rows(p, {"playing": playing, "cover": "yes" if cover else ""}, {"play": ""}, "")[0]
+                row = hero_rows(p, {"playing": playing, "cover": "yes" if cover else ""}, {"play": ""}, "", totals=totals)[0]
                 cell = next(c for c in row.cells if c.live)
                 versions = {}
                 for theme in THEMES:
@@ -284,7 +344,7 @@ def kit(p, cache, now):
 
     return {
         "version": version(),
-        "file": next(c.file for c in hero_rows(p, now, {"play": ""}, "")[0].cells if c.live),
+        "file": next(c.file for c in hero_rows(p, now, {"play": ""}, "", totals=totals)[0].cells if c.live),
         "templates": templates,
         "fonts": fonts,
         "faces": {"semi": metrics("semi", layout.INFO_CHARS), "mono": metrics("mono", layout.STATUS_CHARS)},
@@ -348,7 +408,6 @@ def refresh(p, cache):
             print(f"spotify: no top tracks ({error})", file=sys.stderr)
     if not topped:
         lastfm_top(p, cache)
-    views_data(p, cache)
     now = now_data(p, cache, accounts)
     if now:
         cache["now"] = {**now, "playing": False, "paused": False}
@@ -372,17 +431,8 @@ def main():
     hrefs = live_links(live_base) if live_base else now_links(data["now"], fallback_link(cache, p))
     folder = ROOT / "img"
     folder.mkdir(exist_ok=True)
-    # The contribution calendar in 3D, as a file GitHub shows in its own 3D viewer (linked from the activity card).
-    model = folder / "contributions.stl"
-    skyline_url = None
-    if (data["stats"] or {}).get("calendar"):
-        stl = skyline(data["stats"]["calendar"])
-        if not model.exists() or model.read_text(encoding="utf-8") != stl:
-            model.write_text(stl, encoding="utf-8")
-        skyline_url = f"https://github.com/{repository(p)}/blob/main/img/contributions.stl"
-    elif model.exists():
-        model.unlink()
-    items = page(p, data, hrefs, skyline_url)
+    (folder / "contributions.stl").unlink(missing_ok=True)  # the 3D calendar of the previous design
+    items = page(p, data, hrefs)
     rows = list(rows_of(items))
 
     written = write_images(rows, folder)
@@ -394,11 +444,15 @@ def main():
             empty.rmdir()
 
     (ROOT / "README.md").write_text(readme(items, p, live_base, raw_base(p)), encoding="utf-8")
+    # Only what the page uses is kept; older designs cached more.
+    cache.pop("recent", None)
+    cache.get("extra", {}).pop("views", None)
+    cache["stats"] = {key: value for key, value in (cache.get("stats") or {}).items() if key in ("stars", "contributions")}
     CACHE.write_text(json.dumps(cache, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
     cells = sum(len(row.cells) for row in rows)
     print(
         f"built {cells} linked images × {len(FOLDERS)} versions, {len(data['projects'])} projects, "
-        f"{len(data['recent'])} other repos, {'stats' if data['stats'] else 'no stats'}, {len(data['tracks'])} tracks, "
+        f"{len(data['more'])} more, {len(data['archive'])} archive cards, {len(data['tracks'])} tracks, "
         f"now: {now_key(data['now'])}"
     )
 

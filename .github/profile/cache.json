@@ -1,54 +1,489 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 284,
-    "views": 6659
+    "scrobbles": 284
   },
   "github": {
     "repos": {
+      "ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Complete guide on how to install macOS using OpenCore on Motherboard ASRock Fatal1ty AB350 Gaming-ITX, Ryzen 5 3600, and ASUS Radeon RX560 AREZ",
+        "downloads": 202,
+        "forks": 0,
+        "homepage": "",
+        "language": "",
+        "language_color": "",
+        "pushed": "2022-12-27T20:46:16Z",
+        "stars": 4,
+        "url": "https://github.com/RobyRew/ASRock_Fatality_AB350_Gaming-ITX_Hackintosh_OpenCore",
+        "version": "0.8.7v2"
+      },
+      "ASUS-FX506LHB-Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Complete guide on how to install macOS using OpenCore on Asus ASUS TUF F15 FX506LHB and maybe similar FX506 models",
+        "downloads": 459,
+        "forks": 0,
+        "homepage": "",
+        "language": "ASL",
+        "language_color": "",
+        "pushed": "2023-02-10T16:34:13Z",
+        "stars": 11,
+        "url": "https://github.com/RobyRew/ASUS-FX506LHB-Hackintosh_OpenCore",
+        "version": "0.8.8"
+      },
+      "ASUS-Z170-MAXIMUS-VIII-HERO_Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Complete guide on how to install macOS using OpenCore on Asus MAXIMUS VIII HERO Z170",
+        "downloads": 192,
+        "forks": 0,
+        "homepage": "https://github.com/RobyRew",
+        "language": "C",
+        "language_color": "#555555",
+        "pushed": "2022-05-02T00:23:35Z",
+        "stars": 5,
+        "url": "https://github.com/RobyRew/ASUS-Z170-MAXIMUS-VIII-HERO_Hackintosh_OpenCore",
+        "version": "0.6.9"
+      },
+      "Acer-Aspire-A515-54_Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Complete guide on how to install macOS using OpenCore on Acer Aspire A515-54 and maybe similar A515-xx models",
+        "downloads": 57,
+        "forks": 0,
+        "homepage": "",
+        "language": "ASL",
+        "language_color": "",
+        "pushed": "2022-09-19T22:14:06Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/Acer-Aspire-A515-54_Hackintosh_OpenCore",
+        "version": "0.7.6"
+      },
+      "Doorline": {
+        "archived": false,
+        "description": "native app for doorline apps",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Swift",
+        "language_color": "#F05138",
+        "pushed": "2026-11-24T22:13:16Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/Doorline",
+        "version": ""
+      },
       "Download-AI-Chat-PDF": {
+        "archived": false,
         "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
         "downloads": 11,
         "forks": 0,
+        "homepage": "",
         "language": "JavaScript",
+        "language_color": "#f1e05a",
+        "pushed": "2026-10-17T21:39:07Z",
         "stars": 0,
         "url": "https://github.com/RobyRew/Download-AI-Chat-PDF",
         "version": "v1.1.0"
       },
-      "TopPresenter": {
-        "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 343,
+      "Lenovo-Ideapad-Flex-5-14IIL05_Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Central Point on how to install macOS on Lenovo Ideapad Flex 5 14IIL05 and maybe similar models.",
+        "downloads": 395,
+        "forks": 2,
+        "homepage": "https://github.com/RobyRew",
+        "language": "ASL",
+        "language_color": "",
+        "pushed": "2023-05-18T23:20:35Z",
+        "stars": 11,
+        "url": "https://github.com/RobyRew/Lenovo-Ideapad-Flex-5-14IIL05_Hackintosh_OpenCore",
+        "version": "0.8.4v3"
+      },
+      "Lenovo-P330-Workstation-Tower_Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Central Point on how to instal macOS on Lenovo 30C6S5GV00",
+        "downloads": 68,
+        "forks": 1,
+        "homepage": "https://github.com/RobyRew",
+        "language": "",
+        "language_color": "",
+        "pushed": "2021-12-08T17:30:51Z",
+        "stars": 4,
+        "url": "https://github.com/RobyRew/Lenovo-P330-Workstation-Tower_Hackintosh_OpenCore",
+        "version": "0.7.3"
+      },
+      "MSI_X570_A-Pro_Hackintosh_OpenCore": {
+        "archived": true,
+        "description": "Complete guide on how to install macOS using OpenCore on Motherboard MSI A-Pro X570, Ryzen 9 3900X, MSI Mech OC RX 5700 XT.",
+        "downloads": 542,
+        "forks": 6,
+        "homepage": "https://github.com/RobyRew",
+        "language": "",
+        "language_color": "",
+        "pushed": "2023-09-13T15:52:07Z",
+        "stars": 19,
+        "url": "https://github.com/RobyRew/MSI_X570_A-Pro_Hackintosh_OpenCore",
+        "version": "0.9.4"
+      },
+      "Remedy_Ticket_Folder_Generator": {
+        "archived": false,
+        "description": "",
+        "downloads": 0,
         "forks": 0,
+        "homepage": "https://gcct-systems.github.io/Remedy_Ticket_Folder_Generator/",
+        "language": "HTML",
+        "language_color": "#e34c26",
+        "pushed": "2024-03-12T11:46:26Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/Remedy_Ticket_Folder_Generator",
+        "version": ""
+      },
+      "RobyRew": {
+        "archived": false,
+        "description": "Its me",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "",
+        "language_color": "",
+        "pushed": "2026-11-26T05:23:04Z",
+        "stars": 3,
+        "url": "https://github.com/RobyRew/RobyRew",
+        "version": ""
+      },
+      "Shatranj-On-Java": {
+        "archived": false,
+        "description": "Old version of Chess named Shatranj on Java CLI",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Java",
+        "language_color": "#b07219",
+        "pushed": "2024-03-26T22:32:16Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/Shatranj-On-Java",
+        "version": ""
+      },
+      "TitanD3v-and-Hyperixa-Tweaks-Free": {
+        "archived": true,
+        "description": "Backup for the now taken down TitanD3v and Hyperixa tweaks",
+        "downloads": 12545,
+        "forks": 9,
+        "homepage": "",
+        "language": "Objective-C",
+        "language_color": "#438eff",
+        "pushed": "2023-01-15T08:58:24Z",
+        "stars": 39,
+        "url": "https://github.com/RobyRew/TitanD3v-and-Hyperixa-Tweaks-Free",
+        "version": "1.0"
+      },
+      "TopPresenter": {
+        "archived": false,
+        "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
+        "downloads": 347,
+        "forks": 0,
+        "homepage": "",
         "language": "Swift",
+        "language_color": "#F05138",
+        "pushed": "2026-09-20T15:47:36Z",
         "stars": 1,
         "url": "https://github.com/RobyRew/TopPresenter",
         "version": "v1.0.0"
       },
+      "WallsKiller_Robocode": {
+        "archived": false,
+        "description": "The only speciality of this basic Robot is to completely destroy 9/10 a Basic Walls Robot",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Java",
+        "language_color": "#b07219",
+        "pushed": "2024-04-02T17:48:17Z",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/WallsKiller_Robocode",
+        "version": ""
+      },
+      "astro-logto": {
+        "archived": false,
+        "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-19T15:50:24Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/astro-logto",
+        "version": ""
+      },
+      "bts-downloader": {
+        "archived": false,
+        "description": "BlockTheSpot mod that changes the desktop client's download-related Remote Config defaults (experimental loader)",
+        "downloads": 2,
+        "forks": 0,
+        "homepage": "",
+        "language": "Python",
+        "language_color": "#3572A5",
+        "pushed": "2026-10-22T21:36:28Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/bts-downloader",
+        "version": "v2026.10.22-41f51fa"
+      },
+      "calendar-event-generator": {
+        "archived": false,
+        "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "https://robyrew.github.io/calendar-event-generator/",
+        "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-25T20:15:56Z",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/calendar-event-generator",
+        "version": ""
+      },
+      "chat-converter": {
+        "archived": false,
+        "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-20T07:30:30Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/chat-converter",
+        "version": ""
+      },
       "chatforge": {
+        "archived": false,
         "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
         "downloads": 0,
         "forks": 0,
+        "homepage": "",
         "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-19T16:00:46Z",
         "stars": 0,
         "url": "https://github.com/RobyRew/chatforge",
         "version": ""
       },
+      "high-school-story": {
+        "archived": false,
+        "description": "",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Python",
+        "language_color": "#3572A5",
+        "pushed": "2026-11-25T20:15:49Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/high-school-story",
+        "version": ""
+      },
+      "hollywood-u-rising-stars": {
+        "archived": false,
+        "description": "",
+        "downloads": 12,
+        "forks": 0,
+        "homepage": "",
+        "language": "Smali",
+        "language_color": "",
+        "pushed": "2026-11-26T09:36:40Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/hollywood-u-rising-stars",
+        "version": "1.0.1"
+      },
+      "linkedin-pro-ios": {
+        "archived": false,
+        "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Swift",
+        "language_color": "#F05138",
+        "pushed": "2026-11-20T07:30:22Z",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/linkedin-pro-ios",
+        "version": ""
+      },
       "mapswitch": {
+        "archived": false,
         "description": "Open any map link in your preferred app — privacy-first universal map redirector",
         "downloads": 0,
         "forks": 0,
+        "homepage": "",
         "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-20T07:30:11Z",
         "stars": 1,
         "url": "https://github.com/RobyRew/mapswitch",
         "version": ""
       },
+      "pacetimer": {
+        "archived": false,
+        "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
+        "downloads": 48,
+        "forks": 0,
+        "homepage": "https://robyrew.github.io/pacetimer/",
+        "language": "Swift",
+        "language_color": "#F05138",
+        "pushed": "2026-11-20T07:32:46Z",
+        "stars": 3,
+        "url": "https://github.com/RobyRew/pacetimer",
+        "version": "v1.0.15"
+      },
+      "platform": {
+        "archived": false,
+        "description": "Shared build and UI plumbing for the RobyRew app fleet",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Dockerfile",
+        "language_color": "#384d54",
+        "pushed": "2026-11-19T21:20:00Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/platform",
+        "version": ""
+      },
+      "portfolio": {
+        "archived": false,
+        "description": "Personal portfolio website - cosmincalin.es",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "HTML",
+        "language_color": "#e34c26",
+        "pushed": "2026-11-21T11:04:21Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/portfolio",
+        "version": ""
+      },
+      "powerpoint-extractor": {
+        "archived": false,
+        "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "https://robyrew.github.io/powerpoint-extractor/",
+        "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-20T07:30:28Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/powerpoint-extractor",
+        "version": ""
+      },
+      "retro-phone-tools": {
+        "archived": false,
+        "description": "Descifra firmware Nokia DCT4 (MCU/PPM) y extrae sus tonos/recursos, 100% en el navegador. Port web de dct4decrypt/ToneSniffer/MidiDecode.",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "https://robyrew.github.io/retro-phone-tools/",
+        "language": "JavaScript",
+        "language_color": "#f1e05a",
+        "pushed": "2026-07-03T20:01:55Z",
+        "stars": 1,
+        "url": "https://github.com/RobyRew/retro-phone-tools",
+        "version": ""
+      },
+      "robyrew-bot": {
+        "archived": false,
+        "description": "Telegram bot that loads a command module from each RobyRew product repo",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "HTML",
+        "language_color": "#e34c26",
+        "pushed": "2026-11-21T00:23:04Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/robyrew-bot",
+        "version": ""
+      },
+      "robyrew-id": {
+        "archived": false,
+        "description": "RobyRew ID: one @handle and one picture across the RobyRew apps, written to Logto",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "https://id.robyrew.com",
+        "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-19T21:36:21Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/robyrew-id",
+        "version": ""
+      },
+      "split-stream": {
+        "archived": false,
+        "description": "Split one application's traffic off through your own server",
+        "downloads": 56,
+        "forks": 0,
+        "homepage": "https://robyrew.github.io/split-stream/",
+        "language": "Rust",
+        "language_color": "#dea584",
+        "pushed": "2026-08-30T12:33:48Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/split-stream",
+        "version": "v1.0.0"
+      },
       "spotify-versions-history": {
+        "archived": false,
         "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
         "downloads": 0,
         "forks": 0,
+        "homepage": "https://robyrew.github.io/spotify-versions-history/",
         "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-26T09:54:45Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
+        "version": ""
+      },
+      "striker": {
+        "archived": false,
+        "description": "Universal in-app Objective-C runtime console, driven over USB",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Objective-C",
+        "language_color": "#438eff",
+        "pushed": "2026-11-07T20:49:57Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/striker",
+        "version": ""
+      },
+      "tweak-kit": {
+        "archived": false,
+        "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Python",
+        "language_color": "#3572A5",
+        "pushed": "2026-10-28T19:25:32Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/tweak-kit",
+        "version": ""
+      },
+      "ui": {
+        "archived": false,
+        "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "Astro",
+        "language_color": "#ff5a03",
+        "pushed": "2026-11-21T10:21:59Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/ui",
+        "version": ""
+      },
+      "web-config": {
+        "archived": false,
+        "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "CSS",
+        "language_color": "#663399",
+        "pushed": "2026-11-19T21:19:48Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/web-config",
         "version": ""
       }
     },
@@ -79,1879 +514,10 @@
     "when": "2026-11-24T14:24+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
-  "recent": [
-    {
-      "description": "",
-      "language": "Smali",
-      "name": "hollywood-u-rising-stars",
-      "pushed": "2026-11-25T22:44:42Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/hollywood-u-rising-stars"
-    },
-    {
-      "description": "A comprehensive calendar event generator supporting Apple, Google, and Microsoft calendars with full ICS import/export",
-      "language": "TypeScript",
-      "name": "calendar-event-generator",
-      "pushed": "2026-11-25T20:15:56Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/calendar-event-generator"
-    },
-    {
-      "description": "",
-      "language": "Python",
-      "name": "high-school-story",
-      "pushed": "2026-11-25T20:15:49Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/high-school-story"
-    },
-    {
-      "description": "Searchable catalog of Spotify desktop installers, with a watcher that records each new build and its hashes",
-      "language": "TypeScript",
-      "name": "spotify-versions-history",
-      "pushed": "2026-11-25T18:23:57Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/spotify-versions-history"
-    },
-    {
-      "description": "Its me",
-      "language": "",
-      "name": "RobyRew",
-      "pushed": "2026-11-25T05:23:11Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/RobyRew"
-    },
-    {
-      "description": "native app for doorline apps",
-      "language": "Swift",
-      "name": "Doorline",
-      "pushed": "2026-11-24T22:13:16Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Doorline"
-    },
-    {
-      "description": "Personal portfolio website - cosmincalin.es",
-      "language": "HTML",
-      "name": "portfolio",
-      "pushed": "2026-11-21T11:04:21Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/portfolio"
-    },
-    {
-      "description": "Liquid-glass component set (Obsidian) shared across the RobyRew sites",
-      "language": "Astro",
-      "name": "ui",
-      "pushed": "2026-11-21T10:21:59Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/ui"
-    },
-    {
-      "description": "Telegram bot that loads a command module from each RobyRew product repo",
-      "language": "HTML",
-      "name": "robyrew-bot",
-      "pushed": "2026-11-21T00:23:04Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/robyrew-bot"
-    },
-    {
-      "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
-      "language": "Swift",
-      "name": "pacetimer",
-      "pushed": "2026-11-20T07:32:46Z",
-      "stars": 3,
-      "url": "https://github.com/RobyRew/pacetimer"
-    },
-    {
-      "description": "Convert chat exports (Telegram, WhatsApp, Instagram, Messenger, Snapchat, VSCO, Hinge) through UniversalChat, a lossless versioned format, including the zip Telegram imports. Runs in your browser.",
-      "language": "TypeScript",
-      "name": "chat-converter",
-      "pushed": "2026-11-20T07:30:30Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chat-converter"
-    },
-    {
-      "description": "Extract data from PowerPoint files (PPT and PPTX). Export to JSON, XML, CSV, TXT, HTML, and PDF.",
-      "language": "TypeScript",
-      "name": "powerpoint-extractor",
-      "pushed": "2026-11-20T07:30:28Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/powerpoint-extractor"
-    },
-    {
-      "description": "LinkedIn Professional - customization tweak for the native LinkedIn iOS app (Swift + Orion; jailbreak + AltStore)",
-      "language": "Swift",
-      "name": "linkedin-pro-ios",
-      "pushed": "2026-11-20T07:30:22Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/linkedin-pro-ios"
-    },
-    {
-      "description": "Open any map link in your preferred app — privacy-first universal map redirector",
-      "language": "TypeScript",
-      "name": "mapswitch",
-      "pushed": "2026-11-20T07:30:11Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/mapswitch"
-    },
-    {
-      "description": "RobyRew ID: one @handle and one picture across the RobyRew apps, written to Logto",
-      "language": "TypeScript",
-      "name": "robyrew-id",
-      "pushed": "2026-11-19T21:36:21Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/robyrew-id"
-    },
-    {
-      "description": "Shared build and UI plumbing for the RobyRew app fleet",
-      "language": "Dockerfile",
-      "name": "platform",
-      "pushed": "2026-11-19T21:20:00Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/platform"
-    },
-    {
-      "description": "Shared Astro/TypeScript/Tailwind configuration for the RobyRew sites",
-      "language": "CSS",
-      "name": "web-config",
-      "pushed": "2026-11-19T21:19:48Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/web-config"
-    },
-    {
-      "description": "A web based tool to convert chat exports of popular messaging apps like Telegram, WhatsApp, Instagram, etc.",
-      "language": "TypeScript",
-      "name": "chatforge",
-      "pushed": "2026-11-19T16:00:46Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/chatforge"
-    },
-    {
-      "description": "Logto Traditional Web sign-in for RobyRew Astro server apps",
-      "language": "TypeScript",
-      "name": "astro-logto",
-      "pushed": "2026-11-19T15:50:24Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/astro-logto"
-    },
-    {
-      "description": "Universal in-app Objective-C runtime console, driven over USB",
-      "language": "Objective-C",
-      "name": "striker",
-      "pushed": "2026-11-07T20:49:57Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/striker"
-    },
-    {
-      "description": "Shared infrastructure for RobyRew iOS tweaks (sideload fix, RE inventory, Swift helpers)",
-      "language": "Python",
-      "name": "tweak-kit",
-      "pushed": "2026-10-28T19:25:32Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/tweak-kit"
-    },
-    {
-      "description": "BlockTheSpot mod that changes the desktop client's download-related Remote Config defaults (experimental loader)",
-      "language": "Python",
-      "name": "bts-downloader",
-      "pushed": "2026-10-22T21:36:28Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/bts-downloader"
-    },
-    {
-      "description": "Userscript: save or print the ENTIRE ChatGPT / Gemini / Claude / Grok chat as a PDF — loads lazy & virtualized history, keeps the on-page look, makes ⌘P / Ctrl+P print the whole conversation.",
-      "language": "JavaScript",
-      "name": "Download-AI-Chat-PDF",
-      "pushed": "2026-10-17T21:39:07Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Download-AI-Chat-PDF"
-    },
-    {
-      "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-      "language": "Swift",
-      "name": "TopPresenter",
-      "pushed": "2026-09-20T15:47:36Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/TopPresenter"
-    },
-    {
-      "description": "Split one application's traffic off through your own server",
-      "language": "Rust",
-      "name": "split-stream",
-      "pushed": "2026-08-30T12:33:48Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/split-stream"
-    },
-    {
-      "description": "Descifra firmware Nokia DCT4 (MCU/PPM) y extrae sus tonos/recursos, 100% en el navegador. Port web de dct4decrypt/ToneSniffer/MidiDecode.",
-      "language": "JavaScript",
-      "name": "retro-phone-tools",
-      "pushed": "2026-07-03T20:01:55Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/retro-phone-tools"
-    },
-    {
-      "description": "The only speciality of this basic Robot is to completely destroy 9/10 a Basic Walls Robot",
-      "language": "Java",
-      "name": "WallsKiller_Robocode",
-      "pushed": "2024-04-02T17:48:17Z",
-      "stars": 1,
-      "url": "https://github.com/RobyRew/WallsKiller_Robocode"
-    },
-    {
-      "description": "Old version of Chess named Shatranj on Java CLI",
-      "language": "Java",
-      "name": "Shatranj-On-Java",
-      "pushed": "2024-03-26T22:32:16Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Shatranj-On-Java"
-    },
-    {
-      "description": "",
-      "language": "HTML",
-      "name": "Remedy_Ticket_Folder_Generator",
-      "pushed": "2024-03-12T11:46:26Z",
-      "stars": 0,
-      "url": "https://github.com/RobyRew/Remedy_Ticket_Folder_Generator"
-    }
-  ],
   "spotify_users": {},
   "stats": {
-    "active_days": 113,
-    "all_time": 1619,
-    "best_count": 99,
-    "best_day": "2026-11-08",
-    "busiest": "Wednesday",
-    "calendar": [
-      [
-        [
-          "2025-11-26",
-          0
-        ],
-        [
-          "2025-11-27",
-          0
-        ],
-        [
-          "2025-11-28",
-          0
-        ],
-        [
-          "2025-11-29",
-          0
-        ]
-      ],
-      [
-        [
-          "2025-11-30",
-          11
-        ],
-        [
-          "2025-12-01",
-          0
-        ],
-        [
-          "2025-12-02",
-          1
-        ],
-        [
-          "2025-12-03",
-          0
-        ],
-        [
-          "2025-12-04",
-          0
-        ],
-        [
-          "2025-12-05",
-          0
-        ],
-        [
-          "2025-12-06",
-          0
-        ]
-      ],
-      [
-        [
-          "2025-12-07",
-          0
-        ],
-        [
-          "2025-12-08",
-          0
-        ],
-        [
-          "2025-12-09",
-          0
-        ],
-        [
-          "2025-12-10",
-          4
-        ],
-        [
-          "2025-12-11",
-          37
-        ],
-        [
-          "2025-12-12",
-          5
-        ],
-        [
-          "2025-12-13",
-          0
-        ]
-      ],
-      [
-        [
-          "2025-12-14",
-          0
-        ],
-        [
-          "2025-12-15",
-          0
-        ],
-        [
-          "2025-12-16",
-          0
-        ],
-        [
-          "2025-12-17",
-          0
-        ],
-        [
-          "2025-12-18",
-          0
-        ],
-        [
-          "2025-12-19",
-          0
-        ],
-        [
-          "2025-12-20",
-          0
-        ]
-      ],
-      [
-        [
-          "2025-12-21",
-          0
-        ],
-        [
-          "2025-12-22",
-          0
-        ],
-        [
-          "2025-12-23",
-          0
-        ],
-        [
-          "2025-12-24",
-          0
-        ],
-        [
-          "2025-12-25",
-          0
-        ],
-        [
-          "2025-12-26",
-          0
-        ],
-        [
-          "2025-12-27",
-          0
-        ]
-      ],
-      [
-        [
-          "2025-12-28",
-          0
-        ],
-        [
-          "2025-12-29",
-          0
-        ],
-        [
-          "2025-12-30",
-          0
-        ],
-        [
-          "2025-12-31",
-          0
-        ],
-        [
-          "2026-01-01",
-          0
-        ],
-        [
-          "2026-01-02",
-          0
-        ],
-        [
-          "2026-01-03",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-01-04",
-          0
-        ],
-        [
-          "2026-01-05",
-          0
-        ],
-        [
-          "2026-01-06",
-          0
-        ],
-        [
-          "2026-01-07",
-          0
-        ],
-        [
-          "2026-01-08",
-          0
-        ],
-        [
-          "2026-01-09",
-          0
-        ],
-        [
-          "2026-01-10",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-01-11",
-          0
-        ],
-        [
-          "2026-01-12",
-          0
-        ],
-        [
-          "2026-01-13",
-          0
-        ],
-        [
-          "2026-01-14",
-          0
-        ],
-        [
-          "2026-01-15",
-          0
-        ],
-        [
-          "2026-01-16",
-          0
-        ],
-        [
-          "2026-01-17",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-01-18",
-          0
-        ],
-        [
-          "2026-01-19",
-          0
-        ],
-        [
-          "2026-01-20",
-          0
-        ],
-        [
-          "2026-01-21",
-          0
-        ],
-        [
-          "2026-01-22",
-          0
-        ],
-        [
-          "2026-01-23",
-          0
-        ],
-        [
-          "2026-01-24",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-01-25",
-          0
-        ],
-        [
-          "2026-01-26",
-          0
-        ],
-        [
-          "2026-01-27",
-          0
-        ],
-        [
-          "2026-01-28",
-          0
-        ],
-        [
-          "2026-01-29",
-          0
-        ],
-        [
-          "2026-01-30",
-          0
-        ],
-        [
-          "2026-01-31",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-02-01",
-          0
-        ],
-        [
-          "2026-02-02",
-          0
-        ],
-        [
-          "2026-02-03",
-          0
-        ],
-        [
-          "2026-02-04",
-          0
-        ],
-        [
-          "2026-02-05",
-          0
-        ],
-        [
-          "2026-02-06",
-          0
-        ],
-        [
-          "2026-02-07",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-02-08",
-          0
-        ],
-        [
-          "2026-02-09",
-          0
-        ],
-        [
-          "2026-02-10",
-          0
-        ],
-        [
-          "2026-02-11",
-          0
-        ],
-        [
-          "2026-02-12",
-          0
-        ],
-        [
-          "2026-02-13",
-          0
-        ],
-        [
-          "2026-02-14",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-02-15",
-          0
-        ],
-        [
-          "2026-02-16",
-          0
-        ],
-        [
-          "2026-02-17",
-          0
-        ],
-        [
-          "2026-02-18",
-          0
-        ],
-        [
-          "2026-02-19",
-          0
-        ],
-        [
-          "2026-02-20",
-          0
-        ],
-        [
-          "2026-02-21",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-02-22",
-          0
-        ],
-        [
-          "2026-02-23",
-          0
-        ],
-        [
-          "2026-02-24",
-          0
-        ],
-        [
-          "2026-02-25",
-          0
-        ],
-        [
-          "2026-02-26",
-          0
-        ],
-        [
-          "2026-02-27",
-          0
-        ],
-        [
-          "2026-02-28",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-03-01",
-          0
-        ],
-        [
-          "2026-03-02",
-          0
-        ],
-        [
-          "2026-03-03",
-          0
-        ],
-        [
-          "2026-03-04",
-          0
-        ],
-        [
-          "2026-03-05",
-          0
-        ],
-        [
-          "2026-03-06",
-          0
-        ],
-        [
-          "2026-03-07",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-03-08",
-          0
-        ],
-        [
-          "2026-03-09",
-          0
-        ],
-        [
-          "2026-03-10",
-          0
-        ],
-        [
-          "2026-03-11",
-          0
-        ],
-        [
-          "2026-03-12",
-          0
-        ],
-        [
-          "2026-03-13",
-          0
-        ],
-        [
-          "2026-03-14",
-          1
-        ]
-      ],
-      [
-        [
-          "2026-03-15",
-          0
-        ],
-        [
-          "2026-03-16",
-          0
-        ],
-        [
-          "2026-03-17",
-          2
-        ],
-        [
-          "2026-03-18",
-          0
-        ],
-        [
-          "2026-03-19",
-          0
-        ],
-        [
-          "2026-03-20",
-          0
-        ],
-        [
-          "2026-03-21",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-03-22",
-          0
-        ],
-        [
-          "2026-03-23",
-          0
-        ],
-        [
-          "2026-03-24",
-          0
-        ],
-        [
-          "2026-03-25",
-          0
-        ],
-        [
-          "2026-03-26",
-          0
-        ],
-        [
-          "2026-03-27",
-          0
-        ],
-        [
-          "2026-03-28",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-03-29",
-          0
-        ],
-        [
-          "2026-03-30",
-          0
-        ],
-        [
-          "2026-03-31",
-          0
-        ],
-        [
-          "2026-04-01",
-          0
-        ],
-        [
-          "2026-04-02",
-          0
-        ],
-        [
-          "2026-04-03",
-          0
-        ],
-        [
-          "2026-04-04",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-04-05",
-          2
-        ],
-        [
-          "2026-04-06",
-          0
-        ],
-        [
-          "2026-04-07",
-          0
-        ],
-        [
-          "2026-04-08",
-          0
-        ],
-        [
-          "2026-04-09",
-          0
-        ],
-        [
-          "2026-04-10",
-          0
-        ],
-        [
-          "2026-04-11",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-04-12",
-          0
-        ],
-        [
-          "2026-04-13",
-          0
-        ],
-        [
-          "2026-04-14",
-          0
-        ],
-        [
-          "2026-04-15",
-          0
-        ],
-        [
-          "2026-04-16",
-          5
-        ],
-        [
-          "2026-04-17",
-          3
-        ],
-        [
-          "2026-04-18",
-          1
-        ]
-      ],
-      [
-        [
-          "2026-04-19",
-          6
-        ],
-        [
-          "2026-04-20",
-          0
-        ],
-        [
-          "2026-04-21",
-          0
-        ],
-        [
-          "2026-04-22",
-          0
-        ],
-        [
-          "2026-04-23",
-          0
-        ],
-        [
-          "2026-04-24",
-          0
-        ],
-        [
-          "2026-04-25",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-04-26",
-          0
-        ],
-        [
-          "2026-04-27",
-          0
-        ],
-        [
-          "2026-04-28",
-          0
-        ],
-        [
-          "2026-04-29",
-          0
-        ],
-        [
-          "2026-04-30",
-          0
-        ],
-        [
-          "2026-05-01",
-          0
-        ],
-        [
-          "2026-05-02",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-05-03",
-          12
-        ],
-        [
-          "2026-05-04",
-          0
-        ],
-        [
-          "2026-05-05",
-          0
-        ],
-        [
-          "2026-05-06",
-          0
-        ],
-        [
-          "2026-05-07",
-          0
-        ],
-        [
-          "2026-05-08",
-          0
-        ],
-        [
-          "2026-05-09",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-05-10",
-          0
-        ],
-        [
-          "2026-05-11",
-          0
-        ],
-        [
-          "2026-05-12",
-          0
-        ],
-        [
-          "2026-05-13",
-          0
-        ],
-        [
-          "2026-05-14",
-          0
-        ],
-        [
-          "2026-05-15",
-          0
-        ],
-        [
-          "2026-05-16",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-05-17",
-          0
-        ],
-        [
-          "2026-05-18",
-          0
-        ],
-        [
-          "2026-05-19",
-          0
-        ],
-        [
-          "2026-05-20",
-          0
-        ],
-        [
-          "2026-05-21",
-          0
-        ],
-        [
-          "2026-05-22",
-          0
-        ],
-        [
-          "2026-05-23",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-05-24",
-          0
-        ],
-        [
-          "2026-05-25",
-          0
-        ],
-        [
-          "2026-05-26",
-          23
-        ],
-        [
-          "2026-05-27",
-          3
-        ],
-        [
-          "2026-05-28",
-          0
-        ],
-        [
-          "2026-05-29",
-          0
-        ],
-        [
-          "2026-05-30",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-05-31",
-          0
-        ],
-        [
-          "2026-06-01",
-          0
-        ],
-        [
-          "2026-06-02",
-          8
-        ],
-        [
-          "2026-06-03",
-          9
-        ],
-        [
-          "2026-06-04",
-          14
-        ],
-        [
-          "2026-06-05",
-          0
-        ],
-        [
-          "2026-06-06",
-          2
-        ]
-      ],
-      [
-        [
-          "2026-06-07",
-          0
-        ],
-        [
-          "2026-06-08",
-          0
-        ],
-        [
-          "2026-06-09",
-          0
-        ],
-        [
-          "2026-06-10",
-          0
-        ],
-        [
-          "2026-06-11",
-          3
-        ],
-        [
-          "2026-06-12",
-          2
-        ],
-        [
-          "2026-06-13",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-06-14",
-          0
-        ],
-        [
-          "2026-06-15",
-          0
-        ],
-        [
-          "2026-06-16",
-          2
-        ],
-        [
-          "2026-06-17",
-          5
-        ],
-        [
-          "2026-06-18",
-          2
-        ],
-        [
-          "2026-06-19",
-          2
-        ],
-        [
-          "2026-06-20",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-06-21",
-          1
-        ],
-        [
-          "2026-06-22",
-          7
-        ],
-        [
-          "2026-06-23",
-          1
-        ],
-        [
-          "2026-06-24",
-          2
-        ],
-        [
-          "2026-06-25",
-          1
-        ],
-        [
-          "2026-06-26",
-          6
-        ],
-        [
-          "2026-06-27",
-          13
-        ]
-      ],
-      [
-        [
-          "2026-06-28",
-          7
-        ],
-        [
-          "2026-06-29",
-          2
-        ],
-        [
-          "2026-06-30",
-          0
-        ],
-        [
-          "2026-07-01",
-          0
-        ],
-        [
-          "2026-07-02",
-          2
-        ],
-        [
-          "2026-07-03",
-          5
-        ],
-        [
-          "2026-07-04",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-07-05",
-          1
-        ],
-        [
-          "2026-07-06",
-          4
-        ],
-        [
-          "2026-07-07",
-          0
-        ],
-        [
-          "2026-07-08",
-          0
-        ],
-        [
-          "2026-07-09",
-          0
-        ],
-        [
-          "2026-07-10",
-          0
-        ],
-        [
-          "2026-07-11",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-07-12",
-          4
-        ],
-        [
-          "2026-07-13",
-          4
-        ],
-        [
-          "2026-07-14",
-          8
-        ],
-        [
-          "2026-07-15",
-          0
-        ],
-        [
-          "2026-07-16",
-          0
-        ],
-        [
-          "2026-07-17",
-          1
-        ],
-        [
-          "2026-07-18",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-07-19",
-          0
-        ],
-        [
-          "2026-07-20",
-          0
-        ],
-        [
-          "2026-07-21",
-          2
-        ],
-        [
-          "2026-07-22",
-          0
-        ],
-        [
-          "2026-07-23",
-          0
-        ],
-        [
-          "2026-07-24",
-          0
-        ],
-        [
-          "2026-07-25",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-07-26",
-          0
-        ],
-        [
-          "2026-07-27",
-          1
-        ],
-        [
-          "2026-07-28",
-          10
-        ],
-        [
-          "2026-07-29",
-          29
-        ],
-        [
-          "2026-07-30",
-          34
-        ],
-        [
-          "2026-07-31",
-          1
-        ],
-        [
-          "2026-08-01",
-          7
-        ]
-      ],
-      [
-        [
-          "2026-08-02",
-          0
-        ],
-        [
-          "2026-08-03",
-          0
-        ],
-        [
-          "2026-08-04",
-          0
-        ],
-        [
-          "2026-08-05",
-          0
-        ],
-        [
-          "2026-08-06",
-          5
-        ],
-        [
-          "2026-08-07",
-          3
-        ],
-        [
-          "2026-08-08",
-          9
-        ]
-      ],
-      [
-        [
-          "2026-08-09",
-          5
-        ],
-        [
-          "2026-08-10",
-          1
-        ],
-        [
-          "2026-08-11",
-          0
-        ],
-        [
-          "2026-08-12",
-          0
-        ],
-        [
-          "2026-08-13",
-          0
-        ],
-        [
-          "2026-08-14",
-          0
-        ],
-        [
-          "2026-08-15",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-08-16",
-          6
-        ],
-        [
-          "2026-08-17",
-          7
-        ],
-        [
-          "2026-08-18",
-          0
-        ],
-        [
-          "2026-08-19",
-          0
-        ],
-        [
-          "2026-08-20",
-          0
-        ],
-        [
-          "2026-08-21",
-          0
-        ],
-        [
-          "2026-08-22",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-08-23",
-          2
-        ],
-        [
-          "2026-08-24",
-          1
-        ],
-        [
-          "2026-08-25",
-          8
-        ],
-        [
-          "2026-08-26",
-          16
-        ],
-        [
-          "2026-08-27",
-          21
-        ],
-        [
-          "2026-08-28",
-          13
-        ],
-        [
-          "2026-08-29",
-          9
-        ]
-      ],
-      [
-        [
-          "2026-08-30",
-          3
-        ],
-        [
-          "2026-08-31",
-          0
-        ],
-        [
-          "2026-09-01",
-          1
-        ],
-        [
-          "2026-09-02",
-          0
-        ],
-        [
-          "2026-09-03",
-          2
-        ],
-        [
-          "2026-09-04",
-          19
-        ],
-        [
-          "2026-09-05",
-          24
-        ]
-      ],
-      [
-        [
-          "2026-09-06",
-          0
-        ],
-        [
-          "2026-09-07",
-          0
-        ],
-        [
-          "2026-09-08",
-          0
-        ],
-        [
-          "2026-09-09",
-          0
-        ],
-        [
-          "2026-09-10",
-          0
-        ],
-        [
-          "2026-09-11",
-          0
-        ],
-        [
-          "2026-09-12",
-          1
-        ]
-      ],
-      [
-        [
-          "2026-09-13",
-          2
-        ],
-        [
-          "2026-09-14",
-          0
-        ],
-        [
-          "2026-09-15",
-          0
-        ],
-        [
-          "2026-09-16",
-          4
-        ],
-        [
-          "2026-09-17",
-          1
-        ],
-        [
-          "2026-09-18",
-          0
-        ],
-        [
-          "2026-09-19",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-09-20",
-          17
-        ],
-        [
-          "2026-09-21",
-          6
-        ],
-        [
-          "2026-09-22",
-          0
-        ],
-        [
-          "2026-09-23",
-          64
-        ],
-        [
-          "2026-09-24",
-          19
-        ],
-        [
-          "2026-09-25",
-          0
-        ],
-        [
-          "2026-09-26",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-09-27",
-          0
-        ],
-        [
-          "2026-09-28",
-          0
-        ],
-        [
-          "2026-09-29",
-          0
-        ],
-        [
-          "2026-09-30",
-          0
-        ],
-        [
-          "2026-10-01",
-          1
-        ],
-        [
-          "2026-10-02",
-          2
-        ],
-        [
-          "2026-10-03",
-          3
-        ]
-      ],
-      [
-        [
-          "2026-10-04",
-          0
-        ],
-        [
-          "2026-10-05",
-          0
-        ],
-        [
-          "2026-10-06",
-          0
-        ],
-        [
-          "2026-10-07",
-          0
-        ],
-        [
-          "2026-10-08",
-          0
-        ],
-        [
-          "2026-10-09",
-          0
-        ],
-        [
-          "2026-10-10",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-10-11",
-          0
-        ],
-        [
-          "2026-10-12",
-          6
-        ],
-        [
-          "2026-10-13",
-          2
-        ],
-        [
-          "2026-10-14",
-          0
-        ],
-        [
-          "2026-10-15",
-          11
-        ],
-        [
-          "2026-10-16",
-          4
-        ],
-        [
-          "2026-10-17",
-          6
-        ]
-      ],
-      [
-        [
-          "2026-10-18",
-          32
-        ],
-        [
-          "2026-10-19",
-          29
-        ],
-        [
-          "2026-10-20",
-          62
-        ],
-        [
-          "2026-10-21",
-          64
-        ],
-        [
-          "2026-10-22",
-          45
-        ],
-        [
-          "2026-10-23",
-          3
-        ],
-        [
-          "2026-10-24",
-          23
-        ]
-      ],
-      [
-        [
-          "2026-10-25",
-          1
-        ],
-        [
-          "2026-10-26",
-          0
-        ],
-        [
-          "2026-10-27",
-          1
-        ],
-        [
-          "2026-10-28",
-          3
-        ],
-        [
-          "2026-10-29",
-          20
-        ],
-        [
-          "2026-10-30",
-          17
-        ],
-        [
-          "2026-10-31",
-          11
-        ]
-      ],
-      [
-        [
-          "2026-11-01",
-          3
-        ],
-        [
-          "2026-11-02",
-          0
-        ],
-        [
-          "2026-11-03",
-          0
-        ],
-        [
-          "2026-11-04",
-          0
-        ],
-        [
-          "2026-11-05",
-          0
-        ],
-        [
-          "2026-11-06",
-          0
-        ],
-        [
-          "2026-11-07",
-          23
-        ]
-      ],
-      [
-        [
-          "2026-11-08",
-          99
-        ],
-        [
-          "2026-11-09",
-          28
-        ],
-        [
-          "2026-11-10",
-          1
-        ],
-        [
-          "2026-11-11",
-          19
-        ],
-        [
-          "2026-11-12",
-          5
-        ],
-        [
-          "2026-11-13",
-          4
-        ],
-        [
-          "2026-11-14",
-          0
-        ]
-      ],
-      [
-        [
-          "2026-11-15",
-          0
-        ],
-        [
-          "2026-11-16",
-          4
-        ],
-        [
-          "2026-11-17",
-          8
-        ],
-        [
-          "2026-11-18",
-          1
-        ],
-        [
-          "2026-11-19",
-          17
-        ],
-        [
-          "2026-11-20",
-          15
-        ],
-        [
-          "2026-11-21",
-          8
-        ]
-      ],
-      [
-        [
-          "2026-11-22",
-          0
-        ],
-        [
-          "2026-11-23",
-          0
-        ],
-        [
-          "2026-11-24",
-          17
-        ],
-        [
-          "2026-11-25",
-          25
-        ],
-        [
-          "2026-11-26",
-          0
-        ]
-      ]
-    ],
-    "commits": 670,
-    "contributed_to": 3,
-    "contributions": 1210,
-    "followers": 55,
-    "forks": 18,
-    "gists": 1,
-    "issues": 0,
-    "issues_all": 80,
-    "joined": "2019-04-08T13:49:08Z",
-    "languages": [
-      [
-        "Smali",
-        73.6,
-        "#9CA3AF"
-      ],
-      [
-        "Lua",
-        9.4,
-        "#000080"
-      ],
-      [
-        "Swift",
-        4.8,
-        "#F05138"
-      ],
-      [
-        "TypeScript",
-        4.4,
-        "#3178c6"
-      ],
-      [
-        "Objective-C",
-        3.5,
-        "#438eff"
-      ],
-      [
-        "JavaScript",
-        1.1,
-        "#f1e05a"
-      ],
-      [
-        "CSS",
-        0.7,
-        "#663399"
-      ],
-      [
-        "Other",
-        2.5,
-        "#8B949E"
-      ]
-    ],
-    "longest": 11,
-    "merged_prs": 7,
-    "orgs": 0,
-    "original": 37,
-    "prs": 8,
-    "repos_contributed": 26,
-    "reviews": 0,
-    "stars": 108,
-    "streak": 2
+    "contributions": 1214,
+    "stars": 108
   },
   "top_tracks": [
     {
