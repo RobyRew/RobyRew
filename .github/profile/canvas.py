@@ -4,6 +4,7 @@ import base64
 import hashlib
 import html
 import math
+import random
 import sys
 import urllib.request
 from functools import lru_cache
@@ -519,9 +520,42 @@ def image_data(url):
 # ── shared shapes ─────────────────────────────────────────────────────────────
 
 
+def arc(cx, cy, radius, a0, a1):
+    """A circular arc from angle a0 to a1 (degrees, clockwise), as path data."""
+    def point(a):
+        return f"{num(cx + radius * math.cos(math.radians(a)))} {num(cy + radius * math.sin(math.radians(a)))}"
+    return f"M{point(a0)}A{num(radius)} {num(radius)} 0 {1 if (a1 - a0) % 360 > 180 else 0} 1 {point(a1)}"
+
+
+def vinyl_marks(cx, cy, r, label_r):
+    """What makes a real record's turning visible: grooves that catch the light unevenly, dust and a few hairline
+    scratches. Scattered at random, from a fixed seed, so every build draws the same marks and the Worker's kit stays
+    the same file."""
+    rng = random.Random(146)
+    marks = []
+    for _ in range(11):  # uneven pressing: short runs of groove that shine a little more
+        radius, start = rng.uniform(label_r + 9, r - 5), rng.uniform(0, 360)
+        marks.append(f'<path d="{arc(cx, cy, radius, start, start + rng.uniform(16, 80))}" fill="none" stroke="#fff" '
+                     f'stroke-opacity="{num(rng.uniform(0.05, 0.12))}" stroke-width="{num(rng.uniform(0.6, 1.5))}" '
+                     'stroke-linecap="round"/>')
+    for _ in range(4):  # hairline scratches, along the grooves
+        radius, start = rng.uniform(label_r + 14, r - 8), rng.uniform(0, 360)
+        marks.append(f'<path d="{arc(cx, cy, radius, start, start + rng.uniform(3, 10))}" fill="none" stroke="#fff" '
+                     f'stroke-opacity="{num(rng.uniform(0.12, 0.2))}" stroke-width=".5" stroke-linecap="round"/>')
+    for _ in range(8):  # dust
+        angle, distance = rng.uniform(0, 2 * math.pi), rng.uniform(label_r + 5, r - 3)
+        marks.append(f'<circle cx="{num(cx + distance * math.cos(angle))}" cy="{num(cy + distance * math.sin(angle))}" '
+                     f'r="{num(rng.uniform(0.45, 1.1))}" fill="#fff" fill-opacity="{num(rng.uniform(0.16, 0.34))}"/>')
+    return "".join(marks)
+
+
 def record(svg, cx, cy, r, words, period, cover=None):
     """A vinyl record turning once every `period` seconds. With `cover` (an image as a data URI), the album art is
-    its label; without, a label of my own."""
+    its label; without, a label of my own.
+
+    No record is quite flat: as it turns it rocks a little on the platter (`warp`, once a turn) and drifts a fraction
+    out of true (`drift`, on a longer, unrelated period), so the motion never repeats exactly. The light on the grooves
+    stays where the light is, but rides along with that rocking."""
     label_r, hole_r = 0.38 * r, 4
     disc, label, shadow = svg.uid("disc"), svg.uid("label"), svg.uid("shadow")
     svg.defs.append(
@@ -533,14 +567,23 @@ def record(svg, cx, cy, r, words, period, cover=None):
         f'<radialGradient id="{shadow}"><stop offset=".84" stop-color="#000" stop-opacity=".42"/>'
         f'<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
     )
-    # The disc's own box, so the spin stays centred however the image is cropped or scaled.
+    # The disc's own box, so the spin stays centred however the image is cropped or scaled. Lengths are in the
+    # record's own units (radius 146).
     svg.css.append(
         f".spin{{transform-box:fill-box;transform-origin:center;animation:spin {num(period)}s linear infinite}}"
         "@keyframes spin{to{transform:rotate(360deg)}}"
+        f".warp{{transform-box:fill-box;transform-origin:center;animation:warp {num(period)}s ease-in-out infinite}}"
+        "@keyframes warp{0%,100%{transform:translate(0,0) skewX(0deg) scale(1,1)}"
+        "25%{transform:translate(.9px,-.5px) skewX(.35deg) scale(1.004,.996)}"
+        "50%{transform:translate(.2px,.8px) skewX(-.1deg) scale(.997,1.003)}"
+        "75%{transform:translate(-.8px,-.2px) skewX(-.3deg) scale(1.003,.997)}}"
+        f".drift{{transform-box:fill-box;transform-origin:center;animation:drift {num(period * 2.618)}s ease-in-out "
+        "infinite alternate}@keyframes drift{0%{transform:translate(-.5px,.3px) rotate(-.3deg)}"
+        "100%{transform:translate(.6px,-.4px) rotate(.35deg)}}"
     )
     parts = [
         f'<circle cx="{num(cx + 4)}" cy="{num(cy + 12)}" r="{num(r * 1.16)}" fill="url(#{shadow})"/>',
-        '<g class="spin">',
+        '<g class="drift"><g class="warp"><g class="spin">',
         f'<path d="{circle_path(cx, cy, r)}{circle_path(cx, cy, hole_r)}" fill="url(#{disc})" fill-rule="evenodd"/>',
     ]
     groove, i = label_r + 7, 0
@@ -554,6 +597,7 @@ def record(svg, cx, cy, r, words, period, cover=None):
         i += 1
     for gap in (r * 0.6, r * 0.74, r * 0.87):
         parts.append(f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(gap)}" fill="none" stroke="#000" stroke-opacity=".7" stroke-width="2.4"/>')
+    parts.append(vinyl_marks(cx, cy, r, label_r))
     if cover:
         # Defined once with a fixed id, so the phone image, which holds both themes, carries the picture only once.
         svg.defs.append(f'<image id="cover" href="{cover}" x="{num(cx - label_r)}" y="{num(cy - label_r)}" '
@@ -603,6 +647,7 @@ def finish(svg, parts, cx, cy, r, label_r):
             )
     parts.append(
         f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(r - 0.6)}" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="1.2"/>'
+        "</g></g>"  # the warp and the drift
     )
     svg.add("".join(parts))
 
@@ -613,8 +658,15 @@ def finish(svg, parts, cx, cy, r, label_r):
 ARM_TUBE = "M0 0V26C0 60 13 84 12 112S-6 168-4 196"
 
 
-def tonearm(svg, px, py, angle, rest):
-    """The arm at `angle` degrees about its pivot (positive swings it in over the record), and its rest at `rest`."""
+# What the arm does while the needle is in the groove: it sways with the record's rocking (`ride`, once a turn) and
+# now and then shivers for a moment (`buzz`, run twice on unrelated periods, so the shivers come at irregular times).
+# An invisible square centred on the pivot gives each group a box centred there, so they turn about the pivot.
+ARM_PIVOT_BOX = '<rect x="-300" y="-300" width="600" height="600" fill="none"/>'
+
+
+def tonearm(svg, px, py, angle, rest, ride=None):
+    """The arm at `angle` degrees about its pivot (positive swings it in over the record), and its rest at `rest`.
+    With `ride` (the record's seconds per turn) the needle is playing, and the arm sways and shivers."""
     metal = svg.uid("metal")
     svg.defs.append(
         f'<linearGradient id="{metal}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F6"/>'
@@ -648,9 +700,27 @@ def tonearm(svg, px, py, angle, rest):
         '<path d="M-12 -57H12M-12 -50H12M-12 -43H12" stroke="#000" stroke-opacity=".18"/>'
     )
     shadow = f'<path d="{ARM_TUBE}" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="9" stroke-linecap="round"/>'
+    body = f"{weight}{tube}{headshell}"
+    if ride:
+        svg.css.append(
+            f".ride{{transform-box:fill-box;transform-origin:center;animation:ride {num(ride)}s ease-in-out infinite}}"
+            "@keyframes ride{0%,100%{transform:rotate(0deg)}25%{transform:rotate(.14deg)}50%{transform:rotate(-.05deg)}"
+            "75%{transform:rotate(-.12deg)}}"
+            ".buzz,.buzz2{transform-box:fill-box;transform-origin:center;animation:buzz 6.7s linear infinite}"
+            ".buzz2{animation-duration:10.3s;animation-delay:-3.1s}"
+            "@keyframes buzz{0%,57%,66%,86%,92%,100%{transform:rotate(0deg)}58%{transform:rotate(.32deg)}"
+            "59.5%{transform:rotate(-.26deg)}61%{transform:rotate(.18deg)}62.5%{transform:rotate(-.11deg)}"
+            "64%{transform:rotate(.05deg)}87.5%{transform:rotate(-.2deg)}89%{transform:rotate(.14deg)}"
+            "90.5%{transform:rotate(-.06deg)}}"
+        )
+
+        def moving(markup):
+            return f'<g class="ride"><g class="buzz"><g class="buzz2">{ARM_PIVOT_BOX}{markup}</g></g></g>'
+
+        shadow, body = moving(shadow), moving(body)
     svg.add(
         f'<g transform="translate({num(px + 4)} {num(py + 7)}) rotate({num(angle)})">{shadow}</g>'
-        f'<g transform="translate({num(px)} {num(py)}) rotate({num(angle)})">{weight}{tube}{headshell}</g>'
+        f'<g transform="translate({num(px)} {num(py)}) rotate({num(angle)})">{body}</g>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="24" fill="#2B2B30" fill-opacity=".55"/>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="19" fill="url(#{metal})"/>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="19" fill="none" stroke="#000" stroke-opacity=".25"/>'

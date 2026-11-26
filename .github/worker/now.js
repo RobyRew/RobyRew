@@ -317,7 +317,7 @@ function infoMarkup(kit, k, now) {
   const titles = semi.wrap(item.title, k.title, w, k.lines);
   if (!titles.length) titles.push("");
   let artist = item.artist, album = item.album;
-  const where = item.platform + (item.user ? ` · @${item.user}` : "");
+  const where = item.platform + (item.user ? ` · ${item.user}` : ""); // a display name, so no "@"
   if (phone) {
     artist = [artist, album].filter(Boolean).join(" · ");
     album = "";

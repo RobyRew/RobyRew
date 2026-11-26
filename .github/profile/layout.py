@@ -398,8 +398,9 @@ SPLIT = 0.5
 ARM_PIVOT = (172, -100)
 ARM_PARKED, ARM_PLAYING = -4, 24
 ARM_REST = (186, 53)  # where the parked tube crosses, worked out from its curve
-# Seconds per turn: always turning, a lazy idle, and a real 33 1/3 RPM while a song plays.
-SPIN_IDLE, SPIN_PLAYING = 6, 1.8
+# Seconds per turn: always turning, a lazy idle, and an unhurried turn while a song plays (a real 33 1/3 RPM, 1.8 s,
+# looked rushed at this size).
+SPIN_IDLE, SPIN_PLAYING = 14, 5
 
 # Set while build.py draws the templates the Worker fills in on each visit (see .github/worker/now.js): what's on the
 # deck is left as a slot, with its measurements, and the record's cover as a placeholder.
@@ -459,7 +460,7 @@ def info_markup(svg, k, now):
     titles = semi.wrap(item["title"], k["title"], w, k["lines"], kern=False) or [""]
     artist = item["artist"]
     album = item["album"]
-    where = item["platform"] + (f' · @{item["user"]}' if item["user"] else "")
+    where = item["platform"] + (f' · {item["user"]}' if item["user"] else "")  # a display name, so no "@"
     if phone:
         artist = " · ".join(part for part in (artist, album) if part)
         album = ""
@@ -691,7 +692,7 @@ def deck(c, me, now):
         cover = image_data((now or {}).get("cover"))
     svg.add(f'<g clip-path="url(#{clip})"><g transform="translate({num(c.x + g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
     record(svg, 0, 0, 146, me["record"], SPIN_PLAYING if playing else SPIN_IDLE, cover)
-    tonearm(svg, *ARM_PIVOT, ARM_PLAYING if playing else ARM_PARKED, ARM_REST)
+    tonearm(svg, *ARM_PIVOT, ARM_PLAYING if playing else ARM_PARKED, ARM_REST, ride=SPIN_PLAYING if playing else None)
     svg.add("</g></g>")
     ix, right = g["info"]
     if c.m:
