@@ -208,6 +208,9 @@ label = "Cosmin Calin"
 [[listening.spotify]]
 label = "cosmin.cg22"
 
+[[listening.spotify]]
+label = "yahoo"
+
 # Last.fm accounts (free, up to 5). `platform` is the label on the deck, since Last.fm can't tell which app
 # played a song. Copy the block for more accounts; blocks with an empty user are ignored.
 [[listening.lastfm]]
