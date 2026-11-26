@@ -317,30 +317,59 @@ def when_from(stamp):
     return datetime.fromtimestamp(seconds, timezone.utc).isoformat(timespec="minutes")
 
 
+class SpotifyStep(Exception):
+    """Which step of an account's check failed (sign-in, connect, track details), with the error it raised."""
+
+    def __init__(self, step, error):
+        super().__init__(step)
+        self.step, self.error = step, error
+
+
+def safe_message(error):
+    """An error and its causes in one line, safe for a public log: web addresses cut to their host, anything long
+    enough to be a token or a cookie replaced by an ellipsis."""
+    parts, seen = [], set()
+    while error is not None and id(error) not in seen and len(parts) < 4:
+        seen.add(id(error))
+        text = " ".join(str(error).split())
+        text = re.sub(r"(?:wss?|https?)://([^/\s?#]+)\S*", r"\1/…", text)
+        text = re.sub(r"[A-Za-z0-9_\-.%+/=]{28,}", "…", text)
+        status = getattr(error, "status_code", None) or getattr(error, "status", None)
+        parts.append(f"{type(error).__name__}{f' {status}' if isinstance(status, int) else ''}{f': {text[:140]}' if text else ''}")
+        error = error.__cause__ or error.__context__
+    return " <- ".join(parts)
+
+
 async def spotify_observe(n, cookie, label, known):
     """One account: sign in with its cookie, open a read-only Connect observer and take the snapshot of its players.
     Returns the deck's fields, or None when the account has nothing on its players."""
     from spotapi import Account, AsyncClient, Player
 
-    async with await AsyncClient.from_cookies(cookie) as client:
-        player = Player(client)
-        async with player.connect(timeout=SPOTIFY_TIMEOUT):
-            state = player.state
-            track = state.track if state else None
-            if track is None:
-                return None
-            title, artist, album, cover = track.name, track.artist, track.album, track.image_url or ""
-            if not (title and artist):
-                details = await player.current_track_details()
-                if details is not None and details.uri == track.uri:
-                    title, artist, album, cover = (new or old for new, old in zip(details_fields(details), (title, artist, album, cover)))
-            device = next((d for d in player.devices if d.id == state.active_device_id), None)
-        username = (known or {}).get("username", "")
-        if not username:
-            try:
-                username = (await Account(client).get_profile()).username
-            except Exception as error:
-                print(f"spotify {n}: no profile name ({type(error).__name__})", file=sys.stderr)
+    step = "sign-in"
+    try:
+        async with await AsyncClient.from_cookies(cookie) as client:
+            step = "connect"
+            player = Player(client)
+            async with player.connect(timeout=SPOTIFY_TIMEOUT):
+                state = player.state
+                track = state.track if state else None
+                if track is None:
+                    return None
+                title, artist, album, cover = track.name, track.artist, track.album, track.image_url or ""
+                if not (title and artist):
+                    step = "track details"
+                    details = await player.current_track_details()
+                    if details is not None and details.uri == track.uri:
+                        title, artist, album, cover = (new or old for new, old in zip(details_fields(details), (title, artist, album, cover)))
+                device = next((d for d in player.devices if d.id == state.active_device_id), None)
+            username = (known or {}).get("username", "")
+            if not username:
+                try:
+                    username = (await Account(client).get_profile()).username
+                except Exception as error:
+                    print(f"spotify {n}: no profile name ({safe_message(error)})", file=sys.stderr)
+    except Exception as error:
+        raise SpotifyStep(step, error) from error
     if not title:
         return None
     playing = bool(state.is_playing and not state.is_paused)
@@ -381,12 +410,13 @@ def spotify_now(accounts, users):
     async def one(n, cookie, label):
         try:
             return await asyncio.wait_for(spotify_observe(n, cookie, label, users.get(str(n))), SPOTIFY_TIMEOUT * 4)
+        except SpotifyStep as failure:
+            hint = {"LoginExpired": f" (sign in again and update SPOTIFY_COOKIE_{n})",
+                    "TimeoutError": " (no player snapshot: no device signed in?)"}.get(type(failure.error).__name__, "")
+            print(f"spotify {n}: no playback state at {failure.step}{hint}: {safe_message(failure.error)}", file=sys.stderr)
         except Exception as error:
-            status = getattr(error, "status_code", None) or getattr(error, "status", None)
-            hint = {"LoginExpired": f": sign in again and update SPOTIFY_COOKIE_{n}",
-                    "TimeoutError": ": no player snapshot (no device signed in?)"}.get(type(error).__name__, "")
-            print(f"spotify {n}: no playback state ({type(error).__name__}{f' {status}' if status else ''}{hint})", file=sys.stderr)
-            return None
+            print(f"spotify {n}: no playback state: {safe_message(error)}", file=sys.stderr)
+        return None
 
     async def everyone():
         return await asyncio.gather(*(one(*account) for account in accounts))
