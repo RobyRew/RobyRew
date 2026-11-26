@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 284
+    "scrobbles": 286
   },
   "github": {
     "repos": {
@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T05:23:04Z",
+        "pushed": "2026-11-26T11:31:24Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -429,7 +429,7 @@
         "homepage": "https://robyrew.github.io/spotify-versions-history/",
         "language": "TypeScript",
         "language_color": "#3178c6",
-        "pushed": "2026-11-26T09:54:45Z",
+        "pushed": "2026-11-26T11:07:02Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
@@ -495,28 +495,28 @@
   "live": true,
   "now": {
     "account": 10,
-    "artist": "Josue Escogido",
-    "artist_url": "https://www.last.fm/music/Josue+Escogido",
-    "context": "Te Seguire",
+    "artist": "David Clavijo",
+    "artist_url": "https://www.last.fm/music/David+Clavijo",
+    "context": "Metamorphosis",
     "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/Josue+Escogido/Te+Seguire",
+    "context_url": "https://www.last.fm/music/David+Clavijo/Metamorphosis",
     "cover": "",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Te%20Seguire%20Josue%20Escogido",
+    "play_url": "https://open.spotify.com/search/Metamorphosis%20David%20Clavijo",
     "playing": false,
-    "song_url": "https://www.last.fm/music/Josue+Escogido/_/Te+Seguire",
-    "title": "Te Seguire",
+    "song_url": "https://www.last.fm/music/David+Clavijo/_/Metamorphosis",
+    "title": "Metamorphosis",
     "user": "RobyRew",
     "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-24T14:24+00:00"
+    "when": "2026-11-26T10:05+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "spotify_users": {},
   "stats": {
-    "contributions": 1214,
+    "contributions": 1217,
     "stars": 108
   },
   "top_tracks": [
