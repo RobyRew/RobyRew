@@ -14,17 +14,17 @@
 github = "RobyRew"
 name = "RobyRew"
 person = "Cosmin Calin"
-role = "SysOps at T-Systems"
+role = "SysOps"
 statement = "I build native Apple apps, local-first browser tools and the self-hosted platform they run on."
 aside = "And I take apps apart to see how they work."
 # The small print under the text, on computers.
-facts = ["Deutsche Telekom", "Tarragona, Spain", "EN · ES · CA · RO"]
+facts = ["EN · ES · CA · RO"]
 # Where my own tile links to.
 website = "https://cosmincalin.es"
 # The line over my name. Leave it empty to show my latest push among the projects on this page.
 now = ""
 # Printed around the label of the spinning record.
-record = "RobyRew · Tarragona · 33 RPM · apps, tools & tinkering · "
+record = "RobyRew · Side A · 33 RPM · apps, tools & tinkering · "
 
 # The first project gets the big card, the rest go two to a row.
 # `kind` sits under the name; `note` overrides the repo description. Language, release, downloads and the repo's
