@@ -527,7 +527,42 @@ def arc(cx, cy, radius, a0, a1):
     return f"M{point(a0)}A{num(radius)} {num(radius)} 0 {1 if (a1 - a0) % 360 > 180 else 0} 1 {point(a1)}"
 
 
-def vinyl_marks(cx, cy, r, label_r):
+def turned(point, degrees):
+    """A point turned about the origin, in SVG's sense: clockwise on screen, since y points down."""
+    a = math.radians(degrees)
+    return point[0] * math.cos(a) - point[1] * math.sin(a), point[0] * math.sin(a) + point[1] * math.cos(a)
+
+
+def exact(v):
+    """A number for CSS to four decimals: num()'s two would round a 1.004 scale down to 1."""
+    return f"{v:.4f}".rstrip("0").rstrip(".") or "0"
+
+
+# The record's wobble as numbers, which the tonearm follows too (needle_sway). Lengths are in the record's own units
+# (radius 146). `warp` rocks the disc once a turn, eased in and out between these keys; `drift` takes it out of true
+# from one end to the other and back, over DRIFT_TURNS turns, a period unrelated to the turn.
+WARP_KEYS = (  # (fraction of the turn, translate (x, y), skewX in degrees, scale (x, y))
+    (0.25, (0.9, -0.5), 0.35, (1.004, 0.996)),
+    (0.50, (0.2, 0.8), -0.1, (0.997, 1.003)),
+    (0.75, (-0.8, -0.2), -0.3, (1.003, 0.997)),
+)
+DRIFT_KEYS = (((-0.5, 0.3), -0.3), ((0.6, -0.4), 0.35))  # (translate (x, y), rotate in degrees) at its two ends
+DRIFT_TURNS = 2.618
+
+
+def warped(point, translate, skew, scale):
+    """Where `translate(...) skewX(...) scale(...)` takes a point: CSS applies the list right to left."""
+    x, y = point[0] * scale[0], point[1] * scale[1]
+    return x + math.tan(math.radians(skew)) * y + translate[0], y + translate[1]
+
+
+def drifted(point, translate, degrees):
+    """Where `translate(...) rotate(...)` takes a point."""
+    x, y = turned(point, degrees)
+    return x + translate[0], y + translate[1]
+
+
+def vinyl_marks(cx, cy, r, label_r, needle=None):
     """What makes a real record's turning visible: grooves that catch the light unevenly, dust and a few hairline
     scratches. Scattered at random, from a fixed seed, so every build draws the same marks and the Worker's kit stays
     the same file."""
@@ -546,16 +581,35 @@ def vinyl_marks(cx, cy, r, label_r):
         angle, distance = rng.uniform(0, 2 * math.pi), rng.uniform(label_r + 5, r - 3)
         marks.append(f'<circle cx="{num(cx + distance * math.cos(angle))}" cy="{num(cy + distance * math.sin(angle))}" '
                      f'r="{num(rng.uniform(0.45, 1.1))}" fill="#fff" fill-opacity="{num(rng.uniform(0.16, 0.34))}"/>')
-    return "".join(marks)
+    passes = []
+    if needle:
+        # A scratch across the groove the needle plays and a grain of dust in it. The disc turns clockwise from 0 at
+        # a steady rate, so a mark at angle a reaches the needle's angle b when the turn is (b - a) / 360 done: each
+        # is placed from the moment it should pass, and the arm jolts at that moment (tonearm, `ticks`).
+        groove = math.hypot(needle[0] - cx, needle[1] - cy)
+        at = math.degrees(math.atan2(needle[1] - cy, needle[0] - cx))
+        passes = [rng.uniform(0.16, 0.30), rng.uniform(0.56, 0.70)]
+        a = math.radians(at - 360 * passes[0] - 0.6)  # slanted, crossing the needle's groove at the timed angle
+        b = math.radians(at - 360 * passes[0] + 0.6)
+        marks.append(f'<path d="M{num(cx + (groove - 3) * math.cos(a))} {num(cy + (groove - 3) * math.sin(a))}'
+                     f'L{num(cx + (groove + 3) * math.cos(b))} {num(cy + (groove + 3) * math.sin(b))}" stroke="#fff" '
+                     'stroke-opacity=".24" stroke-width=".6" stroke-linecap="round"/>')
+        a = math.radians(at - 360 * passes[1])
+        marks.append(f'<circle cx="{num(cx + groove * math.cos(a))}" cy="{num(cy + groove * math.sin(a))}" r="1.2" '
+                     'fill="#fff" fill-opacity=".42"/>')
+    return "".join(marks), passes
 
 
-def record(svg, cx, cy, r, words, period, cover=None):
+def record(svg, cx, cy, r, words, period, cover=None, needle=None):
     """A vinyl record turning once every `period` seconds. With `cover` (an image as a data URI), the album art is
     its label; without, a label of my own.
 
     No record is quite flat: as it turns it rocks a little on the platter (`warp`, once a turn) and drifts a fraction
     out of true (`drift`, on a longer, unrelated period), so the motion never repeats exactly. The light on the grooves
-    stays where the light is, but rides along with that rocking."""
+    stays where the light is, but rides along with that rocking.
+
+    `needle` is where the needle meets the record when it plays: a scratch and a grain of dust are put in that groove.
+    Returns the fractions of the turn at which they pass under the needle, for the tonearm to jolt on."""
     label_r, hole_r = 0.38 * r, 4
     disc, label, shadow = svg.uid("disc"), svg.uid("label"), svg.uid("shadow")
     svg.defs.append(
@@ -573,13 +627,13 @@ def record(svg, cx, cy, r, words, period, cover=None):
         f".spin{{transform-box:fill-box;transform-origin:center;animation:spin {num(period)}s linear infinite}}"
         "@keyframes spin{to{transform:rotate(360deg)}}"
         f".warp{{transform-box:fill-box;transform-origin:center;animation:warp {num(period)}s ease-in-out infinite}}"
-        "@keyframes warp{0%,100%{transform:translate(0,0) skewX(0deg) scale(1,1)}"
-        "25%{transform:translate(.9px,-.5px) skewX(.35deg) scale(1.004,.996)}"
-        "50%{transform:translate(.2px,.8px) skewX(-.1deg) scale(.997,1.003)}"
-        "75%{transform:translate(-.8px,-.2px) skewX(-.3deg) scale(1.003,.997)}}"
-        f".drift{{transform-box:fill-box;transform-origin:center;animation:drift {num(period * 2.618)}s ease-in-out "
-        "infinite alternate}@keyframes drift{0%{transform:translate(-.5px,.3px) rotate(-.3deg)}"
-        "100%{transform:translate(.6px,-.4px) rotate(.35deg)}}"
+        "@keyframes warp{0%,100%{transform:translate(0px,0px) skewX(0deg) scale(1,1)}"
+        + "".join(f"{exact(f * 100)}%{{transform:translate({exact(tx)}px,{exact(ty)}px) skewX({exact(k)}deg) "
+                  f"scale({exact(sx)},{exact(sy)})}}" for f, (tx, ty), k, (sx, sy) in WARP_KEYS) + "}"
+        f".drift{{transform-box:fill-box;transform-origin:center;animation:drift {num(period * DRIFT_TURNS)}s "
+        "ease-in-out infinite alternate}@keyframes drift{"
+        + "".join(f"{end}%{{transform:translate({exact(tx)}px,{exact(ty)}px) rotate({exact(turn)}deg)}}"
+                  for end, ((tx, ty), turn) in zip((0, 100), DRIFT_KEYS)) + "}"
     )
     parts = [
         f'<circle cx="{num(cx + 4)}" cy="{num(cy + 12)}" r="{num(r * 1.16)}" fill="url(#{shadow})"/>',
@@ -597,7 +651,8 @@ def record(svg, cx, cy, r, words, period, cover=None):
         i += 1
     for gap in (r * 0.6, r * 0.74, r * 0.87):
         parts.append(f'<circle cx="{num(cx)}" cy="{num(cy)}" r="{num(gap)}" fill="none" stroke="#000" stroke-opacity=".7" stroke-width="2.4"/>')
-    parts.append(vinyl_marks(cx, cy, r, label_r))
+    marks, passes = vinyl_marks(cx, cy, r, label_r, needle)
+    parts.append(marks)
     if cover:
         # Defined once with a fixed id, so the phone image, which holds both themes, carries the picture only once.
         svg.defs.append(f'<image id="cover" href="{cover}" x="{num(cx - label_r)}" y="{num(cy - label_r)}" '
@@ -613,7 +668,7 @@ def record(svg, cx, cy, r, words, period, cover=None):
             "</g>"
         )
         finish(svg, parts, cx, cy, r, label_r)
-        return
+        return passes
     parts.append(
         f'<path d="{circle_path(cx, cy, label_r)}{circle_path(cx, cy, hole_r)}" fill="url(#{label})" fill-rule="evenodd"/>'
     )
@@ -636,6 +691,7 @@ def record(svg, cx, cy, r, words, period, cover=None):
     )
     parts.append("</g>")
     finish(svg, parts, cx, cy, r, label_r)
+    return passes
 
 
 def finish(svg, parts, cx, cy, r, label_r):
@@ -658,15 +714,46 @@ def finish(svg, parts, cx, cy, r, label_r):
 ARM_TUBE = "M0 0V26C0 60 13 84 12 112S-6 168-4 196"
 
 
-# What the arm does while the needle is in the groove: it sways with the record's rocking (`ride`, once a turn) and
-# now and then shivers for a moment (`buzz`, run twice on unrelated periods, so the shivers come at irregular times).
-# An invisible square centred on the pivot gives each group a box centred there, so they turn about the pivot.
+HEADSHELL = ((-4, 196), 20)  # where the headshell sits on the arm, and how far it's angled in
+STYLUS = (0, 38)  # the needle's tip, in the headshell's own coordinates
+# A damped jolt when a mark passes under the needle: (percent of the turn after it arrives, degrees; outward < 0).
+JOLT = ((0, 0), (0.5, -0.22), (1.2, 0.14), (1.9, -0.07), (2.6, 0.03), (3.3, 0))
+# An invisible square centred on the pivot gives each moving group a box centred there, so they turn about the pivot.
 ARM_PIVOT_BOX = '<rect x="-300" y="-300" width="600" height="600" fill="none"/>'
 
 
-def tonearm(svg, px, py, angle, rest, ride=None):
+def needle_point(px, py, angle):
+    """Where the needle's tip is, in the record's units, with the arm at `angle` about its pivot (px, py)."""
+    (hx, hy), tilt = HEADSHELL
+    sx, sy = turned(STYLUS, tilt)
+    ax, ay = turned((hx + sx, hy + sy), angle)
+    return px + ax, py + ay
+
+
+def needle_sway(pivot, needle, moved):
+    """How many degrees the arm turns to keep the needle in its groove when the record's surface under the needle
+    moves from `needle` to `moved`.
+
+    The needle can only be pushed by the groove moving across it, along the radius through it (a turn of the record
+    about its centre doesn't move the groove under the needle at all). That shift, divided by how squarely the
+    needle's arc around the pivot crosses the radius, is how far the needle travels along the arc; over the arm's
+    length that's the angle. First order: the shifts are a unit or so against a 232-unit arm."""
+    vx, vy = needle[0] - pivot[0], needle[1] - pivot[1]
+    arm = math.hypot(vx, vy)
+    travel = (-vy / arm, vx / arm)  # where the needle goes as the arm turns by a positive angle
+    groove = math.hypot(*needle)
+    radial = (needle[0] / groove, needle[1] / groove)
+    shift = (moved[0] - needle[0]) * radial[0] + (moved[1] - needle[1]) * radial[1]
+    return math.degrees(shift / (travel[0] * radial[0] + travel[1] * radial[1]) / arm)
+
+
+def tonearm(svg, px, py, angle, rest, ride=None, ticks=()):
     """The arm at `angle` degrees about its pivot (positive swings it in over the record), and its rest at `rest`.
-    With `ride` (the record's seconds per turn) the needle is playing, and the arm sways and shivers."""
+
+    With `ride` (the record's seconds per turn) the needle is in the groove and the arm follows the record: `armwarp`
+    and `armdrift` turn it by needle_sway() of the record's own `warp` and `drift` keys, on the same periods, keys and
+    easing, so the needle stays in the groove as the disc rocks; `armtick` jolts it at each fraction of the turn in
+    `ticks`, when a mark in the groove passes under the needle."""
     metal = svg.uid("metal")
     svg.defs.append(
         f'<linearGradient id="{metal}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F4F6"/>'
@@ -686,8 +773,9 @@ def tonearm(svg, px, py, angle, rest, ride=None):
         f'<path d="{ARM_TUBE}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round" '
         f'transform="translate(-1.2 -1)"/>'
     )
+    (hx, hy), tilt = HEADSHELL
     headshell = (
-        '<g transform="translate(-4 196) rotate(20)">'
+        f'<g transform="translate({num(hx)} {num(hy)}) rotate({num(tilt)})">'
         f'<path d="M7 6L17 1.5" stroke="url(#{metal})" stroke-width="3" stroke-linecap="round"/>'  # finger lift
         f'<rect x="-8" y="-2" width="16" height="32" rx="3.5" fill="url(#{metal})"/>'
         '<rect x="-6" y="22" width="12" height="13" rx="2" fill="#2B2B30"/>'  # cartridge
@@ -702,20 +790,31 @@ def tonearm(svg, px, py, angle, rest, ride=None):
     shadow = f'<path d="{ARM_TUBE}" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="9" stroke-linecap="round"/>'
     body = f"{weight}{tube}{headshell}"
     if ride:
+        needle = needle_point(px, py, angle)
+
+        def sway(moved):
+            return exact(needle_sway((px, py), needle, moved))
+
+        jolts = {0.0: 0.0, 100.0: 0.0}
+        for fraction in ticks:
+            for after, degrees in JOLT:
+                jolts[round(fraction * 100 + after, 2)] = degrees
         svg.css.append(
-            f".ride{{transform-box:fill-box;transform-origin:center;animation:ride {num(ride)}s ease-in-out infinite}}"
-            "@keyframes ride{0%,100%{transform:rotate(0deg)}25%{transform:rotate(.14deg)}50%{transform:rotate(-.05deg)}"
-            "75%{transform:rotate(-.12deg)}}"
-            ".buzz,.buzz2{transform-box:fill-box;transform-origin:center;animation:buzz 6.7s linear infinite}"
-            ".buzz2{animation-duration:10.3s;animation-delay:-3.1s}"
-            "@keyframes buzz{0%,57%,66%,86%,92%,100%{transform:rotate(0deg)}58%{transform:rotate(.32deg)}"
-            "59.5%{transform:rotate(-.26deg)}61%{transform:rotate(.18deg)}62.5%{transform:rotate(-.11deg)}"
-            "64%{transform:rotate(.05deg)}87.5%{transform:rotate(-.2deg)}89%{transform:rotate(.14deg)}"
-            "90.5%{transform:rotate(-.06deg)}}"
+            f".armwarp{{transform-box:fill-box;transform-origin:center;animation:armwarp {num(ride)}s ease-in-out "
+            "infinite}@keyframes armwarp{0%,100%{transform:rotate(0deg)}"
+            + "".join(f"{exact(f * 100)}%{{transform:rotate({sway(warped(needle, t, k, sc))}deg)}}"
+                      for f, t, k, sc in WARP_KEYS) + "}"
+            f".armdrift{{transform-box:fill-box;transform-origin:center;animation:armdrift {num(ride * DRIFT_TURNS)}s "
+            "ease-in-out infinite alternate}@keyframes armdrift{"
+            + "".join(f"{end}%{{transform:rotate({sway(drifted(needle, t, turn))}deg)}}"
+                      for end, (t, turn) in zip((0, 100), DRIFT_KEYS)) + "}"
+            f".armtick{{transform-box:fill-box;transform-origin:center;animation:armtick {num(ride)}s linear infinite}}"
+            "@keyframes armtick{" + "".join(f"{exact(at)}%{{transform:rotate({exact(deg)}deg)}}"
+                                             for at, deg in sorted(jolts.items())) + "}"
         )
 
         def moving(markup):
-            return f'<g class="ride"><g class="buzz"><g class="buzz2">{ARM_PIVOT_BOX}{markup}</g></g></g>'
+            return f'<g class="armwarp"><g class="armdrift"><g class="armtick">{ARM_PIVOT_BOX}{markup}</g></g></g>'
 
         shadow, body = moving(shadow), moving(body)
     svg.add(

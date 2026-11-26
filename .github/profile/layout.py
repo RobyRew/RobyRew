@@ -26,8 +26,8 @@ import math
 import urllib.parse
 from datetime import datetime, timezone
 
-from canvas import (FACES, HUES, PLATFORMS, STAR, SVG, blobs_for, compact, icon_markup, image_data, num, paint,
-                    record, render_pair, tonearm, window_mock)
+from canvas import (FACES, HUES, PLATFORMS, STAR, SVG, blobs_for, compact, icon_markup, image_data, needle_point, num,
+                    paint, record, render_pair, tonearm, window_mock)
 
 
 WIDTH = {"d": 840, "m": 420}  # desktop and phone canvases
@@ -691,8 +691,11 @@ def deck(c, me, now):
     else:
         cover = image_data((now or {}).get("cover"))
     svg.add(f'<g clip-path="url(#{clip})"><g transform="translate({num(c.x + g["cx"])} {num(g["cy"])}) scale({num(g["r"] / 146)})">')
-    record(svg, 0, 0, 146, me["record"], SPIN_PLAYING if playing else SPIN_IDLE, cover)
-    tonearm(svg, *ARM_PIVOT, ARM_PLAYING if playing else ARM_PARKED, ARM_REST, ride=SPIN_PLAYING if playing else None)
+    period = SPIN_PLAYING if playing else SPIN_IDLE
+    # The needle's place on the record when it plays: the record puts marks in that groove and says when they pass.
+    ticks = record(svg, 0, 0, 146, me["record"], period, cover, needle=needle_point(*ARM_PIVOT, ARM_PLAYING))
+    tonearm(svg, *ARM_PIVOT, ARM_PLAYING if playing else ARM_PARKED, ARM_REST, ride=period if playing else None,
+            ticks=ticks)
     svg.add("</g></g>")
     ix, right = g["info"]
     if c.m:
