@@ -30,13 +30,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run now-playing.yml --repo "$GITHUB_REPOSITORY" --ref main
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: main
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Install font tools
         run: pip install fonttools==4.67.0 brotli==1.2.0
