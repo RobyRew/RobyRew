@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 297
+    "scrobbles": 300
   },
   "github": {
     "repos": {
@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T15:54:20Z",
+        "pushed": "2026-11-26T16:15:44Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -507,23 +507,23 @@
   },
   "now": {
     "account": 1,
-    "artist": "Hope Darst",
-    "artist_url": "https://open.spotify.com/artist/0B5924KrMyjdeYqZsPpw36",
+    "artist": "eldad",
+    "artist_url": "https://open.spotify.com/artist/3NQ8WmLPeLikZVofNkCvf2",
     "context": "Sphere",
     "context_kind": "Playlist",
     "context_url": "https://open.spotify.com/playlist/7v9WZ36OvKAkAjnd12f9nC",
-    "cover": "https://i.scdn.co/image/ab67616d00001e029eab7d538b011f1be6324660",
-    "device": "",
-    "device_type": "",
+    "cover": "https://i.scdn.co/image/ab67616d00001e0220cbae0ba55cf7b944417794",
+    "device": "iPhone",
+    "device_type": "smartphone",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/track/1OAAWiqcdvXWEiMWFs3yB7",
+    "play_url": "https://open.spotify.com/track/7kMXadyf1eVb9eVxsUQNnV",
     "playing": false,
-    "song_url": "https://open.spotify.com/track/1OAAWiqcdvXWEiMWFs3yB7",
-    "title": "Peace Be Still",
+    "song_url": "https://open.spotify.com/track/7kMXadyf1eVb9eVxsUQNnV",
+    "title": "Mă Uit In Jur",
     "user": "Cosmin Calin",
     "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
-    "when": "2026-11-26T15:20+00:00"
+    "when": "2026-11-26T16:15+00:00"
   },
   "spotify_users": {
     "1": {
@@ -532,7 +532,7 @@
     }
   },
   "stats": {
-    "contributions": 1248,
+    "contributions": 1249,
     "stars": 108
   },
   "top_tracks": [
