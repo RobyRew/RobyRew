@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T13:58:55Z",
+        "pushed": "2026-11-26T14:37:06Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -268,20 +268,20 @@
       "high-school-story": {
         "archived": false,
         "description": "",
-        "downloads": 0,
+        "downloads": 7,
         "forks": 0,
         "homepage": "",
         "language": "Python",
         "language_color": "#3572A5",
-        "pushed": "2026-11-25T20:15:49Z",
+        "pushed": "2026-11-26T14:20:16Z",
         "stars": 0,
         "url": "https://github.com/RobyRew/high-school-story",
-        "version": ""
+        "version": "1.0.0"
       },
       "hollywood-u-rising-stars": {
         "archived": false,
         "description": "",
-        "downloads": 12,
+        "downloads": 13,
         "forks": 0,
         "homepage": "",
         "language": "Smali",
@@ -494,29 +494,34 @@
   },
   "live": true,
   "now": {
-    "account": 10,
-    "artist": "David Clavijo",
-    "artist_url": "https://www.last.fm/music/David+Clavijo",
-    "context": "Metamorphosis",
-    "context_kind": "Album",
-    "context_url": "https://www.last.fm/music/David+Clavijo/Metamorphosis",
-    "cover": "",
+    "account": 1,
+    "artist": "Jason Fervento",
+    "artist_url": "",
+    "context": "A playlist",
+    "context_kind": "Playlist",
+    "context_url": "",
+    "cover": "https://i.scdn.co/image/ab67616d00001e0296cc9f900ce09854e1a64c6c",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/search/Metamorphosis%20David%20Clavijo",
+    "play_url": "https://open.spotify.com/track/4XXZ8hWY3c3QU9b3biFW6A",
     "playing": false,
-    "song_url": "https://www.last.fm/music/David+Clavijo/_/Metamorphosis",
-    "title": "Metamorphosis",
-    "user": "RobyRew",
-    "user_url": "https://www.last.fm/user/RobyRew",
-    "when": "2026-11-26T10:05+00:00"
+    "song_url": "https://open.spotify.com/track/4XXZ8hWY3c3QU9b3biFW6A",
+    "title": "Fragments of You",
+    "user": "Cosmin Calin",
+    "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
+    "when": "2026-11-26T14:37+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
-  "spotify_users": {},
+  "spotify_users": {
+    "1": {
+      "url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
+      "username": "gwiw7i4a2ha0a8dbldyn94vwl"
+    }
+  },
   "stats": {
-    "contributions": 1220,
+    "contributions": 1228,
     "stars": 108
   },
   "top_tracks": [
