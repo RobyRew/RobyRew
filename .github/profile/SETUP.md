@@ -36,18 +36,16 @@ redirect through github.com first.
   doing so drops a width condition, so the phone source asks for width only.
 - Every link has a hover tooltip and every image a full-sentence `alt`.
 - Top to bottom:
-  - **Two tiles.** Mine has my name over a slow aurora, with a sweep of the accent through it now and then, what I
-    do, and a blinking cursor; the line over the name is my latest push among the projects on the page (or `now` in
-    `profile.toml`). It links to my website. The turntable shows the album cover as the record's label and what's
-    playing beside it (under it on phones), and plays the song. The record stays in one image: cut across two, its
-    halves would turn out of step.
+  - **Two tiles.** Mine has my name over a slow aurora, with a sweep of the accent through it now and then, and what I
+    do. `statement`, `aside` (with a blinking cursor) and `facts` in `profile.toml` add lines under it, and the line
+    over the name is `now`, or my latest push among the projects on the page unless `latest_push = false`. It links
+    to my website. The turntable shows the album cover as the record's label and what's playing beside it (under it
+    on phones), and plays the song. The record stays in one image: cut across two, its halves would turn out of step.
   - **The numbers:** release downloads and stars across my own repositories (forks left out), public repositories,
     and contributions in the last year.
-  - **Selected work** (`[work]`): the first project on a big card, with a picture of the app (`mock`), the rest two
-    to a row. Language, release, downloads and the live address come from GitHub.
-  - **More projects** (`[more]`): smaller cards in the order of `profile.toml`, ending with a tile to every repository.
-  - **Archive** (`[archive]`): older work, added up: `match` sums every repository whose name contains it.
-  - **On rotation:** the top tracks of the last four weeks, then the contact links and the footer.
+  - **Projects** (`[work]`): two to a row, all the same size: the icon, the name and `note`, one short line.
+  - **More projects** (`[more]`), **Archive** (`[archive]`) and the top tracks (`tracks` above 0 under
+    `[listening]`) show only when `profile.toml` asks for them. Then the contact links and the footer.
 - Numbers that are zero or missing are left out, and copy that doesn't fit is cut with an ellipsis rather than
   overflowing; the font metrics are read at build time, so `build.py` knows exactly where each line ends.
 - The fonts carry no kerning table: the kerning is worked out at build time and written into each line of text,
@@ -127,7 +125,7 @@ Last.fm also covers YouTube Music and Apple Music, and any Spotify account that 
 
    The `[[listening.lastfm]]` blocks in `profile.toml` work too; the variable is checked first.
 
-The first Last.fm account also supplies the "On rotation" top tracks and the scrobble count.
+The first Last.fm account also supplies the top tracks (when `tracks` is above 0) and the scrobble count.
 
 ## 2. Live record player
 

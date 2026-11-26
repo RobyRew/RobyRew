@@ -507,6 +507,8 @@ def lastfm_top(p, cache):
     if not users or not os.environ.get("LASTFM_API_KEY"):
         return
     limit = int(p.get("listening", {}).get("tracks", 5))
+    if limit <= 0:
+        return
     try:
         user = users[0]["user"]
         items = lastfm("user.gettoptracks", user=user, period="1month", limit=limit)["toptracks"]["track"]

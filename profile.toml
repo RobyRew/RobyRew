@@ -15,184 +15,68 @@ github = "RobyRew"
 name = "RobyRew"
 person = "Cosmin Calin"
 role = "SysOps"
-statement = "I build native Apple apps, local-first browser tools and the self-hosted platform they run on."
-aside = "And I take apps apart to see how they work."
-# The small print under the text, on computers.
-facts = ["EN · ES · CA · RO"]
+# Optional, under my name: `statement` (a few lines), `aside` (one line in the accent colour) and `facts` (small
+# print, on computers).
 # Where my own tile links to.
 website = "https://cosmincalin.es"
-# The line over my name. Leave it empty to show my latest push among the projects on this page.
+# The line over my name. Empty shows my latest push among the projects on this page; latest_push = false shows none.
 now = ""
+latest_push = false
 # Printed around the label of the spinning record.
 record = "RobyRew · Side A · 33 RPM · apps, tools & tinkering · "
 
-# The first project gets the big card, the rest go two to a row.
-# `kind` sits under the name; `note` overrides the repo description. Language, release, downloads and the repo's
-# homepage come from GitHub; `live` sets the address to show instead (live = "" shows none).
-# `mock = "presenter"` draws the app beside the big card; `texture = "disasm"` puts an arm64 listing behind a card.
+# Two to a row: the icon, the name and `note` (one short line; it overrides the repo description).
 [work]
-kicker = "01 — Work"
-title = "Selected work"
+kicker = ""
+title = "Projects"
 
 [[work.projects]]
 repo = "TopPresenter"
-kind = "macOS app · SwiftUI + SwiftData"
-note = "Bible and worship presentation: scripture, songs, images and video on the projector, styled from one place. 70 free Bible translations, no subscription, no cloud account."
+note = "Bible & worship slides for macOS"
 icon = "TopPresenter.png"
 hue = "violet"
-mock = "presenter"
 
 [[work.projects]]
 repo = "chat-converter"
 title = "Chat Converter"
-kind = "Web app · runs in your browser"
-note = "Moves a chat export from Telegram, WhatsApp, Instagram, Messenger or Snapchat into the format another app imports."
+note = "Move chats between apps"
 icon = "chat-converter.svg"
 hue = "blue"
-live = "https://chat-converter.robyrew.com"
 
 [[work.projects]]
 repo = "mapswitch"
 title = "MapSwitch"
-kind = "Web app · privacy-first"
-note = "Like song.link, but for places: paste a Google Maps, Apple Maps or Waze link and open it in the map app you use."
+note = "Open any map link in your map app"
 icon = "mapswitch.png"
 hue = "teal"
-live = "https://maps.robyrew.com"
 
 [[work.projects]]
 repo = "pacetimer"
 title = "PeaceTimer"
-kind = "macOS menu-bar app"
-note = "A Liquid Glass countdown in the menu bar: drag along a glowing track to set up to five hours."
+note = "A Liquid Glass menu-bar timer"
 icon = "pacetimer.png"
 hue = "sky"
-live = ""
 
 [[work.projects]]
 repo = "striker"
 title = "Striker"
-kind = "iOS · reverse engineering"
-note = "An Objective-C runtime console you embed in an iOS app and drive from your Mac over USB."
+note = "A live Objective-C console for iOS"
 icon = "terminal"
 hue = "rose"
-texture = "disasm"
 
 [[work.projects]]
 repo = "spotify-versions-history"
 title = "Spotify versions"
-kind = "Archive · website"
-note = "A searchable catalog of Spotify desktop installers, and a watcher that logs each new build's hashes."
+note = "Every Spotify desktop installer"
 icon = "spotify-versions-history.svg"
 hue = "green"
-
-[[work.projects]]
-repo = "Download-AI-Chat-PDF"
-title = "Download AI Chat PDF"
-kind = "Userscript"
-note = "Saves or prints the entire ChatGPT, Gemini, Claude or Grok conversation as a PDF, not just the part that's on screen."
-icon = "pdf"
-hue = "ember"
-
-# Smaller cards, two to a row, in this order, ending with a tile to every repository. `tag` sits on the right.
-[more]
-kicker = "02 — More"
-title = "More projects"
-
-[[more.projects]]
-repo = "Doorline"
-tag = "iPhone · iPad · Mac"
-note = "Classe 300X intercom app, with Apple Home built in"
-icon = "door"
-
-[[more.projects]]
-repo = "chatforge"
-title = "ChatForge"
-tag = "Web app"
-note = "End-to-end encrypted chat on MLS (RFC 9420)"
-icon = "chatforge.svg"
-
-[[more.projects]]
-repo = "calendar-event-generator"
-title = "Calendar Event Generator"
-tag = "Web app"
-note = "Calendar events with full ICS and recurrence rules"
-icon = "calendar-event-generator.svg"
-
-[[more.projects]]
-repo = "powerpoint-extractor"
-title = "PowerPoint Extractor"
-tag = "Web app"
-note = "Text, notes and media out of .pptx and .ppt files"
-icon = "powerpoint-extractor.svg"
-
-[[more.projects]]
-repo = "linkedin-pro-ios"
-title = "LinkedIn Professional"
-tag = "iOS tweak"
-note = "A modular Swift tweak for the LinkedIn iOS app"
-icon = "wand"
-
-[[more.projects]]
-repo = "split-stream"
-title = "SplitStream"
-tag = "Desktop app"
-note = "Routes one app's traffic through your own server"
-icon = "split-stream.png"
-
-[[more.projects]]
-repo = "retro-phone-tools"
-title = "Retro Phone Tools"
-tag = "Web app"
-note = "Decrypts Nokia DCT4 firmware, in the browser"
-icon = "phone"
-
-[[more.projects]]
-repo = "robyrew-id"
-title = "RobyRew ID"
-tag = "Platform"
-note = "One @handle and picture across the RobyRew apps"
-icon = "robyrew-id.svg"
-
-[[more.projects]]
-repo = "ui"
-title = "@robyrew/ui"
-tag = "Design system"
-note = "The liquid-glass design system behind my sites"
-icon = "layers"
-
-# Older work people still use. `match` adds up every repository whose name contains it; `repo` is a single one.
-[archive]
-kicker = "03 — Archive"
-title = "Where it started"
-side = "Archived repos"
-side_url = "https://github.com/RobyRew?tab=repositories&type=archived"
-
-[[archive.items]]
-title = "Hackintosh guides"
-subtitle = "OpenCore EFIs and guides"
-note = "Step-by-step install guides and EFIs for PCs and laptops from MSI, Lenovo, ASUS, ASRock and Acer."
-match = "Hackintosh"
-unit = "guides"
-icon = "laptop"
-hue = "blue"
-tip = "My Hackintosh guides"
-
-[[archive.items]]
-title = "TitanD3v tweak archive"
-subtitle = "iOS tweaks, preserved"
-note = "Kept the TitanD3v and Hyperixa tweaks downloadable after the originals were taken down."
-repo = "TitanD3v-and-Hyperixa-Tweaks-Free"
-icon = "archive"
-hue = "violet"
 
 # Music. Setup steps are in .github/profile/SETUP.md.
 # Priority: the Spotify accounts first (up to 9, read through SpotAPI, no Premium or developer app needed), then the
 # Last.fm accounts below, top to bottom. The first one that is playing shows on the deck, else the latest play.
 [listening]
-kicker = "04 — Music"
-title = "On rotation"
-tracks = 5
+# Top tracks of the last month, on a card of their own (Last.fm). 0 = no card.
+tracks = 0
 # Optional: your Spotify profile URL, so the top-tracks card links to it.
 profile = ""
 # The now-playing Worker (see .github/profile/SETUP.md): the record player is drawn on every visit, with the now

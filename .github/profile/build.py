@@ -18,8 +18,8 @@ from pathlib import Path
 import canvas
 import layout
 from canvas import CACHE, FACES, HUE_ORDER, ICONS, PLATFORMS, ROOT, THEMES, compact, esc, render_pair
-from data import (LANGUAGE_COLORS, PLAY_SEARCH, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
-                  now_key, now_service, play_url, spotify_accounts, stats_data)
+from data import (PLAY_SEARCH, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data, now_key, now_service,
+                  play_url, spotify_accounts, stats_data)
 from layout import Row, draw, hero_rows, page, render, render_phone
 
 HERE = Path(__file__).resolve().parent
@@ -67,38 +67,19 @@ def version():
 # ── data for the page ────────────────────────────────────────────────────────
 
 
-def domain(url):
-    """A web address the way a person would type it: no scheme, no trailing slash."""
-    return re.sub(r"^https?://(www\.)?", "", url or "").rstrip("/")
-
-
 def project(entry, repo, hue):
     """A repository from profile.toml, with what GitHub knows about it."""
-    language = repo.get("language") or ""
     icon = entry.get("icon") or "code"
     image = icon if icon.lower().endswith((".png", ".svg")) else None
-    meta = [language] if language else []
-    if repo.get("version"):
-        meta.append(repo["version"])
-    if repo.get("downloads"):
-        meta.append(f'{compact(repo["downloads"])} downloads')
-    live = entry["live"] if "live" in entry else repo.get("homepage")  # live = "" hides the repo's homepage
-    if live:
-        meta.append(domain(live))
     return {
         "name": entry["repo"],
         "title": entry.get("title") or entry["repo"],
-        "kind": entry.get("kind", ""),
         "tag": entry.get("tag", ""),
         "note": entry.get("note") or repo.get("description") or "",
         "image": image,
         "glyph": None if image else icon,
         "hue": entry.get("hue") or hue,
-        "texture": entry.get("texture"),
-        "mock": entry.get("mock"),
         "url": repo["url"],
-        "meta": meta,
-        "language_color": repo.get("language_color") or LANGUAGE_COLORS.get(language) or "#9CA3AF",
         "pushed": repo.get("pushed", ""),
     }
 
@@ -163,7 +144,8 @@ def collect(p, cache):
             "repos": user.get("public_repos"),
             "contributions": stats.get("contributions"),
         },
-        "pulse": {"name": latest["title"], "when": latest["pushed"]} if latest else None,
+        # latest_push = false in profile.toml leaves the line over my name out.
+        "pulse": {"name": latest["title"], "when": latest["pushed"]} if latest and p["me"].get("latest_push", True) else None,
         "tracks": tracks,
         "now": cache.get("now"),
         "since": str(user.get("created_at", ""))[:4],
@@ -355,7 +337,7 @@ def kit(p, cache, now, spotify=None):
 def refresh(p, cache):
     github_data(p, cache)
     stats_data(p, cache)
-    lastfm_top(p, cache)  # the "On rotation" card: Last.fm's top tracks of the last month
+    lastfm_top(p, cache)  # the top-tracks card: Last.fm's top tracks of the last month (tracks = 0: none)
     service = now_service(p)
     heard = None if service is None else [service["now"]] if service.get("now") else []
     now = now_data(p, cache, spotify_accounts(p), heard=heard)

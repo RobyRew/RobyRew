@@ -27,7 +27,7 @@ import urllib.parse
 from datetime import datetime, timezone
 
 from canvas import (FACES, HUES, PLATFORMS, STAR, SVG, blobs_for, compact, icon_markup, image_data, needle_point, num,
-                    paint, record, render_pair, tonearm, window_mock)
+                    paint, record, render_pair, tonearm)
 
 
 WIDTH = {"d": 840, "m": 420}  # desktop and phone canvases
@@ -620,17 +620,19 @@ def identity(c, me, pulse):
     room = c.x + c.w - left - g["pad"]
     aurora(c)
     kick = c.pick(8.5, 7)
-    size = c.pick(46, 30)
-    while size > 20 and FACES["display"].width(me["name"], size, -size * 0.03) > room:
-        size -= 1
-    rs = c.pick(13.5, 10.5)
     fs, lh = c.pick(13.5, 10.5), c.pick(19, 13.8)
-    role = " · ".join(part for part in (me.get("person"), me.get("role")) if part)
-    roles = FACES["semi"].wrap(role, rs, room, c.pick(1, 2)) if role else []
     statement = FACES["text"].wrap(me.get("statement", ""), fs, room, c.pick(3, 5))
     aside = FACES["semi"].wrap(me["aside"], fs, room - 8, 2) if me.get("aside") else []
     facts = [] if c.m else me.get("facts", [])
     status = pulse_text(me, pulse, c.m)
+    # With nothing but the role under it, the name carries the panel on its own: both a size up.
+    bare = not (statement or aside or facts or status)
+    size = c.pick(56, 34) if bare else c.pick(46, 30)
+    while size > 20 and FACES["display"].width(me["name"], size, -size * 0.03) > room:
+        size -= 1
+    rs = c.pick(15, 11) if bare else c.pick(13.5, 10.5)
+    role = " · ".join(part for part in (me.get("person"), me.get("role")) if part)
+    roles = FACES["semi"].wrap(role, rs, room, c.pick(1, 2)) if role else []
     # Baselines laid out from 0, then the block is centred. Each gap runs from a baseline to the next cap height.
     y = kick * 0.72 if status else 0
     status_y = y
@@ -650,7 +652,7 @@ def identity(c, me, pulse):
     if facts:
         y += c.pick(17, 12) + kick * 0.72
         facts_y = y
-    shift = (c.h - y - fs * 0.22) / 2
+    shift = (c.h - y - (rs if bare else fs) * 0.22) / 2
     if status:
         y = shift + status_y
         cy = y - kick * 0.35
@@ -772,13 +774,13 @@ def stats_items(totals):
     """The numbers that are there: (value, label, icon, star)."""
     items = []
     if totals.get("downloads"):
-        items.append((compact(totals["downloads"]), "Release downloads", "download", False))
+        items.append((compact(totals["downloads"]), "Downloads", "download", False))
     if totals.get("stars"):
-        items.append((compact(totals["stars"]), "Stars earned", None, True))
+        items.append((compact(totals["stars"]), "Stars", None, True))
     if totals.get("repos"):
-        items.append((str(totals["repos"]), "Public repos", "repo", False))
+        items.append((str(totals["repos"]), "Repos", "repo", False))
     if totals.get("contributions"):
-        items.append((compact(totals["contributions"]), "Contributions, past year", "commit", False))
+        items.append((compact(totals["contributions"]), "Contributions", "commit", False))
     return items
 
 
@@ -787,9 +789,9 @@ def stats_items(totals):
 
 def header(c, kicker_text, title, side, arrow):
     t = c.t
-    y = c.pick(26, 24)
-    kicker(c, c.x + 2, y, kicker_text, t["accent"])
-    base = c.pick(50, 45)
+    if kicker_text:
+        kicker(c, c.x + 2, c.pick(26, 24), kicker_text, t["accent"])
+    base = c.pick(50, 45) if kicker_text else c.pick(29, 28)
     size, title = shrink(title, "display", c.pick(20, 17), c.w * 0.62, 0.85, -0.4)
     c.svg.text(c.x + 1, base, title, "display", size, t["head"], tracking=-0.4)
     right = c.x + c.w - 2
@@ -803,8 +805,9 @@ def header(c, kicker_text, title, side, arrow):
 
 
 def header_row(name, kicker_text, title, side, side_href, anchor):
-    return Row(name, 55, 52, [
-        Cell(Card(style="none"), 1, side_href or f"#{anchor}", side if side_href else title, f"{kicker_text}: {title}",
+    alt = f"{kicker_text}: {title}" if kicker_text else title
+    return Row(name, 55 if kicker_text else 40, 52 if kicker_text else 40, [
+        Cell(Card(style="none"), 1, side_href or f"#{anchor}", side if side_href else title, alt,
              lambda c: header(c, kicker_text, title, side, bool(side_href)), key="head"),
     ])
 
@@ -812,102 +815,48 @@ def header_row(name, kicker_text, title, side, side_href, anchor):
 # ── projects ─────────────────────────────────────────────────────────────────
 
 
-# A real arm64 prologue and epilogue, as Ghidra would list it: address, bytes, instruction.
-DISASM = (
-    "100003f40  fd 7b bf a9  stp   x29, x30, [sp, #-0x10]!",
-    "100003f44  fd 03 00 91  mov   x29, sp",
-    "100003f48  00 00 00 90  adrp  x0, 0x100003000",
-    "100003f4c  00 e0 3e 91  add   x0, x0, #0xfb8",
-    "100003f50  05 00 00 94  bl    _puts",
-    "100003f54  00 00 80 52  mov   w0, #0x0",
-    "100003f58  fd 7b c1 a8  ldp   x29, x30, [sp], #0x10",
-    "100003f5c  c0 03 5f d6  ret",
-)
+# A project tile on phones: its padding, and the size and line height of the note under the icon.
+TILE_M = {"pad": 12, "note": 10.5, "lead": 13.5}
 
 
-def disasm(svg, x, y, w, h, size):
-    step = size * 1.55
-    for i in range(int(h // step)):
-        line = DISASM[i % len(DISASM)]
-        svg.text(x, y + i * step, fit(line, "mono", size, w), "mono", size, (svg.t["ink"], 0.06))
-
-
-def project_card(c, pr, big):
-    """A project: its icon with the name and what it is beside it, a line or two about it, and its facts at the
-    bottom. The big card keeps its text in a column beside the icon and can carry a picture of the app."""
+def project_tile(c, pr):
+    """A project: its icon, its name and one line about it (under the icon on phones, two lines at most)."""
     svg, t = c.svg, c.t
-    pad = c.pick(24, 14) if big else c.pick(18, 12)
-    icon = c.pick(64, 46) if big else c.pick(44, 32)
-    if pr.get("texture") == "disasm":
-        # An arm64 listing in the top right, beside the name, fading out towards the text.
-        x, top = c.x + c.w * 0.42, c.pick(22, 16)
-        fade, mask = svg.uid("fade"), svg.uid("mask")
-        svg.defs.append(
-            f'<linearGradient id="{fade}"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
-            f'<stop offset=".6" stop-color="#fff" stop-opacity="1"/></linearGradient>'
-            f'<mask id="{mask}" maskUnits="userSpaceOnUse" x="{num(x)}" y="0" width="{num(c.w * 0.58)}" height="{num(c.h)}">'
-            f'<rect x="{num(x)}" y="0" width="{num(c.w * 0.58 - 2)}" height="{num(c.h)}" fill="url(#{fade})"/></mask>'
-        )
-        svg.add(f'<g mask="url(#{mask})">')
-        disasm(svg, x, top, c.w * 0.58 - 10, pad + icon + 4 - top, c.pick(7.5, 6.5))
-        svg.add("</g>")
+    pad = c.pick(16, TILE_M["pad"])
+    icon = c.pick(44, 30)
     x0 = c.x + pad
-    project_icon(c, pr, x0, pad, icon)
+    project_icon(c, pr, x0, pad if c.m else (c.h - icon) / 2, icon)
+    tx = x0 + icon + c.pick(14, 9)
     right = c.x + c.w - pad
-    beside = big and not c.m
-    if beside and pr.get("mock"):
-        mw = min(236, c.w * 0.3)
-        mx = right - mw
-        window_mock(svg, mx, 20, mw, c.h - 40, pr["hue"])
-        right = mx - 28
-    if not big:
-        arrow = c.pick(24, 20)
-        arrow_button(c, right - arrow, pad, arrow)
-    tx = x0 + icon + c.pick(18, 12)
-    room = right - tx - (0 if big else c.pick(32, 26))
-    gap = c.pick(9, 6)
-    ts, title = shrink(pr["title"], "display", c.pick(26, 19) if big else c.pick(17, 14), room, 0.72, -0.5)
-    ks = c.pick(13, 10.5) if big else c.pick(11.5, 9.5)
-    kind = ""
-    if pr.get("kind"):
-        ks, kind = shrink(pr["kind"], "semi", ks, right - tx, 0.85)  # under the arrow, so the full width
-    block = ts * 0.72 + (gap + ks * 0.72 if kind else 0)
-    ty = pad + (icon - block) / 2 + ts * 0.72
-    ky = ty + gap + ks * 0.72
-    svg.text(tx - 1, ty, title, "display", ts, t["ink"], tracking=-0.5)
-    if kind:
-        svg.text(tx, ky, kind, "semi", ks, t["dim"])
-    px = tx if beside else x0
-    width = right - px
-    fs = c.pick(13.5, 12) if big else c.pick(12.5, 11)
-    lh = c.pick(19.5, 16) if big else c.pick(18, 14.5)
-    lines = c.pick(3, 4) if big else c.pick(2, 5)
-    y = (ky + c.pick(26, 20)) if beside else (pad + icon + c.pick(28, 22))
-    for line in FACES["text"].wrap(pr["note"], fs, width, lines):
-        svg.text(px, y, line, "text", fs, t["dim"])
-        y += lh
-    size = c.pick(8.5, 7.5) if big else c.pick(8, 7)
-    bottom = c.h - (c.pick(22, 13) if big else c.pick(17, 12))
-    meta_line(c, px, bottom, width, pr.get("meta"), pr.get("language_color"), size)
+    if c.m:
+        ts, title = shrink(pr["title"], "display", 13.5, right - tx, 0.8, -0.3)
+        svg.text(tx - 0.5, pad + icon / 2 + ts * 0.36, title, "display", ts, t["ink"], tracking=-0.3)
+        y = pad + icon + 17
+        for line in FACES["text"].wrap(pr["note"], TILE_M["note"], c.w - 2 * pad, 2):
+            svg.text(x0, y, line, "text", TILE_M["note"], t["dim"])
+            y += TILE_M["lead"]
+        return
+    ts, title = shrink(pr["title"], "display", 16.5, right - tx, 0.8, -0.4)
+    ty, ny = centered_block(c.h, ts, 9, 12.5)
+    svg.text(tx - 1, ty, title, "display", ts, t["ink"], tracking=-0.4)
+    svg.text(tx, ny, fit(pr["note"], "text", 12.5, right - tx), "text", 12.5, t["dim"])
 
 
-def project_cell(card, pr, big):
-    alt = f'{pr["title"]}: ' + " ".join(f"{part.rstrip('.')}." for part in (pr.get("kind"), pr["note"]) if part)
-    return Cell(card, 1, pr["url"], f'Open {pr["title"]} on GitHub', alt,
-                lambda c, pr=pr: project_card(c, pr, big), key=pr["name"].lower()[:40])
+def project_cell(card, pr):
+    return Cell(card, 1, pr["url"], f'Open {pr["title"]} on GitHub', f'{pr["title"]}: {pr["note"]}',
+                lambda c, pr=pr: project_tile(c, pr), key=pr["name"].lower()[:40])
 
 
 def project_rows(projects):
-    """The first project on a card of its own, the rest two to a row."""
-    if not projects:
-        return []
-    first, rest = projects[0], projects[1:]
-    rows = [Row("work-1", 182, 156, [project_cell(Card(first["hue"], blobs=blobs_for(0)), first, True)], space=True)]
-    for n, i in enumerate(range(0, len(rest), 2), 2):
-        pair = rest[i:i + 2]
-        solo = len(pair) == 1
-        cells = [project_cell(Card(pr["hue"], blobs=blobs_for(n + k)), pr, solo) for k, pr in enumerate(pair)]
-        rows.append(Row(f"work-{n}", 182 if solo else 146, 156 if solo else 154, cells, space=True))
+    """Two to a row, all the same size. On phones the tiles are as tall as the longest note needs."""
+    room = WIDTH["m"] / 2 - INSET - GAP["m"] / 2 - 2 * TILE_M["pad"]
+    lines = max([1] + [len(FACES["text"].wrap(pr["note"], TILE_M["note"], room, 2)) for pr in projects])
+    phone = 74 + TILE_M["lead"] * (lines - 1)
+    rows = []
+    for n, i in enumerate(range(0, len(projects), 2), 1):
+        pair = projects[i:i + 2]
+        cells = [project_cell(Card(pr["hue"], blobs=blobs_for(i + k)), pr) for k, pr in enumerate(pair)]
+        rows.append(Row(f"work-{n}", 76, phone, cells, space=i + 2 >= len(projects)))
     return rows
 
 
@@ -1073,25 +1022,13 @@ def rotation_rows(tracks, href):
 
 
 def contact_cell(c, item):
+    """Where to find me: an icon and the address, centred."""
     svg, t = c.svg, c.t
-    if c.m:
-        size = 26
-        svg.glass(c.x + 10, 10, size, size, size / 2)
-        svg.icon(item.get("icon") or "globe", c.x + 10 + 6.5, 16.5, 13, t["ink"])
-        svg.text(c.x + 10, 52, fit(item["label"].upper(), "mono", 6.5, c.w - 20, 1), "mono", 6.5, t["faint"], tracking=1)
-        size, value = shrink(item["value"], "semi", 10.5, c.w - 20, 0.8)
-        svg.text(c.x + 10, 66, value, "semi", size, t["ink"])
-        return
-    size = 34
-    y0 = (c.h - size) / 2
-    svg.glass(c.x + 16, y0, size, size, size / 2)
-    svg.icon(item.get("icon") or "globe", c.x + 16 + 9, y0 + 9, 16, t["ink"])
-    tx = c.x + 16 + size + 12
-    room = c.x + c.w - 16 - 16 - tx
-    svg.text(tx, c.h / 2 - 4, fit(item["label"].upper(), "mono", 7.5, room, 1.2), "mono", 7.5, t["faint"], tracking=1.2)
-    size, value = shrink(item["value"], "semi", 13, room, 0.8)
-    svg.text(tx, c.h / 2 + 12, value, "semi", size, t["ink"])
-    svg.icon("arrow", c.x + c.w - 16 - 10, c.h / 2 - 5, 10, t["muted"], stroke=2.2)
+    icon, gap = c.pick(16, 13), c.pick(9, 6)
+    size, value = shrink(item["value"], "semi", c.pick(13.5, 10.5), c.w - c.pick(32, 16) - icon - gap, 0.8)
+    x = c.x + (c.w - icon - gap - FACES["semi"].width(value, size)) / 2
+    svg.icon(item.get("icon") or "globe", x, (c.h - icon) / 2, icon, t["dim"])
+    svg.text(x + icon + gap, c.h / 2 + size * 0.36, value, "semi", size, t["ink"])
 
 
 def contact_row(items):
@@ -1101,19 +1038,17 @@ def contact_row(items):
              f'{item["label"]}: {item["value"]}', lambda c, item=item: contact_cell(c, item), key=item["label"].lower())
         for item in items
     ]
-    return [Row("contact", 66, 78, cells, space=True)]
+    return [Row("contact", 52, 44, cells, space=True)]
 
 
 def footer(c, name):
     t = c.t
     size = c.pick(8, 7.5)
-    y = c.pick(26, 24)
-    left = "SET IN INTER & JETBRAINS MONO" if not c.m else "INTER & JETBRAINS MONO"
-    c.svg.text(c.x + 2, y, left, "mono", size, t["muted"], tracking=1.2)
+    y = c.h / 2 + size * 0.36
+    c.svg.text(c.x + 2, y, f"© {datetime.now(timezone.utc).year} {name}".upper(), "mono", size, t["muted"], tracking=1.2)
     right = c.x + c.w - 2
     c.svg.icon("up", right - 9, y - 8, 9, t["muted"], stroke=2.2)
-    text = f"© {datetime.now(timezone.utc).year} {name} · Back to top" if not c.m else "Top"
-    c.svg.text(right - 13, y, text.upper(), "mono", size, t["muted"], tracking=1.2, anchor="end")
+    c.svg.text(right - 13, y, "TOP", "mono", size, t["muted"], tracking=1.2, anchor="end")
 
 
 def page(p, data, hrefs):
@@ -1132,7 +1067,7 @@ def page(p, data, hrefs):
     if data["projects"]:
         work = p.get("work", {})
         items.append(("anchor", "work"))
-        items.append(header_row("work", work.get("kicker", "Work"), work.get("title", "Selected work"),
+        items.append(header_row("work", work.get("kicker", ""), work.get("title", "Projects"),
                                 f"All {repos} repos" if repos else "All repos", f"{profile}?tab=repositories", "work"))
         items += project_rows(data["projects"])
 
@@ -1164,8 +1099,8 @@ def page(p, data, hrefs):
     if p.get("contact"):
         items += contact_row(p["contact"])
 
-    items.append(Row("footer", 42, 42, [
-        Cell(Card(style="none"), 1, "#top", "Back to the top", "Set in Inter and JetBrains Mono",
+    items.append(Row("footer", 40, 40, [
+        Cell(Card(style="none"), 1, "#top", "Back to the top", "Back to the top",
              lambda c: footer(c, me["name"]), key="end"),
     ]))
     return items

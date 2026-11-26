@@ -69,7 +69,6 @@ THEMES = {
         "accent": "#7AA2FF",
         "aside": "#9DB9FF",
         "live": "#30D158",
-        "window": "#161B22",
         "panel": ("#FFFFFF", 0.045),
     },
     "light": {
@@ -89,7 +88,6 @@ THEMES = {
         "accent": "#2563EB",
         "aside": "#1D4ED8",
         "live": "#1A9E3F",
-        "window": "#FFFFFF",
         "panel": ("#FFFFFF", 0.6),
     },
 }
@@ -825,54 +823,3 @@ def tonearm(svg, px, py, angle, rest, ride=None, ticks=()):
         f'<circle cx="{num(px)}" cy="{num(py)}" r="19" fill="none" stroke="#000" stroke-opacity=".25"/>'
         f'<circle cx="{num(px)}" cy="{num(py)}" r="7.5" fill="#2B2B30"/>'
     )
-
-
-def window_mock(svg, x, y, w, h, hue):
-    """A presenter window: a sidebar of verses, the live slide with a verse on it, and the next slides below."""
-    t = svg.t
-    colors = HUES.get(hue, HUES["violet"])
-    slide = svg.uid("slide")
-    svg.defs.append(
-        f'<linearGradient id="{slide}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="{colors[0]}" stop-opacity=".9"/>'
-        f'<stop offset="1" stop-color="#0E0B1F"/></linearGradient>'
-    )
-    svg.add(
-        f'<rect x="{num(x + 3)}" y="{num(y + 6)}" width="{num(w - 6)}" height="{num(h)}" rx="12" fill="#000" opacity=".16"/>'
-        f'<rect x="{num(x)}" y="{num(y)}" width="{num(w)}" height="{num(h)}" rx="10" fill="{t["window"]}"/>'
-        f'<rect x="{num(x + 0.5)}" y="{num(y + 0.5)}" width="{num(w - 1)}" height="{num(h - 1)}" rx="10" fill="none" '
-        f'{paint(t["edge"], "stroke")}/>'
-    )
-    for i, color in enumerate(("#FF5F57", "#FEBC2E", "#28C840")):
-        svg.add(f'<circle cx="{num(x + 14 + i * 13)}" cy="{num(y + 13)}" r="4" fill="{color}"/>')
-    # Sidebar: the passage, one verse picked.
-    side_w = w * 0.27
-    sx, sy = x + 8, y + 26
-    for i in range(5):
-        row_y = sy + i * 14
-        if i == 1:
-            svg.add(f'<rect x="{num(sx - 2)}" y="{num(row_y - 3)}" width="{num(side_w - 4)}" height="12" rx="3.5" '
-                    f'fill="{colors[0]}" fill-opacity=".85"/>')
-        svg.add(f'<rect x="{num(sx + 2)}" y="{num(row_y + 1.5)}" width="{num((side_w - 14) * (0.9 - 0.12 * (i % 3)))}" height="3" '
-                f'rx="1.5" {paint((t["ink"], 0.9 if i == 1 else 0.28))}/>')
-    # The live slide.
-    lx, ly = x + side_w + 8, y + 24
-    lw, lh = w - side_w - 16, h - 64
-    svg.add(f'<rect x="{num(lx)}" y="{num(ly)}" width="{num(lw)}" height="{num(lh)}" rx="7" fill="url(#{slide})"/>')
-    for width, height, dy, opacity in ((0.72, 4.5, 0.36, 0.95), (0.8, 4.5, 0.5, 0.95), (0.58, 4.5, 0.64, 0.95)):
-        svg.add(
-            f'<rect x="{num(lx + lw * (1 - width) / 2)}" y="{num(ly + lh * dy)}" width="{num(lw * width)}" '
-            f'height="{height}" rx="{height / 2}" fill="#fff" fill-opacity="{opacity}"/>'
-        )
-    svg.text(lx + lw / 2, ly + lh * 0.86, "JOHN 1:1", "mono", 6.5, ("#FFFFFF", 0.75), tracking=1.4, anchor="middle")
-    svg.add(f'<rect x="{num(lx + 8)}" y="{num(ly + 8)}" width="30" height="12" rx="6" fill="#FF3B30"/>')
-    svg.text(lx + 23, ly + 16.6, "LIVE", "mono", 7, "#FFFFFF", tracking=1, anchor="middle")
-    # Next slides.
-    thumb_w = (lw - 3 * 6) / 4
-    for i in range(4):
-        tx = lx + i * (thumb_w + 6)
-        svg.add(
-            f'<rect x="{num(tx)}" y="{num(y + h - 32)}" width="{num(thumb_w)}" height="22" rx="4" '
-            f'fill="{colors[i % 3]}" fill-opacity="{num(0.75 if i == 0 else 0.35)}"'
-            + (f' stroke="{t["ink"]}" stroke-width="1.2"' if i == 0 else "")
-            + "/>"
-        )
