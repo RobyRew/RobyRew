@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 286
+    "scrobbles": 289
   },
   "github": {
     "repos": {
@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T14:41:03Z",
+        "pushed": "2026-11-26T14:50:09Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -495,23 +495,23 @@
   "live": true,
   "now": {
     "account": 1,
-    "artist": "Jason Fervento",
+    "artist": "Prince Royce",
     "artist_url": "",
-    "context": "A playlist",
-    "context_kind": "Playlist",
-    "context_url": "",
-    "cover": "https://i.scdn.co/image/ab67616d00001e0296cc9f900ce09854e1a64c6c",
-    "device": "",
-    "device_type": "",
+    "context": "",
+    "context_kind": "",
+    "context_url": "https://open.spotify.com/track/6PSKhwo0mVcOdjUOhVJd5p",
+    "cover": "https://i.scdn.co/image/ab67616d00001e0297d8bec3d2d22f13b5e55d03",
+    "device": "iPhone",
+    "device_type": "smartphone",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/track/4XXZ8hWY3c3QU9b3biFW6A",
+    "play_url": "https://open.spotify.com/track/2yvjjJrWzVzA2zg4VsoEmo",
     "playing": false,
-    "song_url": "https://open.spotify.com/track/4XXZ8hWY3c3QU9b3biFW6A",
-    "title": "Fragments of You",
+    "song_url": "https://open.spotify.com/track/2yvjjJrWzVzA2zg4VsoEmo",
+    "title": "La Carretera",
     "user": "Cosmin Calin",
     "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
-    "when": "2026-11-26T14:41+00:00"
+    "when": "2026-11-26T14:50+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "spotify_users": {
@@ -521,7 +521,7 @@
     }
   },
   "stats": {
-    "contributions": 1229,
+    "contributions": 1230,
     "stars": 108
   },
   "top_tracks": [
