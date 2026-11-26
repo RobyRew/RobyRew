@@ -202,8 +202,11 @@ worker = "https://robyrew-now.cosmin-calin22.workers.dev"
 # Spotify accounts: add each one with `python3 .github/profile/spotify_login.py <n>` (n = 1 to 9), which saves its web
 # session as the secret SPOTIFY_COOKIE_<n>. Optional: a name for the deck, one block per account in the same order
 # (without one, the deck shows the account's username).
-# [[listening.spotify]]
-# label = "Cosmin"
+[[listening.spotify]]
+label = "Cosmin Calin"
+
+[[listening.spotify]]
+label = "cosmin.cg22"
 
 # Last.fm accounts (free, up to 5). `platform` is the label on the deck, since Last.fm can't tell which app
 # played a song. Copy the block for more accounts; blocks with an empty user are ignored.
