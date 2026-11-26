@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 296
+    "scrobbles": 297
   },
   "github": {
     "repos": {
@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T15:18:26Z",
+        "pushed": "2026-11-26T15:54:20Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -325,7 +325,7 @@
         "homepage": "https://now.spotify.robyrew.com",
         "language": "Python",
         "language_color": "#3572A5",
-        "pushed": "2026-11-26T15:08:04Z",
+        "pushed": "2026-11-26T15:33:38Z",
         "stars": 0,
         "url": "https://github.com/RobyRew/now",
         "version": ""
@@ -442,7 +442,7 @@
         "homepage": "https://robyrew.github.io/spotify-versions-history/",
         "language": "TypeScript",
         "language_color": "#3178c6",
-        "pushed": "2026-11-26T15:16:17Z",
+        "pushed": "2026-11-26T15:51:19Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
@@ -507,23 +507,23 @@
   },
   "now": {
     "account": 1,
-    "artist": "CNCO",
-    "artist_url": "",
-    "context": "",
-    "context_kind": "",
-    "context_url": "https://open.spotify.com/track/6PSKhwo0mVcOdjUOhVJd5p",
-    "cover": "https://i.scdn.co/image/ab67616d00001e022bd583356020d371a2167c90",
-    "device": "iPhone",
-    "device_type": "smartphone",
+    "artist": "Hope Darst",
+    "artist_url": "https://open.spotify.com/artist/0B5924KrMyjdeYqZsPpw36",
+    "context": "Sphere",
+    "context_kind": "Playlist",
+    "context_url": "https://open.spotify.com/playlist/7v9WZ36OvKAkAjnd12f9nC",
+    "cover": "https://i.scdn.co/image/ab67616d00001e029eab7d538b011f1be6324660",
+    "device": "",
+    "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/track/3AEZUABDXNtecAOSC1qTfo",
+    "play_url": "https://open.spotify.com/track/1OAAWiqcdvXWEiMWFs3yB7",
     "playing": false,
-    "song_url": "https://open.spotify.com/track/3AEZUABDXNtecAOSC1qTfo",
-    "title": "Reggaetón Lento (Bailemos)",
+    "song_url": "https://open.spotify.com/track/1OAAWiqcdvXWEiMWFs3yB7",
+    "title": "Peace Be Still",
     "user": "Cosmin Calin",
     "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
-    "when": "2026-11-26T15:18+00:00"
+    "when": "2026-11-26T15:20+00:00"
   },
   "spotify_users": {
     "1": {
@@ -532,7 +532,7 @@
     }
   },
   "stats": {
-    "contributions": 1240,
+    "contributions": 1248,
     "stars": 108
   },
   "top_tracks": [
