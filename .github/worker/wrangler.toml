@@ -5,10 +5,10 @@ compatibility_date = "2025-06-01"
 workers_dev = true
 
 [vars]
-# Published by the "Now playing" workflow: the deck's templates and whose music to look up.
-KIT_URL = "https://robyrew.github.io/RobyRew/kit.json"
-# The copy of the deck it hands over if it can't draw one itself.
-PAGES_URL = "https://robyrew.github.io/RobyRew/"
+# Built by the "Refresh profile" workflow into the repo: the deck's templates and whose music to look up.
+KIT_URL = "https://raw.githubusercontent.com/RobyRew/RobyRew/main/img/kit.json"
+# Where the images built by that workflow are: the copy of the deck it hands over if it can't draw one itself.
+STATIC_URL = "https://raw.githubusercontent.com/RobyRew/RobyRew/main/img/"
 # The now service (RobyRew/now): keeps the Spotify accounts connected and answers with what's playing. When it
 # doesn't answer, or watches no account, the Spotify side comes from kit.json as before.
 NOW_API = "https://now.spotify.robyrew.com/api/now"

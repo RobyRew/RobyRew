@@ -195,8 +195,8 @@ title = "On rotation"
 tracks = 5
 # Optional: your Spotify profile URL, so the top-tracks card links to it.
 profile = ""
-# The now-playing Worker (see .github/profile/SETUP.md): the record player is drawn on every visit, with Last.fm asked
-# live and the Spotify accounts as of the last run of the "Now playing" workflow. Empty = the copy on Pages.
+# The now-playing Worker (see .github/profile/SETUP.md): the record player is drawn on every visit, with the now
+# service and Last.fm asked live. Empty = the image the daily build makes.
 worker = "https://robyrew-now.cosmin-calin22.workers.dev"
 # The now service (RobyRew/now, see .github/profile/SETUP.md): keeps the Spotify accounts connected all the time.
 # While it answers, the workflows take the Spotify side from it and sign in to no account themselves; the

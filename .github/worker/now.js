@@ -1,16 +1,15 @@
 // The record player, drawn fresh on every visit.
 //
 // GitHub shows README images through its image proxy, which asks again on each page view when the answer says not
-// to keep it. So this Worker looks up what's playing and fills it into the deck's templates, which the "Now playing"
-// workflow publishes to GitHub Pages as kit.json. The Spotify accounts come from the now service (NOW_API, RobyRew/now),
-// which keeps them connected all the time and is asked on each visit; when it doesn't answer or watches no account,
-// they come from the workflow's last SpotAPI run, which kit.json carries as `spotify`. Last.fm is asked live, on each
-// visit. The layout numbers come from that kit too, and the drawing below mirrors info_markup() in
-// .github/profile/layout.py, so both look the same. If anything goes wrong, it hands over the copy on Pages, which is
-// at most a few minutes old.
+// to keep it. So this Worker looks up what's playing and fills it into the deck's templates, which the "Refresh
+// profile" workflow builds into the repo as img/kit.json (KIT_URL). The Spotify accounts come from the now service
+// (NOW_API, RobyRew/now), which keeps them connected all the time and is asked on each visit; Last.fm is asked live
+// too. The layout numbers come from that kit, and the drawing below mirrors info_markup() in
+// .github/profile/layout.py, so both look the same. If anything goes wrong, it hands over the image that workflow
+// built (STATIC_URL), which shows the last play it saw.
 
 const KIT_SECONDS = 300; // how long a fetched kit is kept
-const NOW_SECONDS = 15; // how long a lookup is reused, so the images of one page view share it
+const NOW_SECONDS = 2; // how long a lookup is reused: long enough for one page view, short enough to stay current
 const SERVICE_MS = 1500; // how long the now service may take before the workflow's snapshot is used
 const BLANK_COVER = "2a96cbd8b46e442fc41c2b86b821562f"; // Last.fm's grey star placeholder
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -44,9 +43,10 @@ export default {
       return new Response(null, { status: 302, headers: { location: kit.profile } });
     } catch (error) {
       console.error(error);
-      if (image && env.PAGES_URL) {
+      const copies = env.STATIC_URL || "";
+      if (image && copies) {
         try {
-          const copy = await fetch(`${env.PAGES_URL.replace(/\/?$/, "/")}img/${image[1]}/${image[2]}.svg`);
+          const copy = await fetch(`${copies.replace(/\/?$/, "/")}${image[1]}/${image[2]}.svg`);
           return new Response(copy.body, { status: copy.status, headers: { "content-type": "image/svg+xml; charset=utf-8", ...FRESH } });
         } catch (fallback) {
           console.error(fallback);
@@ -78,8 +78,8 @@ async function nowPlaying(env, kit) {
 }
 
 // Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere. The
-// Spotify side is the now service's pick while it watches at least one account, else the workflow's last snapshot
-// (kit.spotify), at most a few minutes old.
+// Spotify side is the now service's pick while it watches at least one account (kit.spotify only when a kit carries
+// a snapshot).
 async function lookUp(env, kit) {
   const quietly = (promise) => promise.catch((error) => (console.error(error), null));
   const [service, scrobbled] = await Promise.all([

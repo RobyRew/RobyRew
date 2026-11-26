@@ -75,8 +75,9 @@ ones in the order they appear in `profile.toml`; the first one that is playing w
 [SpotAPI](https://github.com/Aran404/SpotAPI) reads an account the way Spotify's web player does. The account's web
 session (the `sp_dc` cookie open.spotify.com keeps after you log in) is exchanged for a short-lived token, and a
 read-only Spotify Connect observer takes a snapshot of the account's players: the song, playing or paused, and on
-which device. No developer app and no Premium are needed, and SpotAPI sends no playback commands. Every run of the
-"Now playing" workflow (every five minutes) checks all the accounts at once.
+which device. No developer app and no Premium are needed, and SpotAPI sends no playback commands. The now service
+(below) keeps the accounts connected all the time; the daily build reads them here only when the service doesn't
+answer, all the accounts at once.
 
 Add each account, on your own computer from the repo folder (repeat with 2, 3 … up to 9):
 
@@ -130,33 +131,25 @@ The first Last.fm account also supplies the "On rotation" top tracks and the scr
 
 ## 2. Live record player
 
-The README is only rebuilt once a day, so on its own the record always shows "last played" with the needle parked.
-To make it live, a second workflow publishes the record player to GitHub Pages every five minutes (the shortest
-schedule GitHub allows), whenever the music has changed. Nothing is committed and no branch is created. GitHub
-caches README images for up to about ten minutes on top of that, so the card trails the music by a few minutes;
-a README can't run scripts, so it can't update while the page is open.
+The README is rebuilt once a day (and on every push of the profile), so its own image of the deck shows the last play
+that build saw. The deck you see on the profile is drawn by a Cloudflare Worker instead (step 3), on every visit:
+GitHub's image proxy asks again on each page view because the Worker's answers say not to keep them. The Worker asks
+the now service for the Spotify accounts and Last.fm for the rest, each time, so a song change shows on the next page
+load, within a couple of seconds. A README can't run scripts, so it can't update while the page stays open.
 
-Their links follow the music too: they point at small redirect pages on the same site (`go/play/`, `go/song/`,
-`go/artist/`, `go/context/`, `go/user/`), rewritten every time the song changes. A push that changes the code
-or `profile.toml` redeploys the site straight away.
+The Worker's templates (fonts, layout numbers, the deck's looks) are `img/kit.json`, built by the daily workflow and
+read from the repo. It holds no song, so it only changes when the code or `profile.toml` does. The links on the deck
+(`go/play/`, `go/song/`, `go/artist/`, `go/context/`, `go/user/`) are answered by the Worker too.
 
-```sh
-gh api -X POST repos/RobyRew/RobyRew/pages -f build_type=workflow || gh api -X PUT repos/RobyRew/RobyRew/pages -f build_type=workflow
-gh variable set LIVE_NOW_PLAYING --body true
-gh workflow run now-playing.yml
-gh workflow run refresh.yml
-```
-
-The first run publishes the record player; the second switches the README over to it. Expect it to lag the music
-by roughly 5 to 15 minutes, since GitHub's scheduler and image cache both add delay.
+Until 2026-11-26 a "Now playing" workflow republished the deck to GitHub Pages every five minutes; it's gone, since
+GitHub's artifact listing kept failing its deploys and the Worker no longer needs it.
 
 ## 3. Optional: an instant record player (Cloudflare Worker)
 
 With a free Cloudflare Worker, the deck is drawn on every visit. Its answers tell GitHub's image proxy not to keep
-them. It fills in the templates that step 2 publishes (`kit.json` on Pages): Last.fm is asked live, on each visit,
-and the Spotify accounts come from the "Now playing" workflow's last run (`kit.json` carries that snapshot as
-`spotify`), since SpotAPI is a Python library. If anything goes wrong it hands over the Pages copy, so keep step 2
-running.
+them. It fills in the templates from `img/kit.json` (`KIT_URL` in `.github/worker/wrangler.toml`): the now service and
+Last.fm are asked live, on each visit, and one lookup is reused for at most 2 seconds. If anything goes wrong it hands
+over the image the daily build made (`STATIC_URL`).
 
 1. Make a free account at <https://dash.cloudflare.com> and open **Workers & Pages** once; it asks you to pick
    your `workers.dev` subdomain.
@@ -175,8 +168,8 @@ running.
 4. Put that address in `profile.toml` as `worker` under `[listening]`, and push. The README switches over on the
    next build.
 
-The Worker reuses `LASTFM_API_KEY` (`worker.yml` copies it over on each deploy) and needs no Spotify secret. To go
-back to the Pages copy, empty `worker` again.
+The Worker reuses `LASTFM_API_KEY` (`worker.yml` copies it over on each deploy) and needs no Spotify secret. With
+`worker` empty, the README shows the image the daily build made.
 
 ### The now service (always-on Spotify)
 
@@ -188,8 +181,8 @@ on its `/admin` page (sign in with RobyRew ID, paste each account's `sp_dc`), an
   music instead of every few minutes.
 - The workflows ask it first (`now_api` under `[listening]` in `profile.toml`). While it answers and watches at least
   one account, they sign in to no Spotify account themselves.
-- When it doesn't answer or watches no account, both fall back to what this page describes above: the
-  `SPOTIFY_COOKIE_<n>` secrets and the workflow's snapshot in `kit.json`. Keep those secrets for that fallback.
+- When it doesn't answer or watches no account, the daily build falls back to the `SPOTIFY_COOKIE_<n>` secrets and
+  the Worker to Last.fm. Keep those secrets for that fallback.
 
 ## 4. Optional: private contributions
 

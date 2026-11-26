@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Builds README.md and img/ from profile.toml, and the live record player for GitHub Pages.
+"""Builds README.md and img/ from profile.toml, with img/kit.json for the now-playing Worker.
 
     python3 .github/profile/build.py            fetch fresh data, then build
     python3 .github/profile/build.py --offline  build from cache.json only
-    python3 .github/profile/build.py --live DIR write the live parts and their link redirects to DIR
 """
 
 import hashlib
@@ -19,8 +18,8 @@ from pathlib import Path
 import canvas
 import layout
 from canvas import CACHE, FACES, HUE_ORDER, ICONS, PLATFORMS, ROOT, THEMES, compact, esc, render_pair
-from data import (LANGUAGE_COLORS, PLAY_SEARCH, fetch, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
-                  now_key, now_service, play_url, spotify_accounts, spotify_best, spotify_now, stats_data)
+from data import (LANGUAGE_COLORS, PLAY_SEARCH, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
+                  now_key, now_service, play_url, spotify_accounts, stats_data)
 from layout import Row, draw, hero_rows, page, render, render_phone
 
 HERE = Path(__file__).resolve().parent
@@ -295,16 +294,6 @@ def readme(items, p, live_base, static_base):
 # ── the live record player (GitHub Pages) ────────────────────────────────────
 
 
-def redirect_page(url):
-    target = esc(url)
-    return (
-        '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="robots" content="noindex">'
-        f'<meta http-equiv="refresh" content="0; url={target}"><title>Opening…</title>'
-        f"<script>location.replace({json.dumps(url)})</script>"
-        f'<p style="font:16px system-ui;margin:2rem">Opening <a href="{target}">{target}</a>…</p></html>\n'
-    )
-
-
 def kit(p, cache, now, spotify=None):
     """Everything the Worker (.github/worker/now.js) needs to draw the deck on each visit: the deck in each of its
     looks (idle or playing, with a cover or without) with a slot for what's on it, the fonts they share, the numbers
@@ -360,52 +349,6 @@ def kit(p, cache, now, spotify=None):
     }
 
 
-def live(out):
-    """Renders the parts of the record player that change with the music, plus a redirect for each link."""
-    p, cache = load()
-    p = fill_placeholders(p, cache)
-    accounts = spotify_accounts(p)
-    service = now_service(p)
-    if service is not None:
-        # The now service watches the accounts all the time; its pick is the Spotify side of this run.
-        best = dict(service["now"]) if service.get("now") else None
-        now = now_data(p, dict(cache), accounts, heard=[best] if best else []) or cache.get("now")
-    else:
-        spotify = spotify_now(accounts, dict(cache.get("spotify_users", {})))
-        now = now_data(p, dict(cache), accounts, spotify) or cache.get("now")
-        best = spotify_best([dict(result, account=n) for (n, _, _), result in zip(accounts, spotify) if result])
-        if best:
-            best.pop("username", None)
-    base = os.environ.get("PAGES_URL") or cache.get("pages_url", "")
-    base = base.rstrip("/") + "/" if base else ""
-    key = f"{now_key(now)}|{version()}"
-    out = Path(out)
-    previous = None
-    if base:
-        try:
-            previous = fetch(base + "now.json").get("key")
-        except Exception as error:
-            print(f"live: no previous state ({error})", file=sys.stderr)
-    changed = previous != key or "--force" in sys.argv
-    data = collect(p, cache)
-    data["now"] = now
-    write_images(rows_of(page(p, data, live_links(base))), out / "img", only_live=True)
-    links = now_links(now, fallback_link(cache, p))
-    for name, url in links.items():
-        folder = out / "go" / name
-        folder.mkdir(parents=True, exist_ok=True)
-        (folder / "index.html").write_text(redirect_page(url), encoding="utf-8")
-    (out / "now.json").write_text(json.dumps({"key": key, "now": now, "links": links}, ensure_ascii=False, indent=2),
-                                  encoding="utf-8")
-    (out / "kit.json").write_text(json.dumps(kit(p, cache, now, best), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    (out / "index.html").write_text(redirect_page(f'https://github.com/{p["me"]["github"]}'), encoding="utf-8")
-    (out / ".nojekyll").write_text("", encoding="utf-8")
-    if os.environ.get("GITHUB_OUTPUT"):
-        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
-            handle.write(f"changed={'true' if changed else 'false'}\n")
-    print(f"live: {key} ({'changed' if changed else 'unchanged'})")
-
-
 # ── the daily build ──────────────────────────────────────────────────────────
 
 
@@ -418,23 +361,18 @@ def refresh(p, cache):
     now = now_data(p, cache, spotify_accounts(p), heard=heard)
     if now:
         cache["now"] = {**now, "playing": False, "paused": False}
-    if os.environ.get("LIVE") in ("true", "false"):
-        cache["live"] = os.environ["LIVE"] == "true"
 
 
 def main():
-    if "--live" in sys.argv:
-        live(sys.argv[sys.argv.index("--live") + 1])
-        return
     canvas.OFFLINE = "--offline" in sys.argv
     p, cache = load()
     if not canvas.OFFLINE:
         refresh(p, cache)
     p = fill_placeholders(p, cache)
     data = collect(p, cache)
-    # The deck comes from the Worker when there is one (drawn on each visit), else from Pages (redrawn every 5 minutes).
+    # The deck comes from the Worker when there is one (drawn on each visit), else it's the image built here.
     worker = p.get("listening", {}).get("worker", "").strip()
-    live_base = (worker.rstrip("/") + "/") if worker else (cache.get("pages_url") if cache.get("live") else None)
+    live_base = (worker.rstrip("/") + "/") if worker else None
     hrefs = live_links(live_base) if live_base else now_links(data["now"], fallback_link(cache, p))
     folder = ROOT / "img"
     folder.mkdir(exist_ok=True)
@@ -451,8 +389,15 @@ def main():
             empty.rmdir()
 
     (ROOT / "README.md").write_text(readme(items, p, live_base, raw_base(p)), encoding="utf-8")
+    # The Worker's templates, read from the repo (raw.githubusercontent.com). No song in it, so the file only changes
+    # when the code or the profile does: what's playing comes from the now service and Last.fm on each visit.
+    kit_file = folder / "kit.json"
+    kit_text = json.dumps(kit(p, cache, None), ensure_ascii=False, separators=(",", ":"))
+    if not kit_file.exists() or kit_file.read_text(encoding="utf-8") != kit_text:
+        kit_file.write_text(kit_text, encoding="utf-8")
     # Only what the page uses is kept; older designs cached more.
-    cache.pop("recent", None)
+    for gone in ("recent", "live", "pages_url"):
+        cache.pop(gone, None)
     cache.get("extra", {}).pop("views", None)
     cache["stats"] = {key: value for key, value in (cache.get("stats") or {}).items() if key in ("stars", "contributions")}
     CACHE.write_text(json.dumps(cache, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
