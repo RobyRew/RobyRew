@@ -198,6 +198,10 @@ profile = ""
 # The now-playing Worker (see .github/profile/SETUP.md): the record player is drawn on every visit, with Last.fm asked
 # live and the Spotify accounts as of the last run of the "Now playing" workflow. Empty = the copy on Pages.
 worker = "https://robyrew-now.cosmin-calin22.workers.dev"
+# The now service (RobyRew/now, see .github/profile/SETUP.md): keeps the Spotify accounts connected all the time.
+# While it answers, the workflows take the Spotify side from it and sign in to no account themselves; the
+# Worker reads it through NOW_API in .github/worker/wrangler.toml. Empty = read the accounts here.
+now_api = "https://now.spotify.robyrew.com/api/now"
 
 # Spotify accounts: add each one with `python3 .github/profile/spotify_login.py <n>` (n = 1 to 9), which saves its web
 # session as the secret SPOTIFY_COOKIE_<n>. Optional: a name for the deck, one block per account in the same order

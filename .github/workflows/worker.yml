@@ -41,8 +41,8 @@ jobs:
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
         run: |
           npx --yes wrangler@4 deploy
-          # Only the secrets that are set. The Spotify accounts are read by the "Now playing" workflow (SpotAPI is
-          # Python); the Worker takes their snapshot from kit.json, so it needs no Spotify secret of its own.
+          # Only the secrets that are set. The Spotify side comes from the now service's public /api/now (NOW_API in
+          # wrangler.toml) or from kit.json, so the Worker needs no Spotify secret of its own.
           node -e '
             const names = ["LASTFM_API_KEY"];
             const set = Object.fromEntries(names.filter((n) => process.env[n]).map((n) => [n, process.env[n]]));

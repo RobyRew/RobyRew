@@ -557,23 +557,58 @@ def lastfm_top(p, cache):
         cache["top_tracks"] = tracks
 
 
-def now_data(p, cache, accounts, spotify=None):
+NOW_SERVICE_TIMEOUT = 8  # seconds
+
+
+def now_service(p):
+    """The now service's answer, {"now": fields or None, "live": n, ...}, when it watches at least one account.
+
+    The service (RobyRew/now, `now_api` under [listening] in profile.toml, or the NOW_API variable) keeps the
+    Spotify accounts connected all the time and answers with the same fields spotify_observe() builds. When it
+    answers, a run takes its Spotify side from there and signs in to no account itself. None when it isn't set up,
+    doesn't answer, or watches no account; the caller then reads the accounts here, as before."""
+    url = (os.environ.get("NOW_API") or p.get("listening", {}).get("now_api") or "").strip()
+    if not url:
+        return None
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "robyrew-profile", "Accept": "application/json"})
+        with urllib.request.urlopen(request, timeout=NOW_SERVICE_TIMEOUT) as response:
+            answer = json.loads(response.read())
+    except Exception as error:
+        print(f"now service: no answer ({type(error).__name__}), reading the Spotify accounts here", file=sys.stderr)
+        return None
+    if not isinstance(answer, dict) or not answer.get("live"):
+        print("now service: watching no account, reading the Spotify accounts here", file=sys.stderr)
+        return None
+    if answer.get("now") is not None and not isinstance(answer["now"], dict):
+        return None
+    return answer
+
+
+def now_data(p, cache, accounts, spotify=None, heard=None):
     """Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere.
-    `spotify` is spotify_now()'s result when the caller has already asked."""
-    users = cache.setdefault("spotify_users", {})
-    if spotify is None:
-        spotify = spotify_now(accounts, users)
-    heard = []
-    for (n, _, _), result in zip(accounts, spotify):
-        if not result:
-            continue
-        result = dict(result, account=n)
-        username = result.pop("username", "")
-        if username:
-            users[str(n)] = {"username": username, "url": result["user_url"]}
-        if result["playing"]:
-            return result
-        heard.append(result)
+    `spotify` is spotify_now()'s result when the caller has already asked. `heard`, when given, is the Spotify side
+    already decided (the now service's answer, see now_service()), and no account is asked here."""
+    if heard is not None:
+        heard = [dict(result) for result in heard if result]
+        playing = next((result for result in heard if result.get("playing")), None)
+        if playing:
+            return playing
+    else:
+        users = cache.setdefault("spotify_users", {})
+        if spotify is None:
+            spotify = spotify_now(accounts, users)
+        heard = []
+        for (n, _, _), result in zip(accounts, spotify):
+            if not result:
+                continue
+            result = dict(result, account=n)
+            username = result.pop("username", "")
+            if username:
+                users[str(n)] = {"username": username, "url": result["user_url"]}
+            if result["playing"]:
+                return result
+            heard.append(result)
     scrobbled = []
     for i, entry in enumerate(lastfm_users(p)):
         try:

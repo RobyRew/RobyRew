@@ -178,6 +178,19 @@ running.
 The Worker reuses `LASTFM_API_KEY` (`worker.yml` copies it over on each deploy) and needs no Spotify secret. To go
 back to the Pages copy, empty `worker` again.
 
+### The now service (always-on Spotify)
+
+[RobyRew/now](https://github.com/RobyRew/now), at `now.spotify.robyrew.com`, keeps one read-only SpotAPI observer per
+Spotify account connected all the time and answers `GET /api/now` with the record player's fields. Accounts are added
+on its `/admin` page (sign in with RobyRew ID, paste each account's `sp_dc`), and their deck names are set there too.
+
+- The Worker asks it on each visit (`NOW_API` in `.github/worker/wrangler.toml`), so the Spotify side changes with the
+  music instead of every few minutes.
+- The workflows ask it first (`now_api` under `[listening]` in `profile.toml`). While it answers and watches at least
+  one account, they sign in to no Spotify account themselves.
+- When it doesn't answer or watches no account, both fall back to what this page describes above: the
+  `SPOTIFY_COOKIE_<n>` secrets and the workflow's snapshot in `kit.json`. Keep those secrets for that fallback.
+
 ## 4. Optional: private contributions
 
 The numbers use the workflow's own token, which sees public activity. To count private contributions in the

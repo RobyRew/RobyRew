@@ -20,7 +20,7 @@ import canvas
 import layout
 from canvas import CACHE, FACES, HUE_ORDER, ICONS, PLATFORMS, ROOT, THEMES, compact, esc, render_pair
 from data import (LANGUAGE_COLORS, PLAY_SEARCH, fetch, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
-                  now_key, play_url, spotify_accounts, spotify_best, spotify_now, stats_data)
+                  now_key, now_service, play_url, spotify_accounts, spotify_best, spotify_now, stats_data)
 from layout import Row, draw, hero_rows, page, render, render_phone
 
 HERE = Path(__file__).resolve().parent
@@ -365,11 +365,17 @@ def live(out):
     p, cache = load()
     p = fill_placeholders(p, cache)
     accounts = spotify_accounts(p)
-    spotify = spotify_now(accounts, dict(cache.get("spotify_users", {})))
-    now = now_data(p, dict(cache), accounts, spotify) or cache.get("now")
-    best = spotify_best([dict(result, account=n) for (n, _, _), result in zip(accounts, spotify) if result])
-    if best:
-        best.pop("username", None)
+    service = now_service(p)
+    if service is not None:
+        # The now service watches the accounts all the time; its pick is the Spotify side of this run.
+        best = dict(service["now"]) if service.get("now") else None
+        now = now_data(p, dict(cache), accounts, heard=[best] if best else []) or cache.get("now")
+    else:
+        spotify = spotify_now(accounts, dict(cache.get("spotify_users", {})))
+        now = now_data(p, dict(cache), accounts, spotify) or cache.get("now")
+        best = spotify_best([dict(result, account=n) for (n, _, _), result in zip(accounts, spotify) if result])
+        if best:
+            best.pop("username", None)
     base = os.environ.get("PAGES_URL") or cache.get("pages_url", "")
     base = base.rstrip("/") + "/" if base else ""
     key = f"{now_key(now)}|{version()}"
@@ -407,7 +413,9 @@ def refresh(p, cache):
     github_data(p, cache)
     stats_data(p, cache)
     lastfm_top(p, cache)  # the "On rotation" card: Last.fm's top tracks of the last month
-    now = now_data(p, cache, spotify_accounts(p))
+    service = now_service(p)
+    heard = None if service is None else [service["now"]] if service.get("now") else []
+    now = now_data(p, cache, spotify_accounts(p), heard=heard)
     if now:
         cache["now"] = {**now, "playing": False, "paused": False}
     if os.environ.get("LIVE") in ("true", "false"):

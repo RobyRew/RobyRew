@@ -2,13 +2,16 @@
 //
 // GitHub shows README images through its image proxy, which asks again on each page view when the answer says not
 // to keep it. So this Worker looks up what's playing and fills it into the deck's templates, which the "Now playing"
-// workflow publishes to GitHub Pages as kit.json. The Spotify accounts are read by that workflow through SpotAPI
-// (Python) every few minutes and arrive in kit.json as `spotify`; Last.fm is asked live, on each visit. The layout
-// numbers come from that kit too, and the drawing below mirrors info_markup() in .github/profile/layout.py, so both
-// look the same. If anything goes wrong, it hands over the copy on Pages, which is at most a few minutes old.
+// workflow publishes to GitHub Pages as kit.json. The Spotify accounts come from the now service (NOW_API, RobyRew/now),
+// which keeps them connected all the time and is asked on each visit; when it doesn't answer or watches no account,
+// they come from the workflow's last SpotAPI run, which kit.json carries as `spotify`. Last.fm is asked live, on each
+// visit. The layout numbers come from that kit too, and the drawing below mirrors info_markup() in
+// .github/profile/layout.py, so both look the same. If anything goes wrong, it hands over the copy on Pages, which is
+// at most a few minutes old.
 
 const KIT_SECONDS = 300; // how long a fetched kit is kept
 const NOW_SECONDS = 15; // how long a lookup is reused, so the images of one page view share it
+const SERVICE_MS = 1500; // how long the now service may take before the workflow's snapshot is used
 const BLANK_COVER = "2a96cbd8b46e442fc41c2b86b821562f"; // Last.fm's grey star placeholder
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 const FRESH = {
@@ -75,13 +78,18 @@ async function nowPlaying(env, kit) {
 }
 
 // Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere. The
-// Spotify side is the workflow's last snapshot (kit.spotify), at most a few minutes old.
+// Spotify side is the now service's pick while it watches at least one account, else the workflow's last snapshot
+// (kit.spotify), at most a few minutes old.
 async function lookUp(env, kit) {
   const quietly = (promise) => promise.catch((error) => (console.error(error), null));
-  const scrobbled = await Promise.all(
-    env.LASTFM_API_KEY ? kit.lastfm.map((entry, i) => quietly(lastfmNow(env.LASTFM_API_KEY, kit, entry, 10 + i))) : [],
-  );
-  const heard = kit.spotify ? [kit.spotify] : [];
+  const [service, scrobbled] = await Promise.all([
+    env.NOW_API ? quietly(serviceNow(env.NOW_API)) : null,
+    Promise.all(
+      env.LASTFM_API_KEY ? kit.lastfm.map((entry, i) => quietly(lastfmNow(env.LASTFM_API_KEY, kit, entry, 10 + i))) : [],
+    ),
+  ]);
+  const watched = service && service.live > 0;
+  const heard = watched ? (service.now ? [service.now] : []) : kit.spotify ? [kit.spotify] : [];
   const playing = heard.find((c) => c.playing);
   if (playing) return playing;
   // Spotify scrobbles to Last.fm too; that's the same play.
@@ -94,6 +102,13 @@ async function lookUp(env, kit) {
     const a = c.when || "", b = best.when || "";
     return a > b || (a === b && (c.account ?? 9) < (best.account ?? 9)) ? c : best;
   });
+}
+
+// The now service's answer: {now: the record player's fields or null, live: accounts connected, at}.
+async function serviceNow(url) {
+  const answer = await getJSON(url, { accept: "application/json" }, { signal: AbortSignal.timeout(SERVICE_MS) });
+  if (!answer || typeof answer.live !== "number") throw new Error("now service: unexpected answer");
+  return answer;
 }
 
 async function getJSON(url, headers = {}, options = {}) {

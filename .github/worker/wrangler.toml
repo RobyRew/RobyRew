@@ -9,3 +9,6 @@ workers_dev = true
 KIT_URL = "https://robyrew.github.io/RobyRew/kit.json"
 # The copy of the deck it hands over if it can't draw one itself.
 PAGES_URL = "https://robyrew.github.io/RobyRew/"
+# The now service (RobyRew/now): keeps the Spotify accounts connected and answers with what's playing. When it
+# doesn't answer, or watches no account, the Spotify side comes from kit.json as before.
+NOW_API = "https://now.spotify.robyrew.com/api/now"
