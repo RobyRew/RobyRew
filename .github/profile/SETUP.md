@@ -67,13 +67,43 @@ Every command below runs on your Mac from the repo folder, with the GitHub CLI (
 
 ## 1. Music
 
-The deck under the record can read up to 5 Spotify accounts and up to 5 Last.fm accounts. Spotify accounts come
-first, then the Last.fm ones in the order they appear in `profile.toml`; the first one that is playing wins.
+The deck reads up to 9 Spotify accounts and up to 5 Last.fm accounts. Spotify accounts come first, then the Last.fm
+ones in the order they appear in `profile.toml`; the first one that is playing wins, else the latest play anywhere.
+
+### Spotify accounts (SpotAPI)
+
+[SpotAPI](https://github.com/Aran404/SpotAPI) reads an account the way Spotify's web player does. The account's web
+session (the `sp_dc` cookie open.spotify.com keeps after you log in) is exchanged for a short-lived token, and a
+read-only Spotify Connect observer takes a snapshot of the account's players: the song, playing or paused, and on
+which device. No developer app and no Premium are needed, and SpotAPI sends no playback commands. Every run of the
+"Now playing" workflow (every five minutes) checks all the accounts at once.
+
+Add each account, on your own computer from the repo folder (repeat with 2, 3 … up to 9):
+
+```sh
+pip install spotapi==2.1.3
+python3 .github/profile/spotify_login.py 1
+```
+
+It walks you through it: log in to the account in a private window, copy the `sp_dc` cookie from the developer
+tools, paste it (it isn't shown), close the window without logging out. It checks the session with Spotify, tells
+you whose account it is, and saves it as the secret `SPOTIFY_COOKIE_1`. To show names on the deck instead of
+usernames, add `[[listening.spotify]]` blocks with a `label` to `profile.toml`, one per account, in order.
+
+Worth knowing:
+
+- A session is a full login for that account: whoever has the cookie can act as it. It lives only in the repo's
+  secrets, and the workflows log error types and HTTP statuses, never cookies, tokens or URLs.
+- It lasts until that session is logged out (or the password changes). The deck then carries on with the other
+  accounts and Last.fm, and the run log names the account to add again.
+- SpotAPI uses Spotify's unofficial web-player endpoints, which Spotify can change. It's pinned
+  (`spotapi==2.1.3`, `wreq==0.12.3` in the workflows), so an update only arrives when you move the pin. It's
+  GPL-3.0, installed at run time and not copied into this repo.
+- Spotify may treat an automated session as unusual: each run opens one observer per account for a few seconds.
 
 ### Last.fm (free, works for everything)
 
-Since February 2026 Spotify only lets **Premium** accounts create Web API apps, so Last.fm is the way in for free
-accounts. It also covers YouTube Music and Apple Music.
+Last.fm also covers YouTube Music and Apple Music, and any Spotify account that scrobbles to it.
 
 1. Make a free account at <https://www.last.fm> for each music account you want on the deck (one Spotify
    account can scrobble to one Last.fm account), and connect them:
@@ -96,24 +126,7 @@ accounts. It also covers YouTube Music and Apple Music.
 
    The `[[listening.lastfm]]` blocks in `profile.toml` work too; the variable is checked first.
 
-The first Last.fm account also supplies the "On rotation" top tracks and the scrobble count when Spotify isn't set up.
-
-### Spotify Web API (optional, needs Premium)
-
-Adds the device and playlist to the deck. The account that **owns** the app must have Spotify Premium; up to
-5 accounts can connect to it.
-
-1. Create an app at <https://developer.spotify.com/dashboard> with a Premium account. Use
-   `http://127.0.0.1:8888/callback` as the redirect URI and tick **Web API** (it is greyed out without Premium).
-2. In the app, open **Settings → User Management** and add the name and email of every account you will connect.
-3. Connect each account, in priority order. Spotify shows which account it is approving; use **Not you?** to switch.
-
-   ```sh
-   python3 .github/profile/spotify_auth.py      # account 1
-   python3 .github/profile/spotify_auth.py 2    # account 2, and so on up to 5
-   ```
-
-   Each run asks for the app's client ID and secret, then offers to save the secrets with `gh` for you.
+The first Last.fm account also supplies the "On rotation" top tracks and the scrobble count.
 
 ## 2. Live record player
 
@@ -139,9 +152,11 @@ by roughly 5 to 15 minutes, since GitHub's scheduler and image cache both add de
 
 ## 3. Optional: an instant record player (Cloudflare Worker)
 
-With a free Cloudflare Worker, the deck is drawn on every visit, so it shows what's playing right now instead of a
-few minutes ago. Its answers tell GitHub's image proxy not to keep them. It fills in the templates that step 2
-publishes (`kit.json` on Pages), and if anything goes wrong it hands over the Pages copy, so keep step 2 running.
+With a free Cloudflare Worker, the deck is drawn on every visit. Its answers tell GitHub's image proxy not to keep
+them. It fills in the templates that step 2 publishes (`kit.json` on Pages): Last.fm is asked live, on each visit,
+and the Spotify accounts come from the "Now playing" workflow's last run (`kit.json` carries that snapshot as
+`spotify`), since SpotAPI is a Python library. If anything goes wrong it hands over the Pages copy, so keep step 2
+running.
 
 1. Make a free account at <https://dash.cloudflare.com> and open **Workers & Pages** once; it asks you to pick
    your `workers.dev` subdomain.
@@ -160,8 +175,8 @@ publishes (`kit.json` on Pages), and if anything goes wrong it hands over the Pa
 4. Put that address in `profile.toml` as `worker` under `[listening]`, and push. The README switches over on the
    next build.
 
-The Worker reuses `LASTFM_API_KEY` and the Spotify secrets (`worker.yml` copies them over on each deploy). To go
-back, empty `worker` again.
+The Worker reuses `LASTFM_API_KEY` (`worker.yml` copies it over on each deploy) and needs no Spotify secret. To go
+back to the Pages copy, empty `worker` again.
 
 ## 4. Optional: private contributions
 

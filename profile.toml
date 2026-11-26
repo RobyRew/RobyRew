@@ -187,17 +187,23 @@ icon = "archive"
 hue = "violet"
 
 # Music. Setup steps are in .github/profile/SETUP.md.
-# Priority: Spotify accounts 1–5 first (needs Spotify Premium), then the Last.fm accounts below, top to bottom.
-# The first one that is playing shows on the deck.
+# Priority: the Spotify accounts first (up to 9, read through SpotAPI, no Premium or developer app needed), then the
+# Last.fm accounts below, top to bottom. The first one that is playing shows on the deck, else the latest play.
 [listening]
 kicker = "04 — Music"
 title = "On rotation"
 tracks = 5
 # Optional: your Spotify profile URL, so the top-tracks card links to it.
 profile = ""
-# Optional: the address of the now-playing Worker, once it's deployed (see .github/profile/SETUP.md). The record
-# player then shows what's playing on every visit, instead of every few minutes.
-worker = ""
+# The now-playing Worker (see .github/profile/SETUP.md): the record player is drawn on every visit, with Last.fm asked
+# live and the Spotify accounts as of the last run of the "Now playing" workflow. Empty = the copy on Pages.
+worker = "https://robyrew-now.cosmin-calin22.workers.dev"
+
+# Spotify accounts: add each one with `python3 .github/profile/spotify_login.py <n>` (n = 1 to 9), which saves its web
+# session as the secret SPOTIFY_COOKIE_<n>. Optional: a name for the deck, one block per account in the same order
+# (without one, the deck shows the account's username).
+# [[listening.spotify]]
+# label = "Cosmin"
 
 # Last.fm accounts (free, up to 5). `platform` is the label on the deck, since Last.fm can't tell which app
 # played a song. Copy the block for more accounts; blocks with an empty user are ignored.

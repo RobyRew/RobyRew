@@ -39,19 +39,12 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
-          SPOTIFY_REFRESH_TOKEN_2: ${{ secrets.SPOTIFY_REFRESH_TOKEN_2 }}
-          SPOTIFY_REFRESH_TOKEN_3: ${{ secrets.SPOTIFY_REFRESH_TOKEN_3 }}
-          SPOTIFY_REFRESH_TOKEN_4: ${{ secrets.SPOTIFY_REFRESH_TOKEN_4 }}
-          SPOTIFY_REFRESH_TOKEN_5: ${{ secrets.SPOTIFY_REFRESH_TOKEN_5 }}
         run: |
           npx --yes wrangler@4 deploy
-          # Only the secrets that are set, so an unused Spotify slot doesn't stop the deploy.
+          # Only the secrets that are set. The Spotify accounts are read by the "Now playing" workflow (SpotAPI is
+          # Python); the Worker takes their snapshot from kit.json, so it needs no Spotify secret of its own.
           node -e '
-            const names = ["LASTFM_API_KEY", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET", "SPOTIFY_REFRESH_TOKEN",
-              ...[2, 3, 4, 5].map((n) => `SPOTIFY_REFRESH_TOKEN_${n}`)];
+            const names = ["LASTFM_API_KEY"];
             const set = Object.fromEntries(names.filter((n) => process.env[n]).map((n) => [n, process.env[n]]));
             require("fs").writeFileSync("secrets.json", JSON.stringify(set));
           '

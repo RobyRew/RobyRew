@@ -20,7 +20,7 @@ import canvas
 import layout
 from canvas import CACHE, FACES, HUE_ORDER, ICONS, PLATFORMS, ROOT, THEMES, compact, esc, render_pair
 from data import (LANGUAGE_COLORS, PLAY_SEARCH, fetch, github_data, lastfm_music_url, lastfm_top, lastfm_users, now_data,
-                  now_key, play_url, spotify_accounts, spotify_token, spotify_top, stats_data)
+                  now_key, play_url, spotify_accounts, spotify_best, spotify_now, stats_data)
 from layout import Row, draw, hero_rows, page, render, render_phone
 
 HERE = Path(__file__).resolve().parent
@@ -305,7 +305,7 @@ def redirect_page(url):
     )
 
 
-def kit(p, cache, now):
+def kit(p, cache, now, spotify=None):
     """Everything the Worker (.github/worker/now.js) needs to draw the deck on each visit: the deck in each of its
     looks (idle or playing, with a cover or without) with a slot for what's on it, the fonts they share, the numbers
     to measure text with, and whose music to look up."""
@@ -353,6 +353,8 @@ def kit(p, cache, now):
         "play_search": PLAY_SEARCH,
         "lastfm": lastfm_users(p),
         "now": now,
+        # The Spotify accounts' best snapshot from this run (SpotAPI is Python, so the Worker reads it from here).
+        "spotify": spotify,
         "fallback": fallback_link(cache, p),
         "profile": f'https://github.com/{p["me"]["github"]}',
     }
@@ -362,7 +364,12 @@ def live(out):
     """Renders the parts of the record player that change with the music, plus a redirect for each link."""
     p, cache = load()
     p = fill_placeholders(p, cache)
-    now = now_data(p, dict(cache), spotify_accounts()) or cache.get("now")
+    accounts = spotify_accounts(p)
+    spotify = spotify_now(accounts, dict(cache.get("spotify_users", {})))
+    now = now_data(p, dict(cache), accounts, spotify) or cache.get("now")
+    best = spotify_best([dict(result, account=n) for (n, _, _), result in zip(accounts, spotify) if result])
+    if best:
+        best.pop("username", None)
     base = os.environ.get("PAGES_URL") or cache.get("pages_url", "")
     base = base.rstrip("/") + "/" if base else ""
     key = f"{now_key(now)}|{version()}"
@@ -384,7 +391,7 @@ def live(out):
         (folder / "index.html").write_text(redirect_page(url), encoding="utf-8")
     (out / "now.json").write_text(json.dumps({"key": key, "now": now, "links": links}, ensure_ascii=False, indent=2),
                                   encoding="utf-8")
-    (out / "kit.json").write_text(json.dumps(kit(p, cache, now), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (out / "kit.json").write_text(json.dumps(kit(p, cache, now, best), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (out / "index.html").write_text(redirect_page(f'https://github.com/{p["me"]["github"]}'), encoding="utf-8")
     (out / ".nojekyll").write_text("", encoding="utf-8")
     if os.environ.get("GITHUB_OUTPUT"):
@@ -399,16 +406,8 @@ def live(out):
 def refresh(p, cache):
     github_data(p, cache)
     stats_data(p, cache)
-    accounts = spotify_accounts()
-    topped = False
-    if accounts:
-        try:
-            topped = spotify_top(p, cache, spotify_token(*accounts[0][1:]))
-        except Exception as error:
-            print(f"spotify: no top tracks ({error})", file=sys.stderr)
-    if not topped:
-        lastfm_top(p, cache)
-    now = now_data(p, cache, accounts)
+    lastfm_top(p, cache)  # the "On rotation" card: Last.fm's top tracks of the last month
+    now = now_data(p, cache, spotify_accounts(p))
     if now:
         cache["now"] = {**now, "playing": False, "paused": False}
     if os.environ.get("LIVE") in ("true", "false"):

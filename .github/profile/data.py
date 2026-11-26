@@ -1,6 +1,7 @@
 """Everything the profile reads from the outside world: GitHub, Spotify and Last.fm."""
 
-import base64
+import asyncio
+import importlib.util
 import json
 import os
 import re
@@ -230,34 +231,27 @@ def stats_data(p, cache):
     cache["stats"] = stats
 
 
-def spotify_accounts():
-    """Up to five Spotify accounts, in priority order. They can share one app (client ID and secret)."""
-    shared_id, shared_secret = os.environ.get("SPOTIFY_CLIENT_ID"), os.environ.get("SPOTIFY_CLIENT_SECRET")
+# Spotify, through SpotAPI (https://github.com/Aran404/SpotAPI): each account's own web session, read from its
+# Spotify Connect state, the way the web player sees it. Read only: SpotAPI observes the account's players and sends
+# no playback commands. Last.fm accounts are numbered from 10, so Spotify takes slots 1 to 9.
+SPOTIFY_SLOTS = 9
+SPOTIFY_TIMEOUT = 15  # seconds for each step of an account's Connect handshake
+
+
+def spotify_accounts(p):
+    """The Spotify accounts to watch, in priority order: (slot, cookie, label).
+
+    The cookie is the account's web session, saved as the secret SPOTIFY_COOKIE_<slot>: a Cookie header copied from
+    open.spotify.com, or just the value of its sp_dc cookie. `[[listening.spotify]]` blocks in profile.toml can give
+    the accounts a name for the deck, in the same order."""
+    labels = [entry.get("label", "") for entry in p.get("listening", {}).get("spotify", [])]
     accounts = []
-    for n in range(1, 6):
-        refresh = os.environ.get(f"SPOTIFY_REFRESH_TOKEN_{n}") or (os.environ.get("SPOTIFY_REFRESH_TOKEN") if n == 1 else None)
-        client_id = os.environ.get(f"SPOTIFY_CLIENT_ID_{n}") or shared_id
-        secret = os.environ.get(f"SPOTIFY_CLIENT_SECRET_{n}") or shared_secret
-        if refresh and client_id and secret:
-            accounts.append((n, client_id, secret, refresh))
+    for n in range(1, SPOTIFY_SLOTS + 1):
+        cookie = (os.environ.get(f"SPOTIFY_COOKIE_{n}") or (os.environ.get("SPOTIFY_COOKIE", "") if n == 1 else "")).strip()
+        if not cookie:
+            continue
+        accounts.append((n, cookie if "=" in cookie else f"sp_dc={cookie}", labels[n - 1] if n <= len(labels) else ""))
     return accounts
-
-
-def spotify_token(client_id, secret, refresh):
-    auth = base64.b64encode(f"{client_id}:{secret}".encode()).decode()
-    return fetch(
-        "https://accounts.spotify.com/api/token",
-        {"Authorization": f"Basic {auth}", "Content-Type": "application/x-www-form-urlencoded"},
-        urllib.parse.urlencode({"grant_type": "refresh_token", "refresh_token": refresh}).encode(),
-    )["access_token"]
-
-
-def smallest_image(images, minimum=64):
-    images = [i for i in images or [] if i.get("url")]
-    if not images:
-        return ""
-    fitting = [i for i in images if (i.get("width") or 0) >= minimum]
-    return min(fitting or images, key=lambda i: i.get("width") or 0)["url"]
 
 
 PLAY_SEARCH = {
@@ -278,93 +272,135 @@ def lastfm_music_url(*parts):
     return "https://www.last.fm/music/" + "/".join(urllib.parse.quote_plus(part) for part in parts)
 
 
-def spotify_top(p, cache, token):
-    limit = int(p.get("listening", {}).get("tracks", 5))
-    bearer = {"Authorization": f"Bearer {token}"}
-    try:
-        items = fetch(f"https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit={limit}", bearer)["items"]
-    except Exception as error:
-        print(f"spotify: keeping cached top tracks ({error})", file=sys.stderr)
-        return
-    if items:
-        cache["top_tracks"] = [
-            {
-                "name": item["name"],
-                "artist": ", ".join(a["name"] for a in item["artists"]),
-                "ms": item["duration_ms"],
-                "cover": smallest_image(item.get("album", {}).get("images")),
-                "source": "Spotify",
-                "url": item.get("external_urls", {}).get("spotify", ""),
-                "artist_url": (item["artists"][0].get("external_urls", {}).get("spotify", "") if item["artists"] else ""),
-                "plays_url": item.get("external_urls", {}).get("spotify", ""),
-            }
-            for item in items
-        ]
-        return True
+def open_url(uri):
+    """A Spotify URI as an open.spotify.com address: spotify:track:ID becomes /track/ID, Liked Songs /collection."""
+    parts = (uri or "").split(":")
+    if len(parts) == 3 and parts[0] == "spotify":
+        return f"https://open.spotify.com/{parts[1]}/{parts[2]}"
+    if len(parts) >= 4 and parts[0] == "spotify" and parts[1] == "user" and parts[3] == "collection":
+        return "https://open.spotify.com/collection/tracks"
+    return ""
 
 
-def spotify_context(context, item, bearer):
-    """What the song is playing from: (kind, name, url)."""
-    if not context:
-        album = item.get("album") or {}
-        return ("Album", album.get("name", ""), album.get("external_urls", {}).get("spotify", "")) if album else ("", "", "")
-    kind = context.get("type")
-    url = context.get("external_urls", {}).get("spotify", "")
-    if kind == "playlist":
-        try:
-            playlist = fetch(f'https://api.spotify.com/v1/playlists/{context["uri"].split(":")[-1]}?fields=name', bearer)
-            return "Playlist", playlist["name"], url
-        except Exception:
-            return "Playlist", "A playlist", url
-    if kind == "album":
-        return "Album", item.get("album", {}).get("name", ""), url
-    if kind == "artist":
-        return "Radio", f'{item["artists"][0]["name"]} radio' if item.get("artists") else "Artist radio", url
-    if kind == "collection":
-        return "Library", "Liked Songs", "https://open.spotify.com/collection/tracks"
-    return "", "", url
+CONTEXT_KINDS = {"album": "Album", "playlist": "Playlist", "artist": "Radio", "collection": "Library", "show": "Podcast"}
 
 
-def spotify_item(item, context, bearer, user, playing, paused, device, when):
-    kind, name, url = spotify_context(context, item, bearer)
-    artists = item.get("artists") or []
-    song = item.get("external_urls", {}).get("spotify", "")
+def spotify_context(uri, album):
+    """What the song plays from, as (kind, name, url). SpotAPI's snapshot names the album; other contexts get a kind."""
+    parts = (uri or "").split(":")
+    kind = "collection" if "collection" in parts else (parts[1] if len(parts) >= 3 else "")
+    if kind in ("", "album"):
+        return ("Album", album, open_url(uri)) if album else ("", "", "")
+    names = {"collection": "Liked Songs", "playlist": "A playlist", "artist": "Artist radio", "show": "A podcast"}
+    return CONTEXT_KINDS.get(kind, ""), names.get(kind, ""), open_url(uri)
+
+
+def details_fields(details):
+    """Title, artists, album and a cover from SpotAPI's TrackDetails, for when the Connect event leaves them out."""
+    album = getattr(details, "album_of_track", None)
+    sources = getattr(getattr(album, "cover_art", None), "sources", None) or []
+    sized = sorted((s for s in sources if getattr(s, "url", "")), key=lambda s: abs((getattr(s, "width", 0) or 0) - 300))
+    artists = []
+    for group in (getattr(details, "first_artist", None), getattr(details, "other_artists", None)):
+        for item in getattr(group, "items", None) or []:
+            name = getattr(getattr(item, "profile", None), "name", "")
+            if name:
+                artists.append(name)
+    return getattr(details, "name", ""), ", ".join(artists), getattr(album, "name", "") or "", sized[0].url if sized else ""
+
+
+def when_from(stamp):
+    """A Connect timestamp (milliseconds since 1970) as the ISO minute the deck shows."""
+    if not stamp:
+        return datetime.now(timezone.utc).isoformat(timespec="minutes")
+    seconds = stamp / 1000 if stamp > 10**11 else stamp
+    return datetime.fromtimestamp(seconds, timezone.utc).isoformat(timespec="minutes")
+
+
+async def spotify_observe(n, cookie, label, known):
+    """One account: sign in with its cookie, open a read-only Connect observer and take the snapshot of its players.
+    Returns the deck's fields, or None when the account has nothing on its players."""
+    from spotapi import Account, AsyncClient, Player
+
+    async with await AsyncClient.from_cookies(cookie) as client:
+        player = Player(client)
+        async with player.connect(timeout=SPOTIFY_TIMEOUT):
+            state = player.state
+            track = state.track if state else None
+            if track is None:
+                return None
+            title, artist, album, cover = track.name, track.artist, track.album, track.image_url or ""
+            if not (title and artist):
+                details = await player.current_track_details()
+                if details is not None and details.uri == track.uri:
+                    title, artist, album, cover = (new or old for new, old in zip(details_fields(details), (title, artist, album, cover)))
+            device = next((d for d in player.devices if d.id == state.active_device_id), None)
+        username = (known or {}).get("username", "")
+        if not username:
+            try:
+                username = (await Account(client).get_profile()).username
+            except Exception as error:
+                print(f"spotify {n}: no profile name ({type(error).__name__})", file=sys.stderr)
+    if not title:
+        return None
+    playing = bool(state.is_playing and not state.is_paused)
+    kind, name, context_url = spotify_context(state.context_uri, album)
+    song = open_url(track.uri)
     return {
         "playing": playing,
-        "paused": paused,
-        "title": item.get("name", ""),
-        "artist": ", ".join(a["name"] for a in artists) or item.get("show", {}).get("name", ""),
-        "cover": smallest_image(item.get("album", {}).get("images") or item.get("images"), 160),  # big enough for the record
+        "paused": bool(state.is_paused),
+        "title": title,
+        "artist": artist,
+        "cover": cover,
         "context": name,
         "context_kind": kind,
-        "device": device.get("name", ""),
-        "device_type": device.get("type", ""),
-        "user": user.get("name", ""),
+        "device": device.name if device else "",
+        "device_type": (device.type or "").lower() if device else "",
+        "user": label or username,
+        "username": username,
         "platform": "Spotify",
-        "when": when,
+        "when": when_from(state.timestamp),
         "song_url": song,
-        "artist_url": artists[0].get("external_urls", {}).get("spotify", "") if artists else "",
-        "context_url": url,
-        "user_url": user.get("url", ""),
-        "play_url": song,
+        "artist_url": "",
+        "context_url": context_url,
+        "user_url": f"https://open.spotify.com/user/{urllib.parse.quote(username)}" if username else "",
+        "play_url": song or play_url("Spotify", title, artist),
     }
 
 
-def spotify_now(token, user=None):
-    bearer = {"Authorization": f"Bearer {token}"}
-    if not isinstance(user, dict) or not user.get("name"):
-        me = fetch("https://api.spotify.com/v1/me", bearer) or {}
-        user = {"name": me.get("display_name") or me.get("id") or "", "url": me.get("external_urls", {}).get("spotify", "")}
-    player = fetch("https://api.spotify.com/v1/me/player?additional_types=track,episode", bearer)
-    if player and player.get("item"):
-        playing = bool(player.get("is_playing"))
-        return spotify_item(player["item"], player.get("context"), bearer, user, playing, not playing,
-                            player.get("device") or {}, datetime.now(timezone.utc).isoformat(timespec="minutes"))
-    recent = fetch("https://api.spotify.com/v1/me/player/recently-played?limit=1", bearer)
-    if recent and recent.get("items"):
-        play = recent["items"][0]
-        return spotify_item(play["track"], play.get("context"), bearer, user, False, False, {}, play.get("played_at", ""))
-    return None
+def spotify_now(accounts, users):
+    """Every account at once, each bounded in time. A list in account order: the account's fields, or None.
+
+    Only error types and HTTP statuses are logged: a SpotAPI message or URL can carry a token or a cookie."""
+    if not accounts:
+        return []
+    if importlib.util.find_spec("spotapi") is None:  # a local build without it still works
+        print("spotify: SpotAPI isn't installed (pip install spotapi), skipping the Spotify accounts", file=sys.stderr)
+        return [None] * len(accounts)
+
+    async def one(n, cookie, label):
+        try:
+            return await asyncio.wait_for(spotify_observe(n, cookie, label, users.get(str(n))), SPOTIFY_TIMEOUT * 4)
+        except Exception as error:
+            status = getattr(error, "status_code", None) or getattr(error, "status", None)
+            hint = {"LoginExpired": f": sign in again and update SPOTIFY_COOKIE_{n}",
+                    "TimeoutError": ": no player snapshot (no device signed in?)"}.get(type(error).__name__, "")
+            print(f"spotify {n}: no playback state ({type(error).__name__}{f' {status}' if status else ''}{hint})", file=sys.stderr)
+            return None
+
+    async def everyone():
+        return await asyncio.gather(*(one(*account) for account in accounts))
+
+    return asyncio.run(everyone())
+
+
+def spotify_best(results):
+    """The account to show: the first one playing, else the latest play."""
+    found = [r for r in results if r]
+    playing = [r for r in found if r["playing"]]
+    if playing:
+        return playing[0]
+    return max(found, key=lambda r: r.get("when") or "") if found else None
 
 
 LASTFM_BLANK = "2a96cbd8b46e442fc41c2b86b821562f"  # Last.fm's grey star placeholder
@@ -491,23 +527,23 @@ def lastfm_top(p, cache):
         cache["top_tracks"] = tracks
 
 
-def now_data(p, cache, accounts):
-    """Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere."""
+def now_data(p, cache, accounts, spotify=None):
+    """Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere.
+    `spotify` is spotify_now()'s result when the caller has already asked."""
     users = cache.setdefault("spotify_users", {})
-    spotify = []
-    for n, client_id, secret, refresh in accounts:
-        try:
-            result = spotify_now(spotify_token(client_id, secret, refresh), users.get(str(n)))
-        except Exception as error:
-            print(f"spotify {n}: no playback state ({error})", file=sys.stderr)
-            continue
+    if spotify is None:
+        spotify = spotify_now(accounts, users)
+    heard = []
+    for (n, _, _), result in zip(accounts, spotify):
         if not result:
             continue
-        users[str(n)] = {"name": result["user"], "url": result["user_url"]}
-        result["account"] = n
+        result = dict(result, account=n)
+        username = result.pop("username", "")
+        if username:
+            users[str(n)] = {"username": username, "url": result["user_url"]}
         if result["playing"]:
             return result
-        spotify.append(result)
+        heard.append(result)
     scrobbled = []
     for i, entry in enumerate(lastfm_users(p)):
         try:
@@ -517,12 +553,12 @@ def now_data(p, cache, accounts):
             continue
         if not result:
             continue
-        if any((result["title"], result["artist"]) == (c["title"], c["artist"]) for c in spotify):
+        if any((result["title"], result["artist"]) == (c["title"], c["artist"]) for c in heard):
             continue  # Spotify scrobbles to Last.fm too; that's the same play
         if result["playing"]:
             return result
         scrobbled.append(result)
-    candidates = spotify + scrobbled
+    candidates = heard + scrobbled
     if not candidates:
         return cache.get("now")
     return max(candidates, key=lambda c: (c.get("when") or "", -c.get("account", 9)))

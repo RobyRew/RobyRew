@@ -1,8 +1,9 @@
 // The record player, drawn fresh on every visit.
 //
 // GitHub shows README images through its image proxy, which asks again on each page view when the answer says not
-// to keep it. So this Worker looks up what's playing (Spotify, then Last.fm, like .github/profile/data.py) and fills
-// it into the deck's templates, which the "Now playing" workflow publishes to GitHub Pages as kit.json. The layout
+// to keep it. So this Worker looks up what's playing and fills it into the deck's templates, which the "Now playing"
+// workflow publishes to GitHub Pages as kit.json. The Spotify accounts are read by that workflow through SpotAPI
+// (Python) every few minutes and arrive in kit.json as `spotify`; Last.fm is asked live, on each visit. The layout
 // numbers come from that kit too, and the drawing below mirrors info_markup() in .github/profile/layout.py, so both
 // look the same. If anything goes wrong, it hands over the copy on Pages, which is at most a few minutes old.
 
@@ -18,8 +19,6 @@ const FRESH = {
 
 let kept = { kit: null, at: 0 };
 let lastLookup = { now: undefined, at: 0 };
-const tokens = new Map(); // Spotify account → { token, until }
-const spotifyUsers = new Map();
 
 export default {
   async fetch(request, env) {
@@ -75,14 +74,14 @@ async function nowPlaying(env, kit) {
   return now;
 }
 
-// Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere.
+// Spotify accounts, then Last.fm accounts: the first one playing wins, else the most recent play anywhere. The
+// Spotify side is the workflow's last snapshot (kit.spotify), at most a few minutes old.
 async function lookUp(env, kit) {
   const quietly = (promise) => promise.catch((error) => (console.error(error), null));
-  const [spotify, scrobbled] = await Promise.all([
-    Promise.all(spotifyAccounts(env).map((account) => quietly(spotifyNow(account)))),
-    Promise.all(env.LASTFM_API_KEY ? kit.lastfm.map((entry, i) => quietly(lastfmNow(env.LASTFM_API_KEY, kit, entry, 10 + i))) : []),
-  ]);
-  const heard = spotify.filter(Boolean);
+  const scrobbled = await Promise.all(
+    env.LASTFM_API_KEY ? kit.lastfm.map((entry, i) => quietly(lastfmNow(env.LASTFM_API_KEY, kit, entry, 10 + i))) : [],
+  );
+  const heard = kit.spotify ? [kit.spotify] : [];
   const playing = heard.find((c) => c.playing);
   if (playing) return playing;
   // Spotify scrobbles to Last.fm too; that's the same play.
@@ -160,98 +159,6 @@ async function lastfmNow(key, kit, entry, account) {
   };
 }
 
-function spotifyAccounts(env) {
-  const accounts = [];
-  for (let n = 1; n <= 5; n++) {
-    const refresh = env[`SPOTIFY_REFRESH_TOKEN_${n}`] || (n === 1 ? env.SPOTIFY_REFRESH_TOKEN : "");
-    const id = env[`SPOTIFY_CLIENT_ID_${n}`] || env.SPOTIFY_CLIENT_ID;
-    const secret = env[`SPOTIFY_CLIENT_SECRET_${n}`] || env.SPOTIFY_CLIENT_SECRET;
-    if (refresh && id && secret) accounts.push({ n, id, secret, refresh });
-  }
-  return accounts;
-}
-
-async function spotifyToken(account) {
-  const known = tokens.get(account.n);
-  if (known && known.until > Date.now()) return known.token;
-  const data = await getJSON("https://accounts.spotify.com/api/token", {
-    authorization: `Basic ${btoa(`${account.id}:${account.secret}`)}`,
-    "content-type": "application/x-www-form-urlencoded",
-  }, { method: "POST", body: new URLSearchParams({ grant_type: "refresh_token", refresh_token: account.refresh }).toString() });
-  tokens.set(account.n, { token: data.access_token, until: Date.now() + ((data.expires_in || 3600) - 60) * 1000 });
-  return data.access_token;
-}
-
-function smallestImage(images, minimum = 64) {
-  const usable = (images || []).filter((i) => i.url);
-  if (!usable.length) return "";
-  const fitting = usable.filter((i) => (i.width || 0) >= minimum);
-  return (fitting.length ? fitting : usable).reduce((a, b) => ((b.width || 0) < (a.width || 0) ? b : a)).url;
-}
-
-async function spotifyContext(context, item, bearer) {
-  if (!context) {
-    const album = item.album;
-    return album ? ["Album", album.name || "", album.external_urls?.spotify || ""] : ["", "", ""];
-  }
-  const url = context.external_urls?.spotify || "";
-  switch (context.type) {
-    case "playlist":
-      try {
-        const playlist = await getJSON(`https://api.spotify.com/v1/playlists/${context.uri.split(":").pop()}?fields=name`, bearer);
-        return ["Playlist", playlist.name, url];
-      } catch {
-        return ["Playlist", "A playlist", url];
-      }
-    case "album":
-      return ["Album", item.album?.name || "", url];
-    case "artist":
-      return ["Radio", item.artists?.length ? `${item.artists[0].name} radio` : "Artist radio", url];
-    case "collection":
-      return ["Library", "Liked Songs", "https://open.spotify.com/collection/tracks"];
-    default:
-      return ["", "", url];
-  }
-}
-
-async function spotifyItem(item, context, bearer, user, playing, paused, device, when) {
-  const [kind, name, url] = await spotifyContext(context, item, bearer);
-  const artists = item.artists || [];
-  const song = item.external_urls?.spotify || "";
-  return {
-    playing, paused, title: item.name || "",
-    artist: artists.map((a) => a.name).join(", ") || item.show?.name || "",
-    cover: smallestImage(item.album?.images || item.images, 160), // big enough for the record
-    context: name, context_kind: kind, device: device.name || "", device_type: device.type || "",
-    user: user.name || "", platform: "Spotify", when,
-    song_url: song, artist_url: artists[0]?.external_urls?.spotify || "", context_url: url,
-    user_url: user.url || "", play_url: song,
-  };
-}
-
-async function spotifyNow(account) {
-  const bearer = { authorization: `Bearer ${await spotifyToken(account)}` };
-  let user = spotifyUsers.get(account.n);
-  if (!user) {
-    const me = (await getJSON("https://api.spotify.com/v1/me", bearer)) || {};
-    user = { name: me.display_name || me.id || "", url: me.external_urls?.spotify || "" };
-    spotifyUsers.set(account.n, user);
-  }
-  let result = null;
-  const player = await getJSON("https://api.spotify.com/v1/me/player?additional_types=track,episode", bearer);
-  if (player?.item) {
-    const playing = Boolean(player.is_playing);
-    result = await spotifyItem(player.item, player.context, bearer, user, playing, !playing, player.device || {}, minutes(new Date()));
-  } else {
-    const recent = await getJSON("https://api.spotify.com/v1/me/player/recently-played?limit=1", bearer);
-    const play = recent?.items?.[0];
-    if (play) result = await spotifyItem(play.track, play.context, bearer, user, false, false, {}, play.played_at || "");
-  }
-  if (result) result.account = account.n;
-  return result;
-}
-
-// Where each part of the record player links to, as now_links() in build.py.
 function links(kit, now) {
   now = now || {};
   const { title = "", artist = "" } = now;

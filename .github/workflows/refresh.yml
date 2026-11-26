@@ -38,20 +38,24 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install font tools
-        run: pip install fonttools==4.67.0 brotli==1.2.0
+      # SpotAPI reads the Spotify accounts' players (https://github.com/Aran404/SpotAPI); pinned, since it gets
+      # the accounts' web sessions.
+      - name: Install font tools and SpotAPI
+        run: pip install fonttools==4.67.0 brotli==1.2.0 spotapi==2.1.3 wreq==0.12.3
 
       - name: Build, commit and push to main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_STATS_TOKEN: ${{ secrets.PROFILE_TOKEN }}
-          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
-          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
-          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
-          SPOTIFY_REFRESH_TOKEN_2: ${{ secrets.SPOTIFY_REFRESH_TOKEN_2 }}
-          SPOTIFY_REFRESH_TOKEN_3: ${{ secrets.SPOTIFY_REFRESH_TOKEN_3 }}
-          SPOTIFY_REFRESH_TOKEN_4: ${{ secrets.SPOTIFY_REFRESH_TOKEN_4 }}
-          SPOTIFY_REFRESH_TOKEN_5: ${{ secrets.SPOTIFY_REFRESH_TOKEN_5 }}
+          SPOTIFY_COOKIE_1: ${{ secrets.SPOTIFY_COOKIE_1 }}
+          SPOTIFY_COOKIE_2: ${{ secrets.SPOTIFY_COOKIE_2 }}
+          SPOTIFY_COOKIE_3: ${{ secrets.SPOTIFY_COOKIE_3 }}
+          SPOTIFY_COOKIE_4: ${{ secrets.SPOTIFY_COOKIE_4 }}
+          SPOTIFY_COOKIE_5: ${{ secrets.SPOTIFY_COOKIE_5 }}
+          SPOTIFY_COOKIE_6: ${{ secrets.SPOTIFY_COOKIE_6 }}
+          SPOTIFY_COOKIE_7: ${{ secrets.SPOTIFY_COOKIE_7 }}
+          SPOTIFY_COOKIE_8: ${{ secrets.SPOTIFY_COOKIE_8 }}
+          SPOTIFY_COOKIE_9: ${{ secrets.SPOTIFY_COOKIE_9 }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
           LASTFM_USERS: ${{ vars.LASTFM_USERS }}
           LIVE: ${{ vars.LIVE_NOW_PLAYING }}
