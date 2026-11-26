@@ -1,7 +1,7 @@
 {
   "extra": {
     "lastfm_url": "https://www.last.fm/user/RobyRew",
-    "scrobbles": 289
+    "scrobbles": 296
   },
   "github": {
     "repos": {
@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T14:50:09Z",
+        "pushed": "2026-11-26T15:18:26Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -317,6 +317,19 @@
         "url": "https://github.com/RobyRew/mapswitch",
         "version": ""
       },
+      "now": {
+        "archived": false,
+        "description": "Always-on Spotify Connect observers for the RobyRew profile's record player, served as GET /api/now",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "https://now.spotify.robyrew.com",
+        "language": "Python",
+        "language_color": "#3572A5",
+        "pushed": "2026-11-26T15:08:04Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/now",
+        "version": ""
+      },
       "pacetimer": {
         "archived": false,
         "description": "Tide — a Liquid-Glass menu-bar countdown for macOS, with a drag-to-stretch timer, haptics, sleep-prevention, and a native Liquid Glass .icon.",
@@ -429,7 +442,7 @@
         "homepage": "https://robyrew.github.io/spotify-versions-history/",
         "language": "TypeScript",
         "language_color": "#3178c6",
-        "pushed": "2026-11-26T13:53:04Z",
+        "pushed": "2026-11-26T15:16:17Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
@@ -489,29 +502,29 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 45
+      "public_repos": 46
     }
   },
   "live": true,
   "now": {
     "account": 1,
-    "artist": "Prince Royce",
+    "artist": "CNCO",
     "artist_url": "",
     "context": "",
     "context_kind": "",
     "context_url": "https://open.spotify.com/track/6PSKhwo0mVcOdjUOhVJd5p",
-    "cover": "https://i.scdn.co/image/ab67616d00001e0297d8bec3d2d22f13b5e55d03",
+    "cover": "https://i.scdn.co/image/ab67616d00001e022bd583356020d371a2167c90",
     "device": "iPhone",
     "device_type": "smartphone",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/track/2yvjjJrWzVzA2zg4VsoEmo",
+    "play_url": "https://open.spotify.com/track/3AEZUABDXNtecAOSC1qTfo",
     "playing": false,
-    "song_url": "https://open.spotify.com/track/2yvjjJrWzVzA2zg4VsoEmo",
-    "title": "La Carretera",
+    "song_url": "https://open.spotify.com/track/3AEZUABDXNtecAOSC1qTfo",
+    "title": "Reggaetón Lento (Bailemos)",
     "user": "Cosmin Calin",
     "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
-    "when": "2026-11-26T14:50+00:00"
+    "when": "2026-11-26T15:18+00:00"
   },
   "pages_url": "https://robyrew.github.io/RobyRew/",
   "spotify_users": {
@@ -521,7 +534,7 @@
     }
   },
   "stats": {
-    "contributions": 1230,
+    "contributions": 1240,
     "stars": 108
   },
   "top_tracks": [
@@ -548,6 +561,17 @@
       "url": "https://www.last.fm/music/Biji+Din+B%C4%83rbule%C8%99ti/_/YEHOVA+IRE"
     },
     {
+      "artist": "Cali Y El Dandee",
+      "artist_url": "https://www.last.fm/music/+noredirect/Cali+Y+El+Dandee",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/7d322391182d4b08bbf81d4dd6b1d5f2.png",
+      "ms": 232000,
+      "name": "Yo Te Esperaré",
+      "plays": 3,
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Cali+Y+El+Dandee/_/Yo+Te+Esperar%C3%A9",
+      "source": "Last.fm",
+      "url": "https://www.last.fm/music/+noredirect/Cali+Y+El+Dandee/_/Yo+Te+Esperar%C3%A9"
+    },
+    {
       "artist": "ELOHIM Worship",
       "artist_url": "https://www.last.fm/music/ELOHIM+Worship",
       "cover": "",
@@ -559,26 +583,15 @@
       "url": "https://www.last.fm/music/ELOHIM+Worship/_/Salvat"
     },
     {
-      "artist": "Speranta",
-      "artist_url": "https://www.last.fm/music/Speranta",
-      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/388f36b655bc458ec5252827dcb58770.png",
-      "ms": 257000,
-      "name": "Jos la picioarele-Ti",
+      "artist": "Prince Royce",
+      "artist_url": "https://www.last.fm/music/Prince+Royce",
+      "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/16dc50eb0266ec17259d548d3a4f000e.png",
+      "ms": 238000,
+      "name": "La Carretera",
       "plays": 3,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Speranta/_/Jos+la+picioarele-Ti",
+      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Prince+Royce/_/La+Carretera",
       "source": "Last.fm",
-      "url": "https://www.last.fm/music/Speranta/_/Jos+la+picioarele-Ti"
-    },
-    {
-      "artist": "Teo Family",
-      "artist_url": "https://www.last.fm/music/Teo+Family",
-      "cover": "",
-      "ms": 221000,
-      "name": "Cand El Vorbeste",
-      "plays": 3,
-      "plays_url": "https://www.last.fm/user/RobyRew/library/music/Teo+Family/_/Cand+El+Vorbeste",
-      "source": "Last.fm",
-      "url": "https://www.last.fm/music/Teo+Family/_/Cand+El+Vorbeste"
+      "url": "https://www.last.fm/music/Prince+Royce/_/La+Carretera"
     }
   ]
 }
