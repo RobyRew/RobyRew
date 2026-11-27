@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T22:48:38Z",
+        "pushed": "2026-11-26T22:48:57Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -442,7 +442,7 @@
         "homepage": "https://robyrew.github.io/spotify-versions-history/",
         "language": "TypeScript",
         "language_color": "#3178c6",
-        "pushed": "2026-11-26T21:58:40Z",
+        "pushed": "2026-11-27T00:25:26Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
@@ -506,24 +506,24 @@
     }
   },
   "now": {
-    "account": 2,
-    "artist": "supwel",
-    "artist_url": "https://open.spotify.com/artist/3QEjJCefGJTVNDg3fKswlx",
-    "context": "if i fall Radio",
+    "account": 1,
+    "artist": "Creation House, Adi Kovaci",
+    "artist_url": "https://open.spotify.com/artist/0Zfx5yTOqB3ncFmnpAzFPl",
+    "context": "Sphere",
     "context_kind": "Playlist",
-    "context_url": "https://open.spotify.com/playlist/37i9dQZF1E8MScOMXbsKbW",
-    "cover": "https://i.scdn.co/image/ab67616d00001e0275e2cebf9343b4ff75a92f30",
+    "context_url": "https://open.spotify.com/playlist/7v9WZ36OvKAkAjnd12f9nC",
+    "cover": "https://i.scdn.co/image/ab67616d00001e02a78e84e653bc7dc82e5e48d8",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/track/6l7HAssCvBBQOaaLjVI1wH",
+    "play_url": "https://open.spotify.com/track/1RWx1q4wtVJS0Sr4P5Yw8b",
     "playing": false,
-    "song_url": "https://open.spotify.com/track/6l7HAssCvBBQOaaLjVI1wH",
-    "title": "if i fall",
-    "user": "cosmin.cg22",
-    "user_url": "https://open.spotify.com/user/cosmin.cg22",
-    "when": "2026-11-26T21:24+00:00"
+    "song_url": "https://open.spotify.com/track/1RWx1q4wtVJS0Sr4P5Yw8b",
+    "title": "Dragostea Dintâi - Live",
+    "user": "Cosmin Calin",
+    "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
+    "when": "2026-11-26T23:27+00:00"
   },
   "spotify_users": {
     "1": {
@@ -532,7 +532,7 @@
     }
   },
   "stats": {
-    "contributions": 1280,
+    "contributions": 1284,
     "stars": 108
   },
   "top_tracks": [
