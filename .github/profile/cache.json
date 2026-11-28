@@ -143,7 +143,7 @@
         "homepage": "",
         "language": "",
         "language_color": "",
-        "pushed": "2026-11-26T22:48:57Z",
+        "pushed": "2026-11-27T05:23:20Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/RobyRew",
         "version": ""
@@ -177,7 +177,7 @@
       "TopPresenter": {
         "archived": false,
         "description": "Professional Bible & worship presentation app for macOS — SwiftUI + SwiftData",
-        "downloads": 347,
+        "downloads": 348,
         "forks": 0,
         "homepage": "",
         "language": "Swift",
@@ -263,6 +263,19 @@
         "pushed": "2026-11-26T22:44:23Z",
         "stars": 0,
         "url": "https://github.com/RobyRew/chatforge",
+        "version": ""
+      },
+      "christian-mission-platform": {
+        "archived": false,
+        "description": "A platform for a mission organisation: public site, applications, portal and administration.",
+        "downloads": 0,
+        "forks": 0,
+        "homepage": "",
+        "language": "TypeScript",
+        "language_color": "#3178c6",
+        "pushed": "2026-11-28T04:31:48Z",
+        "stars": 0,
+        "url": "https://github.com/RobyRew/christian-mission-platform",
         "version": ""
       },
       "high-school-story": {
@@ -364,7 +377,7 @@
         "homepage": "",
         "language": "HTML",
         "language_color": "#e34c26",
-        "pushed": "2026-11-26T13:53:35Z",
+        "pushed": "2026-11-27T23:31:51Z",
         "stars": 0,
         "url": "https://github.com/RobyRew/portfolio",
         "version": ""
@@ -442,7 +455,7 @@
         "homepage": "https://robyrew.github.io/spotify-versions-history/",
         "language": "TypeScript",
         "language_color": "#3178c6",
-        "pushed": "2026-11-27T00:25:26Z",
+        "pushed": "2026-11-28T04:33:38Z",
         "stars": 3,
         "url": "https://github.com/RobyRew/spotify-versions-history",
         "version": ""
@@ -502,28 +515,28 @@
     },
     "user": {
       "created_at": "2019-04-08T13:49:08Z",
-      "public_repos": 46
+      "public_repos": 47
     }
   },
   "now": {
     "account": 1,
-    "artist": "Creation House, Adi Kovaci",
-    "artist_url": "https://open.spotify.com/artist/0Zfx5yTOqB3ncFmnpAzFPl",
-    "context": "Sphere",
-    "context_kind": "Playlist",
-    "context_url": "https://open.spotify.com/playlist/7v9WZ36OvKAkAjnd12f9nC",
-    "cover": "https://i.scdn.co/image/ab67616d00001e02a78e84e653bc7dc82e5e48d8",
+    "artist": "GaVriel",
+    "artist_url": "https://open.spotify.com/artist/1yzYNUGhfMTntAsh9hjuP2",
+    "context": "",
+    "context_kind": "",
+    "context_url": "https://open.spotify.com/track/32dpGB3AzAE1DsS0lsazgU",
+    "cover": "https://i.scdn.co/image/ab67616d00001e021fb266b0df99790c99fcf164",
     "device": "",
     "device_type": "",
     "paused": false,
     "platform": "Spotify",
-    "play_url": "https://open.spotify.com/track/1RWx1q4wtVJS0Sr4P5Yw8b",
+    "play_url": "https://open.spotify.com/track/32dpGB3AzAE1DsS0lsazgU",
     "playing": false,
-    "song_url": "https://open.spotify.com/track/1RWx1q4wtVJS0Sr4P5Yw8b",
-    "title": "Dragostea Dintâi - Live",
+    "song_url": "https://open.spotify.com/track/32dpGB3AzAE1DsS0lsazgU",
+    "title": "No Busco Mas",
     "user": "Cosmin Calin",
     "user_url": "https://open.spotify.com/user/gwiw7i4a2ha0a8dbldyn94vwl",
-    "when": "2026-11-26T23:27+00:00"
+    "when": "2026-11-27T23:10+00:00"
   },
   "spotify_users": {
     "1": {
@@ -532,7 +545,7 @@
     }
   },
   "stats": {
-    "contributions": 1284,
+    "contributions": 1309,
     "stars": 108
   },
   "top_tracks": [
